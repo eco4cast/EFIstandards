@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stmml="http://www.xml-cml.org/schema/stmml-1.1" packageId="3d74900b-1773-4969-b66f-dfecb3bff7f8" system="uuid" xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1/ eml.xsd">
+  <dataset>
+    <title>A vey silly logistic forecast</title>
+    <creator id="http://orcid.org/0000-0002-1642-628X">
+      <individualName>
+        <givenName>Carl</givenName>
+        <surName>Boettiger</surName>
+      </individualName>
+      <electronicMailAddress>cboettig@gmail.com</electronicMailAddress>
+    </creator>
+    <pubDate>2019-11-14</pubDate>
+    <abstract>An illustration of how we might use EML metadata to describe an ecological forecast</abstract>
+    <keywordSet>
+      <keyword>forecast</keyword>
+      <keyword>population</keyword>
+      <keyword>timeseries</keyword>
+      <keywordThesaurus>EFI controlled vocabulary</keywordThesaurus>
+    </keywordSet>
+    <intellectualRights>http://www.lternet.edu/data/netpolicy.html.</intellectualRights>
+    <coverage>
+      <geographicCoverage>
+        <geographicDescription>Harvard Forest Greenhouse, Tom Swamp Tract (Harvard Forest)</geographicDescription>
+        <boundingCoordinates>
+          <westBoundingCoordinate>-122.44</westBoundingCoordinate>
+          <eastBoundingCoordinate>-117.15</eastBoundingCoordinate>
+          <northBoundingCoordinate>37.38</northBoundingCoordinate>
+          <southBoundingCoordinate>30</southBoundingCoordinate>
+          <boundingAltitudes>
+            <altitudeMinimum>160</altitudeMinimum>
+            <altitudeMaximum>330</altitudeMaximum>
+            <altitudeUnits>meter</altitudeUnits>
+          </boundingAltitudes>
+        </boundingCoordinates>
+      </geographicCoverage>
+      <temporalCoverage>
+        <rangeOfDates>
+          <beginDate>
+            <calendarDate>2012-06-01</calendarDate>
+          </beginDate>
+          <endDate>
+            <calendarDate>2013-12-31</calendarDate>
+          </endDate>
+        </rangeOfDates>
+      </temporalCoverage>
+      <taxonomicCoverage>
+        <taxonomicClassification>
+          <taxonRankName>Genus</taxonRankName>
+          <taxonRankValue>Sarracenia</taxonRankValue>
+          <taxonomicClassification>
+            <taxonRankName>Species</taxonRankName>
+            <taxonRankValue>purpurea</taxonRankValue>
+          </taxonomicClassification>
+        </taxonomicClassification>
+      </taxonomicCoverage>
+    </coverage>
+    <contact>
+      <references>http://orcid.org/0000-0002-1642-628X</references>
+    </contact>
+    <methods>
+      <methodStep>
+        <description>
+          <section>
+            <title>Overview</title>
+            <para>
+    This data was simulated using a logistic map in R. The code can be
+    found at https://github.com/somewhere or https://doi.org/10.xxx
+  </para>
+          </section>
+        </description>
+      </methodStep>
+    </methods>
+    <dataTable>
+      <entityName>logistic-forecast.csv</entityName>
+      <entityDescription>Forecast of population size under a few models</entityDescription>
+      <physical>
+        <objectName>logistic-forecast.csv</objectName>
+        <size unit="bytes">926</size>
+        <authentication method="MD5">08e90814425188265dda3c93cb61adb2</authentication>
+        <dataFormat>
+          <textFormat>
+            <recordDelimiter>
+</recordDelimiter>
+            <attributeOrientation>column</attributeOrientation>
+            <simpleDelimited>
+              <fieldDelimiter>,</fieldDelimiter>
+            </simpleDelimited>
+          </textFormat>
+        </dataFormat>
+      </physical>
+      <attributeList>
+        <attribute>
+          <attributeName>t</attributeName>
+          <attributeDefinition>time</attributeDefinition>
+          <storageType>date</storageType>
+          <measurementScale>
+            <dateTime>
+              <formatString>YYYY-MM-DD</formatString>
+              <dateTimeDomain/>
+            </dateTime>
+          </measurementScale>
+        </attribute>
+        <attribute>
+          <attributeName>n</attributeName>
+          <attributeDefinition>population size (logistic)</attributeDefinition>
+          <storageType>float</storageType>
+          <measurementScale>
+            <ratio>
+              <unit>
+                <standardUnit>numberPerMeterSquared</standardUnit>
+              </unit>
+              <numericDomain>
+                <numberType>real</numberType>
+              </numericDomain>
+            </ratio>
+          </measurementScale>
+        </attribute>
+        <attribute>
+          <attributeName>ne</attributeName>
+          <attributeDefinition>population size (exp)</attributeDefinition>
+          <storageType>float</storageType>
+          <measurementScale>
+            <ratio>
+              <unit>
+                <standardUnit>numberPerMeterSquared</standardUnit>
+              </unit>
+              <numericDomain>
+                <numberType>real</numberType>
+              </numericDomain>
+            </ratio>
+          </measurementScale>
+        </attribute>
+      </attributeList>
+    </dataTable>
+  </dataset>
+</eml:eml>

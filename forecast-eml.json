@@ -1,0 +1,152 @@
+{
+  "@context": {
+    "@vocab": "eml://ecoinformatics.org/eml-2.1.1/",
+    "eml": "eml://ecoinformatics.org/eml-2.1.1/",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance/",
+    "xml": "http://www.w3.org/XML/1998/namespace",
+    "stmml": "http://www.xml-cml.org/schema/stmml-1.1/",
+    "id": "@id",
+    "@base": "eml://"
+  },
+  "@type": "EML",
+  "dataset": {
+    "title": "A vey silly logistic forecast",
+    "creator": {
+      "id": "http://orcid.org/0000-0002-1642-628X",
+      "individualName": {
+        "givenName": "Carl",
+        "surName": "Boettiger"
+      },
+      "electronicMailAddress": "cboettig@gmail.com"
+    },
+    "pubDate": "2019-11-14",
+    "abstract": "An illustration of how we might use EML metadata to describe an ecological forecast",
+    "keywordSet": {
+      "keywordThesaurus": "EFI controlled vocabulary",
+      "keyword": [
+        "forecast",
+        "population",
+        "timeseries"
+      ]
+    },
+    "intellectualRights": "http://www.lternet.edu/data/netpolicy.html.",
+    "coverage": {
+      "geographicCoverage": {
+        "geographicDescription": "Harvard Forest Greenhouse, Tom Swamp Tract (Harvard Forest)",
+        "boundingCoordinates": {
+          "westBoundingCoordinate": "-122.44",
+          "eastBoundingCoordinate": "-117.15",
+          "northBoundingCoordinate": "37.38",
+          "southBoundingCoordinate": "30",
+          "boundingAltitudes": {
+            "altitudeMinimum": "160",
+            "altitudeMaximum": "330",
+            "altitudeUnits": "meter"
+          }
+        }
+      },
+      "temporalCoverage": {
+        "rangeOfDates": {
+          "beginDate": {
+            "calendarDate": "2012-06-01"
+          },
+          "endDate": {
+            "calendarDate": "2013-12-31"
+          }
+        }
+      },
+      "taxonomicCoverage": {
+        "taxonomicClassification": {
+          "taxonRankName": "Genus",
+          "taxonRankValue": "Sarracenia",
+          "taxonomicClassification": {
+            "taxonRankName": "Species",
+            "taxonRankValue": "purpurea"
+          }
+        }
+      }
+    },
+    "contact": {
+      "references": "http://orcid.org/0000-0002-1642-628X"
+    },
+    "methods": {
+      "methodStep": {
+        "description": {
+          "section": "<title>Overview<\/title>\n<para>\n    This data was simulated using a logistic map in R. The code can be\n    found at https://github.com/somewhere or https://doi.org/10.xxx\n  <\/para>"
+        }
+      }
+    },
+    "dataTable": {
+      "entityName": "logistic-forecast.csv",
+      "entityDescription": "Forecast of population size under a few models",
+      "physical": {
+        "objectName": "logistic-forecast.csv",
+        "size": {
+          "unit": "bytes",
+          "size": "926"
+        },
+        "authentication": {
+          "method": "MD5",
+          "authentication": "08e90814425188265dda3c93cb61adb2"
+        },
+        "dataFormat": {
+          "textFormat": {
+            "recordDelimiter": "\n",
+            "attributeOrientation": "column",
+            "simpleDelimited": {
+              "fieldDelimiter": ","
+            }
+          }
+        }
+      },
+      "attributeList": {
+        "attribute": [
+          {
+            "attributeName": "t",
+            "attributeDefinition": "time",
+            "storageType": "date",
+            "measurementScale": {
+              "dateTime": {
+                "formatString": "YYYY-MM-DD",
+                "dateTimeDomain": []
+              }
+            }
+          },
+          {
+            "attributeName": "n",
+            "attributeDefinition": "population size (logistic)",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "numberPerMeterSquared"
+                },
+                "numericDomain": {
+                  "numberType": "real"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "ne",
+            "attributeDefinition": "population size (exp)",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "numberPerMeterSquared"
+                },
+                "numericDomain": {
+                  "numberType": "real"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "packageId": "3d74900b-1773-4969-b66f-dfecb3bff7f8",
+  "schemaLocation": "eml://ecoinformatics.org/eml-2.1.1/ eml.xsd",
+  "system": "uuid"
+}
