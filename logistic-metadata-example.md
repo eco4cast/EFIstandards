@@ -126,7 +126,8 @@ attributes <- tibble::tribble(
   "ne",         "population size (exp)",       "numberPerMeterSquared",    NA,         "real"
   )
 
-attrList <- set_attributes(attributes, col_classes = c("Date", "numeric", "numeric"))
+attrList <- set_attributes(attributes, 
+                           col_classes = c("Date", "numeric", "numeric"))
 physical <- set_physical("logistic-forecast.csv")
 ```
 
@@ -142,10 +143,15 @@ dataTable <- eml$dataTable(
                  attributeList = attrList)
 ```
 
+There’s a lot more optional terminology that could be exploited here –
+for instance, the specification lets us define different missing value
+codes (and explanations) for each column, and allows us to indicate
+`precision`, `minimum` and `maximum`.
+
 Note that `physical` type can document almost any formats as well,
 including NetCDF etc. A NetCDF file would still document the variables
 measured in much the same way regardless of the underlying
-representation.
+representation. Note that
 
 Now that we’ve documented the actual data.frame itself, we can add
 additional metadata to the record describing our forecast, which is
