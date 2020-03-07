@@ -1,10 +1,10 @@
 {
   "@context": {
-    "@vocab": "eml://ecoinformatics.org/eml-2.1.1/",
-    "eml": "eml://ecoinformatics.org/eml-2.1.1/",
+    "@vocab": "https://eml.ecoinformatics.org/eml-2.2.0/",
+    "eml": "https://eml.ecoinformatics.org/eml-2.2.0/",
     "xsi": "http://www.w3.org/2001/XMLSchema-instance/",
     "xml": "http://www.w3.org/XML/1998/namespace",
-    "stmml": "http://www.xml-cml.org/schema/stmml-1.1/",
+    "stmml": "http://www.xml-cml.org/schema/stmml-1.2/",
     "id": "@id",
     "@base": "eml://"
   },
@@ -19,7 +19,7 @@
       },
       "electronicMailAddress": "cboettig@gmail.com"
     },
-    "pubDate": "2019-11-14",
+    "pubDate": "2020-03-07",
     "abstract": "An illustration of how we might use EML metadata to describe an ecological forecast",
     "keywordSet": {
       "keywordThesaurus": "EFI controlled vocabulary",
@@ -72,7 +72,7 @@
     "methods": {
       "methodStep": {
         "description": {
-          "section": "<title>Overview<\/title>\n<para>\n    This data was simulated using a logistic map in R. The code can be\n    found at https://github.com/somewhere or https://doi.org/10.xxx\n  <\/para>"
+          "markdown": "# Overview\n\nThis data was simulated using a logistic map in R. The code can be found at https://github.com/somewhere or https://doi.org/10.xxx\n\n"
         }
       }
     },
@@ -87,7 +87,7 @@
         },
         "authentication": {
           "method": "MD5",
-          "authentication": "08e90814425188265dda3c93cb61adb2"
+          "authentication": "499a5c3fe4c91bf630bc6d8b8fe441d2"
         },
         "dataFormat": {
           "textFormat": {
@@ -146,7 +146,7 @@
       }
     }
   },
-  "packageId": "8dad6e31-7144-45ef-a25a-8aa0e1a1ac72",
-  "schemaLocation": "eml://ecoinformatics.org/eml-2.1.1/ eml.xsd",
+  "packageId": "c8f2cef9-036e-4f4e-b56a-e3cab349afe6",
+  "schemaLocation": "https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd",
   "system": "uuid"
 }

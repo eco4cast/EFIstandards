@@ -9,6 +9,7 @@ Consider the following trivial forecast model from <https://github.com/EcoForeca
 library(EML)
 library(tidyverse)
 library(uuid)
+emld::eml_version("eml-2.2.0")
 ```
 
 
@@ -158,8 +159,8 @@ keywordSet <- list(
 Our dataset needs an abstract describing what this is all about.  Also, a methods section is not required but it's probably a good idea.  Here we import a methods section that was written in Markdown.
  
 ```{r}
-abstract <- set_TextType("abstract.md")
-methods <- set_methods("methods.md")
+abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
+methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))
 ```
 
 

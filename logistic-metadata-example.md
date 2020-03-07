@@ -8,7 +8,10 @@ Consider the following trivial forecast model from
 library(EML)
 library(tidyverse)
 library(uuid)
+emld::eml_version("eml-2.2.0")
 ```
+
+    ## [1] "eml-2.2.0"
 
 # Population Growth
 
@@ -86,16 +89,16 @@ df %>% pivot_longer(c(n, ne),
     ## # A tibble: 60 x 11
     ##    observation_date model_identifier predicted_value conf_interv_2.5
     ##    <date>           <chr>                      <dbl>           <dbl>
-    ##  1 2001-11-14       n                          0.1             0.1  
-    ##  2 2001-11-14       ne                         0.1             0.1  
-    ##  3 2002-11-14       n                          0.199           0.199
-    ##  4 2002-11-14       ne                         0.2             0.2  
-    ##  5 2003-11-14       n                          0.394           0.394
-    ##  6 2003-11-14       ne                         0.4             0.4  
-    ##  7 2004-11-14       n                          0.773           0.773
-    ##  8 2004-11-14       ne                         0.8             0.8  
-    ##  9 2005-11-14       n                          1.49            1.49 
-    ## 10 2005-11-14       ne                         1.6             1.6  
+    ##  1 2001-03-07       n                          0.1             0.1  
+    ##  2 2001-03-07       ne                         0.1             0.1  
+    ##  3 2002-03-07       n                          0.199           0.199
+    ##  4 2002-03-07       ne                         0.2             0.2  
+    ##  5 2003-03-07       n                          0.394           0.394
+    ##  6 2003-03-07       ne                         0.4             0.4  
+    ##  7 2004-03-07       n                          0.773           0.773
+    ##  8 2004-03-07       ne                         0.8             0.8  
+    ##  9 2005-03-07       n                          1.49            1.49 
+    ## 10 2005-03-07       ne                         1.6             1.6  
     ## # … with 50 more rows, and 7 more variables: conf_interv_97.5 <dbl>,
     ## #   distribution_of_response <chr>, observed_value <lgl>,
     ## #   forecast_issued_date <date>, response_variable <chr>,
@@ -193,11 +196,18 @@ keywordSet <- list(
 
 Our dataset needs an abstract describing what this is all about. Also, a
 methods section is not required but it’s probably a good idea. Here we
-import a methods section that was written in Markdown.
+import a methods section that was written in
+Markdown.
 
 ``` r
-abstract <- set_TextType("abstract.md")
-methods <- set_methods("methods.md")
+abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
+```
+
+    ## Warning in readLines("abstract.md"): incomplete final line found on
+    ## 'abstract.md'
+
+``` r
+methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))
 ```
 
 ``` r

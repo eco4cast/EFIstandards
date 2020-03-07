@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stmml="http://www.xml-cml.org/schema/stmml-1.1" packageId="8dad6e31-7144-45ef-a25a-8aa0e1a1ac72" system="uuid" xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.1/ eml.xsd">
+<eml:eml xmlns:eml="https://eml.ecoinformatics.org/eml-2.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stmml="http://www.xml-cml.org/schema/stmml-1.2" packageId="c8f2cef9-036e-4f4e-b56a-e3cab349afe6" system="uuid" xsi:schemaLocation="https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd">
   <dataset>
     <title>A vey silly logistic forecast</title>
     <creator id="http://orcid.org/0000-0002-1642-628X">
@@ -9,7 +9,7 @@
       </individualName>
       <electronicMailAddress>cboettig@gmail.com</electronicMailAddress>
     </creator>
-    <pubDate>2019-11-14</pubDate>
+    <pubDate>2020-03-07</pubDate>
     <abstract>An illustration of how we might use EML metadata to describe an ecological forecast</abstract>
     <keywordSet>
       <keyword>forecast</keyword>
@@ -60,13 +60,11 @@
     <methods>
       <methodStep>
         <description>
-          <section>
-            <title>Overview</title>
-            <para>
-    This data was simulated using a logistic map in R. The code can be
-    found at https://github.com/somewhere or https://doi.org/10.xxx
-  </para>
-          </section>
+          <markdown># Overview
+
+This data was simulated using a logistic map in R. The code can be found at https://github.com/somewhere or https://doi.org/10.xxx
+
+</markdown>
         </description>
       </methodStep>
     </methods>
@@ -76,7 +74,7 @@
       <physical>
         <objectName>logistic-forecast.csv</objectName>
         <size unit="bytes">926</size>
-        <authentication method="MD5">08e90814425188265dda3c93cb61adb2</authentication>
+        <authentication method="MD5">499a5c3fe4c91bf630bc6d8b8fe441d2</authentication>
         <dataFormat>
           <textFormat>
             <recordDelimiter>
