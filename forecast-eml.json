@@ -1,10 +1,10 @@
 {
   "@context": {
-    "@vocab": "eml://ecoinformatics.org/eml-2.1.1/",
-    "eml": "eml://ecoinformatics.org/eml-2.1.1/",
+    "@vocab": "https://eml.ecoinformatics.org/eml-2.2.0/",
+    "eml": "https://eml.ecoinformatics.org/eml-2.2.0/",
     "xsi": "http://www.w3.org/2001/XMLSchema-instance/",
     "xml": "http://www.w3.org/XML/1998/namespace",
-    "stmml": "http://www.xml-cml.org/schema/stmml-1.1/",
+    "stmml": "http://www.xml-cml.org/schema/stmml-1.2/",
     "id": "@id",
     "@base": "eml://"
   },
@@ -12,14 +12,14 @@
   "dataset": {
     "title": "A vey silly logistic forecast",
     "creator": {
-      "id": "http://orcid.org/0000-0002-1642-628X",
+      "id": "https://orcid.org/0000-0003-1282-7825",
       "individualName": {
-        "givenName": "Carl",
-        "surName": "Boettiger"
+        "givenName": "Quinn",
+        "surName": "Thomas"
       },
-      "electronicMailAddress": "cboettig@gmail.com"
+      "electronicMailAddress": "rqthomas@vt.edu"
     },
-    "pubDate": "2019-11-14",
+    "pubDate": "2001-03-04",
     "abstract": "An illustration of how we might use EML metadata to describe an ecological forecast",
     "keywordSet": {
       "keywordThesaurus": "EFI controlled vocabulary",
@@ -67,27 +67,27 @@
       }
     },
     "contact": {
-      "references": "http://orcid.org/0000-0002-1642-628X"
+      "references": "https://orcid.org/0000-0003-1282-7825"
     },
     "methods": {
       "methodStep": {
         "description": {
-          "section": "<title>Overview<\/title>\n<para>\n    This data was simulated using a logistic map in R. The code can be\n    found at https://github.com/somewhere or https://doi.org/10.xxx\n  <\/para>"
+          "section": "<title>Methods Description<\/title><para><emphasis role=\"strong\">Forecast timestep<\/emphasis> 1 day\n  <\/para><para>\n  <emphasis role=\"strong\">Forecast time horizon<\/emphasis>\n<\/para><para>\n  <emphasis role=\"strong\">Data assimilation<\/emphasis>\n<\/para><para>\n    Data Assimilation used: No If, DA used - type of method: N/A If, DA\n    used - Number of parameters calibrated: N/A If, DA used - Sources of\n    training data (DOI, GitHub): N/A\n  <\/para><para>\n  <emphasis role=\"strong\">Model Description<\/emphasis>\n<\/para><para>\n    Type of model (Empirical, process-based, machine learning):\n    Empirical Model name: discrete Lotka–Volterra model Location of\n    repository with model code: https://github.com/somewhere or\n    https://doi.org/10.xxx Model citation: N/A Total number of model\n    process parameters: 3\n  <\/para><para>\n  <emphasis role=\"strong\">Model Covariates<\/emphasis>\n<\/para><para>\n    Type (i.e., meteorology): N/A Source (i.e., NOAA GEFS): N/A\n  <\/para><para>\n  <emphasis role=\"strong\">Uncertainty<\/emphasis>\n<\/para><para>\n    Answers: No, Derived from data, Propagates, Assimilates\n  <\/para><para>\n    Initial conditions: Parameter: Parameter Random Effects: Process\n    (within model): Multi-model: Driver: Scenario:\n  <\/para><para>\n    Method for propagating uncertainty (Analytic, ensemble numeric):\n    ensemble numeric If Analytic, specific method If ensemble numeric,\n    number of ensembles: 10\n  <\/para>"
         }
       }
     },
     "dataTable": {
-      "entityName": "logistic-forecast.csv",
-      "entityDescription": "Forecast of population size under a few models",
+      "entityName": "logistic-forecast-ensemble-multi-variable-multi-depth.csv",
+      "entityDescription": "Forecast of population size using a depth specific model",
       "physical": {
-        "objectName": "logistic-forecast.csv",
+        "objectName": "logistic-forecast-ensemble-multi-variable-multi-depth.csv",
         "size": {
           "unit": "bytes",
-          "size": "926"
+          "size": "31064"
         },
         "authentication": {
           "method": "MD5",
-          "authentication": "08e90814425188265dda3c93cb61adb2"
+          "authentication": "501c2f5bd9c1e3e736fcb37f3cd340a3"
         },
         "dataFormat": {
           "textFormat": {
@@ -102,7 +102,7 @@
       "attributeList": {
         "attribute": [
           {
-            "attributeName": "t",
+            "attributeName": "time",
             "attributeDefinition": "time",
             "storageType": "date",
             "measurementScale": {
@@ -113,8 +113,38 @@
             }
           },
           {
-            "attributeName": "n",
-            "attributeDefinition": "population size (logistic)",
+            "attributeName": "depth",
+            "attributeDefinition": "depth in reservior",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "meter"
+                },
+                "numericDomain": {
+                  "numberType": "real"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "ensemble",
+            "attributeDefinition": "index of ensemble member",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "dimensionless"
+                },
+                "numericDomain": {
+                  "numberType": "integer"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "species_1",
+            "attributeDefinition": "Population size of species 1",
             "storageType": "float",
             "measurementScale": {
               "ratio": {
@@ -128,8 +158,8 @@
             }
           },
           {
-            "attributeName": "ne",
-            "attributeDefinition": "population size (exp)",
+            "attributeName": "species_2",
+            "attributeDefinition": "Population size of species 2",
             "storageType": "float",
             "measurementScale": {
               "ratio": {
@@ -141,12 +171,58 @@
                 }
               }
             }
+          },
+          {
+            "attributeName": "forecast_issue_time",
+            "attributeDefinition": "time that forecast was created",
+            "storageType": "date",
+            "measurementScale": {
+              "dateTime": {
+                "formatString": "YYYY-MM-DD",
+                "dateTimeDomain": []
+              }
+            }
+          },
+          {
+            "attributeName": "data_assimilation",
+            "attributeDefinition": "Flag whether time step included data assimilation",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "dimensionless"
+                },
+                "numericDomain": {
+                  "numberType": "integer"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "Forecast_id",
+            "attributeDefinition": "ID for specific forecast cycle",
+            "storageType": "string",
+            "measurementScale": {
+              "nominal": {
+                "nonNumericDomain": []
+              }
+            }
+          },
+          {
+            "attributeName": "ForecastProject_id",
+            "attributeDefinition": "ID for forecasting project",
+            "storageType": "string",
+            "measurementScale": {
+              "nominal": {
+                "nonNumericDomain": []
+              }
+            }
           }
         ]
       }
     }
   },
-  "packageId": "8dad6e31-7144-45ef-a25a-8aa0e1a1ac72",
-  "schemaLocation": "eml://ecoinformatics.org/eml-2.1.1/ eml.xsd",
+  "packageId": "7d879be0-a593-4581-8d8f-fe09ffabd7e6",
+  "schemaLocation": "https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd",
   "system": "uuid"
 }

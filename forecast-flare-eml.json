@@ -1,0 +1,223 @@
+{
+  "@context": {
+    "@vocab": "https://eml.ecoinformatics.org/eml-2.2.0/",
+    "eml": "https://eml.ecoinformatics.org/eml-2.2.0/",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance/",
+    "xml": "http://www.w3.org/XML/1998/namespace",
+    "stmml": "http://www.xml-cml.org/schema/stmml-1.2/",
+    "id": "@id",
+    "@base": "eml://"
+  },
+  "@type": "EML",
+  "dataset": {
+    "title": "FLARE forecast",
+    "creator": {
+      "id": "https://orcid.org/0000-0003-1282-7825",
+      "individualName": {
+        "givenName": "Quinn",
+        "surName": "Thomas"
+      },
+      "electronicMailAddress": "rqthomas@vt.edu"
+    },
+    "pubDate": "2020-02-13T21:32:52-05:00",
+    "abstract": "An illustration of how we might use EML metadata to describe an ecological forecast",
+    "keywordSet": {
+      "keywordThesaurus": "EFI controlled vocabulary",
+      "keyword": [
+        "forecast",
+        "ecosystem",
+        "timeseries"
+      ]
+    },
+    "intellectualRights": "http://www.lternet.edu/data/netpolicy.html.",
+    "coverage": {
+      "geographicCoverage": {
+        "geographicDescription": "Falling Creek Reservior",
+        "boundingCoordinates": {
+          "westBoundingCoordinate": "-79.9",
+          "eastBoundingCoordinate": "-79.9",
+          "northBoundingCoordinate": "37.27",
+          "southBoundingCoordinate": "37.27"
+        }
+      },
+      "temporalCoverage": {
+        "rangeOfDates": {
+          "beginDate": {
+            "calendarDate": "2019-05-27 12:00:00"
+          },
+          "endDate": {
+            "calendarDate": "2019-05-27 12:00:00"
+          }
+        }
+      }
+    },
+    "contact": {
+      "references": "https://orcid.org/0000-0003-1282-7825"
+    },
+    "methods": {
+      "methodStep": {
+        "description": {
+          "section": "<title>Methods Description<\/title><para><emphasis role=\"strong\">Forecast timestep<\/emphasis> 1 day\n  <\/para><para>\n  <emphasis role=\"strong\">Forecast time horizon<\/emphasis>\n<\/para><para>\n    16 days\n  <\/para><para>\n  <emphasis role=\"strong\">Data assimilation<\/emphasis>\n<\/para><para>\n    Data Assimilation used: Yes If, DA used - type of method: EnKF If,\n    DA used - Number of parameters calibrated: 3 If, DA used - Sources\n    of training data (DOI, GitHub):\n    https://github.com/CareyLabVT/SCCData/tree/carina-data\n  <\/para><para>\n  <emphasis role=\"strong\">Model Description<\/emphasis>\n<\/para><para>\n    Type of model (Empirical, process-based, machine learning):\n    Process-based Model name: General Lake Model-AED V3 Location of\n    repository with model code: GLM:\n    https://github.com/AquaticEcoDynamics/GLM AED:\n    https://github.com/AquaticEcoDynamics/libaed2 Model citation: Hipsey\n    et al. 2019 GMD Total number of model process parameters: Hard to\n    count\n  <\/para><para>\n  <emphasis role=\"strong\">Model Covariates<\/emphasis>\n<\/para><para>\n    Type (i.e., meteorology): meteorology Source (i.e., NOAA GEFS): NOAA\n    GEFS 16-day\n  <\/para><para>\n    Type (i.e., meteorology): Stream Inflow Source (i.e., NOAA GEFS):\n    https://github.com/CareyLabVT/SCCData/tree/diana-data\n  <\/para><para>\n  <emphasis role=\"strong\">Uncertainty<\/emphasis>\n<\/para><para>\n    Answers: No, Derived from data, Propagates, Assimilates\n  <\/para><para>\n    Initial conditions: Assimilates Parameter: Propagates, Assimilates\n    Parameter Random Effects: No Process (within model): Propagates,\n    Assimilates Multi-model: No Driver: Derived from data Scenario: Yes\n    - oxygen system on and off\n  <\/para><para>\n    Method for propagating uncertainty (Analytic, ensemble numeric):\n    ensemble numeric If Analytic, specific method: NA If ensemble\n    numeric, number of ensembles: 210\n  <\/para>"
+        }
+      }
+    },
+    "dataTable": {
+      "entityName": "flare-forecast-ensemble-multi-variable-1D.csv",
+      "entityDescription": "Falling Creek Reservior Forecast",
+      "physical": {
+        "objectName": "flare-forecast-ensemble-multi-variable-1D.csv",
+        "size": {
+          "unit": "bytes",
+          "size": "15686909"
+        },
+        "authentication": {
+          "method": "MD5",
+          "authentication": "513384d6f529de0fa15aeffe4f7c2f19"
+        },
+        "dataFormat": {
+          "textFormat": {
+            "recordDelimiter": "\n",
+            "attributeOrientation": "column",
+            "simpleDelimited": {
+              "fieldDelimiter": ","
+            }
+          }
+        }
+      },
+      "attributeList": {
+        "attribute": [
+          {
+            "attributeName": "time",
+            "attributeDefinition": "time",
+            "storageType": "date",
+            "measurementScale": {
+              "dateTime": {
+                "formatString": "YYYY-MM-DD%THH:MM_SS%Z",
+                "dateTimeDomain": []
+              }
+            }
+          },
+          {
+            "attributeName": "depth",
+            "attributeDefinition": "depth in reservior",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "meter"
+                },
+                "numericDomain": {
+                  "numberType": "real"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "ensemble",
+            "attributeDefinition": "index of ensemble member",
+            "storageType": "string",
+            "measurementScale": {
+              "nominal": {
+                "nonNumericDomain": []
+              }
+            }
+          },
+          {
+            "attributeName": "scenario",
+            "attributeDefinition": "forecast scenario",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "dimensionless"
+                },
+                "numericDomain": {
+                  "numberType": "character"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "temperature",
+            "attributeDefinition": "water temperature",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "celsius"
+                },
+                "numericDomain": {
+                  "numberType": "real"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "oxygen",
+            "attributeDefinition": "oxygen concentration",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "numberPerMeterSquared"
+                },
+                "numericDomain": {
+                  "numberType": "real"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "forecast_issue_time",
+            "attributeDefinition": "time that forecast was created",
+            "storageType": "date",
+            "measurementScale": {
+              "dateTime": {
+                "formatString": "YYYY-MM-DD",
+                "dateTimeDomain": []
+              }
+            }
+          },
+          {
+            "attributeName": "data_assimilation",
+            "attributeDefinition": "Flag whether time step included data assimilation",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "dimensionless"
+                },
+                "numericDomain": {
+                  "numberType": "integer"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "Forecast_id",
+            "attributeDefinition": "ID for specific forecast cycle",
+            "storageType": "string",
+            "measurementScale": {
+              "nominal": {
+                "nonNumericDomain": []
+              }
+            }
+          },
+          {
+            "attributeName": "ForecastProject_id",
+            "attributeDefinition": "ID for forecasting project",
+            "storageType": "string",
+            "measurementScale": {
+              "nominal": {
+                "nonNumericDomain": []
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "packageId": "30405043",
+  "schemaLocation": "https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd",
+  "system": "uuid"
+}
