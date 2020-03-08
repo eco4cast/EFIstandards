@@ -45,66 +45,51 @@
     <methods>
       <methodStep>
         <description>
-          <section>
-            <title>Methods Description</title>
-            <para><emphasis role="strong">Forecast timestep</emphasis> 1 day
-  </para>
-            <para>
-              <emphasis role="strong">Forecast time horizon</emphasis>
-            </para>
-            <para>
-    16 days
-  </para>
-            <para>
-              <emphasis role="strong">Data assimilation</emphasis>
-            </para>
-            <para>
-    Data Assimilation used: Yes If, DA used - type of method: EnKF If,
-    DA used - Number of parameters calibrated: 3 If, DA used - Sources
-    of training data (DOI, GitHub):
-    https://github.com/CareyLabVT/SCCData/tree/carina-data
-  </para>
-            <para>
-              <emphasis role="strong">Model Description</emphasis>
-            </para>
-            <para>
-    Type of model (Empirical, process-based, machine learning):
-    Process-based Model name: General Lake Model-AED V3 Location of
-    repository with model code: GLM:
-    https://github.com/AquaticEcoDynamics/GLM AED:
-    https://github.com/AquaticEcoDynamics/libaed2 Model citation: Hipsey
-    et al. 2019 GMD Total number of model process parameters: Hard to
-    count
-  </para>
-            <para>
-              <emphasis role="strong">Model Covariates</emphasis>
-            </para>
-            <para>
-    Type (i.e., meteorology): meteorology Source (i.e., NOAA GEFS): NOAA
-    GEFS 16-day
-  </para>
-            <para>
-    Type (i.e., meteorology): Stream Inflow Source (i.e., NOAA GEFS):
-    https://github.com/CareyLabVT/SCCData/tree/diana-data
-  </para>
-            <para>
-              <emphasis role="strong">Uncertainty</emphasis>
-            </para>
-            <para>
-    Answers: No, Derived from data, Propagates, Assimilates
-  </para>
-            <para>
-    Initial conditions: Assimilates Parameter: Propagates, Assimilates
-    Parameter Random Effects: No Process (within model): Propagates,
-    Assimilates Multi-model: No Driver: Derived from data Scenario: Yes
-    - oxygen system on and off
-  </para>
-            <para>
-    Method for propagating uncertainty (Analytic, ensemble numeric):
-    ensemble numeric If Analytic, specific method: NA If ensemble
-    numeric, number of ensembles: 210
-  </para>
-          </section>
+          <markdown># Methods Description
+
+**Forecast timestep**
+1 day
+
+**Forecast time horizon**
+
+**Data assimilation**
+
+Data Assimilation used: No
+If, DA used - type of method: N/A
+If, DA used - Number of parameters calibrated: N/A
+If, DA used - Sources of training data (DOI, GitHub): N/A
+
+**Model Description**
+
+Type of model (Empirical, process-based, machine learning): Empirical
+Model name: discrete Lotka–Volterra model
+Location of repository with model code: https://github.com/somewhere or https://doi.org/10.xxx
+Model citation: N/A
+Total number of model process parameters: 3
+
+**Model Covariates**
+
+Type (i.e., meteorology): N/A
+Source (i.e., NOAA GEFS): N/A
+
+**Uncertainty**
+
+Answers: No, Derived from data, Propagates, Assimilates
+
+Initial conditions:
+Parameter:
+Parameter Random Effects:
+Process (within model):
+Multi-model:
+Driver:
+Scenario:
+
+Method for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric
+If Analytic, specific method
+If ensemble numeric, number of ensembles: 10
+
+
+</markdown>
         </description>
       </methodStep>
     </methods>
@@ -114,7 +99,7 @@
       <physical>
         <objectName>flare-forecast-ensemble-multi-variable-1D.csv</objectName>
         <size unit="bytes">15686909</size>
-        <authentication method="MD5">513384d6f529de0fa15aeffe4f7c2f19</authentication>
+        <authentication method="MD5">ea348edf584c17e39038f4ecda2127eb</authentication>
         <dataFormat>
           <textFormat>
             <recordDelimiter>

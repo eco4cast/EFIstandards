@@ -8,7 +8,10 @@ Building off Carl Boettiger’s example:
 library(EML)
 library(tidyverse)
 library(uuid)
+emld::eml_version("eml-2.2.0")
 ```
+
+    ## [1] "eml-2.2.0"
 
 A simple, example forecast of population Growth of two interacting
 species
@@ -132,13 +135,13 @@ df_combined
     ##  1 2001-03-07     1        1     0.5        0.5  2001-03-04      
     ##  2 2001-03-07     1        2     0.5        0.5  2001-03-04      
     ##  3 2001-03-07     1        3     0.5        0.5  2001-03-04      
-    ##  4 2002-03-07     1        1     0.961      1.96 2001-03-04      
-    ##  5 2002-03-07     1        2     0.985      1.95 2001-03-04      
-    ##  6 2002-03-07     1        3     0.960      1.96 2001-03-04      
-    ##  7 2003-03-07     1        1     1.79       7.19 2001-03-04      
-    ##  8 2003-03-07     1        2     1.84       7.15 2001-03-04      
-    ##  9 2003-03-07     1        3     1.78       7.18 2001-03-04      
-    ## 10 2004-03-07     1        1     3.02      20.4  2001-03-04      
+    ##  4 2002-03-07     1        1     0.980      1.97 2001-03-04      
+    ##  5 2002-03-07     1        2     0.958      1.96 2001-03-04      
+    ##  6 2002-03-07     1        3     0.978      1.95 2001-03-04      
+    ##  7 2003-03-07     1        1     1.81       7.19 2001-03-04      
+    ##  8 2003-03-07     1        2     1.79       7.19 2001-03-04      
+    ##  9 2003-03-07     1        3     1.82       7.15 2001-03-04      
+    ## 10 2004-03-07     1        1     3.03      20.4  2001-03-04      
     ## # … with 260 more rows, and 3 more variables: data_assimilation <dbl>,
     ## #   ForecastProject_id <dbl>, Forecast_id <chr>
 
@@ -435,18 +438,25 @@ Items in the “methods.md”
   - Method for propagating uncertainty (Analytic, ensemble numeric):
     ensemble numeric
   - If Analytic, specific method
-  - If ensemble numeric, number of ensembles: 10
+  - If ensemble numeric, number of ensembles:
+10
 
 <!-- end list -->
 
 ``` r
-abstract <- set_TextType("abstract.md")
-methods <- set_methods("methods.md")
+abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
+```
+
+    ## Warning in readLines("abstract.md"): incomplete final line found on
+    ## 'abstract.md'
+
+``` r
+methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))
 ```
 
 ``` r
 dataset = eml$dataset(
-               title = "A vey silly logistic forecast",
+               title = "A very silly logistic forecast",
                creator = me,
                contact = list(references="https://orcid.org/0000-0003-1282-7825"),
                pubDate = forecast_issue_time,
@@ -485,14 +495,8 @@ eml_validate(my_eml)
 
     ## [1] FALSE
     ## attr(,"errors")
-    ## [1] "Element 'emphasis', attribute 'role': The attribute 'role' is not allowed."                                            
-    ## [2] "Element 'emphasis', attribute 'role': The attribute 'role' is not allowed."                                            
-    ## [3] "Element 'emphasis', attribute 'role': The attribute 'role' is not allowed."                                            
-    ## [4] "Element 'emphasis', attribute 'role': The attribute 'role' is not allowed."                                            
-    ## [5] "Element 'emphasis', attribute 'role': The attribute 'role' is not allowed."                                            
-    ## [6] "Element 'emphasis', attribute 'role': The attribute 'role' is not allowed."                                            
-    ## [7] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."
-    ## [8] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."
+    ## [1] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."
+    ## [2] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."
 
 We are now ready to write out a valid EML document:
 

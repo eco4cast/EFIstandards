@@ -10,7 +10,7 @@
   },
   "@type": "EML",
   "dataset": {
-    "title": "A vey silly logistic forecast",
+    "title": "A very silly logistic forecast",
     "creator": {
       "id": "https://orcid.org/0000-0003-1282-7825",
       "individualName": {
@@ -72,7 +72,7 @@
     "methods": {
       "methodStep": {
         "description": {
-          "section": "<title>Methods Description<\/title><para><emphasis role=\"strong\">Forecast timestep<\/emphasis> 1 day\n  <\/para><para>\n  <emphasis role=\"strong\">Forecast time horizon<\/emphasis>\n<\/para><para>\n  <emphasis role=\"strong\">Data assimilation<\/emphasis>\n<\/para><para>\n    Data Assimilation used: No If, DA used - type of method: N/A If, DA\n    used - Number of parameters calibrated: N/A If, DA used - Sources of\n    training data (DOI, GitHub): N/A\n  <\/para><para>\n  <emphasis role=\"strong\">Model Description<\/emphasis>\n<\/para><para>\n    Type of model (Empirical, process-based, machine learning):\n    Empirical Model name: discrete Lotka–Volterra model Location of\n    repository with model code: https://github.com/somewhere or\n    https://doi.org/10.xxx Model citation: N/A Total number of model\n    process parameters: 3\n  <\/para><para>\n  <emphasis role=\"strong\">Model Covariates<\/emphasis>\n<\/para><para>\n    Type (i.e., meteorology): N/A Source (i.e., NOAA GEFS): N/A\n  <\/para><para>\n  <emphasis role=\"strong\">Uncertainty<\/emphasis>\n<\/para><para>\n    Answers: No, Derived from data, Propagates, Assimilates\n  <\/para><para>\n    Initial conditions: Parameter: Parameter Random Effects: Process\n    (within model): Multi-model: Driver: Scenario:\n  <\/para><para>\n    Method for propagating uncertainty (Analytic, ensemble numeric):\n    ensemble numeric If Analytic, specific method If ensemble numeric,\n    number of ensembles: 10\n  <\/para>"
+          "markdown": "# Methods Description\n\n**Forecast timestep**\n1 day\n\n**Forecast time horizon**\n\n**Data assimilation**\n\nData Assimilation used: No\nIf, DA used - type of method: N/A\nIf, DA used - Number of parameters calibrated: N/A\nIf, DA used - Sources of training data (DOI, GitHub): N/A\n\n**Model Description**\n\nType of model (Empirical, process-based, machine learning): Empirical\nModel name: discrete Lotka–Volterra model\nLocation of repository with model code: https://github.com/somewhere or https://doi.org/10.xxx\nModel citation: N/A\nTotal number of model process parameters: 3\n\n**Model Covariates**\n\nType (i.e., meteorology): N/A\nSource (i.e., NOAA GEFS): N/A\n\n**Uncertainty**\n\nAnswers: No, Derived from data, Propagates, Assimilates\n\nInitial conditions:\nParameter:\nParameter Random Effects:\nProcess (within model):\nMulti-model:\nDriver:\nScenario:\n\nMethod for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric\nIf Analytic, specific method\nIf ensemble numeric, number of ensembles: 10\n\n\n"
         }
       }
     },
@@ -83,11 +83,11 @@
         "objectName": "logistic-forecast-ensemble-multi-variable-multi-depth.csv",
         "size": {
           "unit": "bytes",
-          "size": "31064"
+          "size": "31065"
         },
         "authentication": {
           "method": "MD5",
-          "authentication": "501c2f5bd9c1e3e736fcb37f3cd340a3"
+          "authentication": "d0bcc87233975be688e20431a9baffe5"
         },
         "dataFormat": {
           "textFormat": {
@@ -222,7 +222,7 @@
       }
     }
   },
-  "packageId": "7d879be0-a593-4581-8d8f-fe09ffabd7e6",
+  "packageId": "4cfd39c1-8220-4c82-a459-9e7758a7966e",
   "schemaLocation": "https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd",
   "system": "uuid"
 }

@@ -11,6 +11,7 @@ library(tidyverse)
 library(uuid)
 library(ncdf4)
 library(lubridate)
+emld::eml_version("eml-2.2.0")
 ```
 
 First, set the forecast identifiers
@@ -464,8 +465,8 @@ Our dataset needs an abstract describing what this is all about.  Also, a method
   * If ensemble numeric, number of ensembles: 210
  
 ```{r}
-abstract <- set_TextType("abstract.md")
-methods <- set_methods("methods_flare.md")
+abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
+methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))
 ```
 
 

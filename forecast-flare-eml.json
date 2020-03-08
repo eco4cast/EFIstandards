@@ -57,7 +57,7 @@
     "methods": {
       "methodStep": {
         "description": {
-          "section": "<title>Methods Description<\/title><para><emphasis role=\"strong\">Forecast timestep<\/emphasis> 1 day\n  <\/para><para>\n  <emphasis role=\"strong\">Forecast time horizon<\/emphasis>\n<\/para><para>\n    16 days\n  <\/para><para>\n  <emphasis role=\"strong\">Data assimilation<\/emphasis>\n<\/para><para>\n    Data Assimilation used: Yes If, DA used - type of method: EnKF If,\n    DA used - Number of parameters calibrated: 3 If, DA used - Sources\n    of training data (DOI, GitHub):\n    https://github.com/CareyLabVT/SCCData/tree/carina-data\n  <\/para><para>\n  <emphasis role=\"strong\">Model Description<\/emphasis>\n<\/para><para>\n    Type of model (Empirical, process-based, machine learning):\n    Process-based Model name: General Lake Model-AED V3 Location of\n    repository with model code: GLM:\n    https://github.com/AquaticEcoDynamics/GLM AED:\n    https://github.com/AquaticEcoDynamics/libaed2 Model citation: Hipsey\n    et al. 2019 GMD Total number of model process parameters: Hard to\n    count\n  <\/para><para>\n  <emphasis role=\"strong\">Model Covariates<\/emphasis>\n<\/para><para>\n    Type (i.e., meteorology): meteorology Source (i.e., NOAA GEFS): NOAA\n    GEFS 16-day\n  <\/para><para>\n    Type (i.e., meteorology): Stream Inflow Source (i.e., NOAA GEFS):\n    https://github.com/CareyLabVT/SCCData/tree/diana-data\n  <\/para><para>\n  <emphasis role=\"strong\">Uncertainty<\/emphasis>\n<\/para><para>\n    Answers: No, Derived from data, Propagates, Assimilates\n  <\/para><para>\n    Initial conditions: Assimilates Parameter: Propagates, Assimilates\n    Parameter Random Effects: No Process (within model): Propagates,\n    Assimilates Multi-model: No Driver: Derived from data Scenario: Yes\n    - oxygen system on and off\n  <\/para><para>\n    Method for propagating uncertainty (Analytic, ensemble numeric):\n    ensemble numeric If Analytic, specific method: NA If ensemble\n    numeric, number of ensembles: 210\n  <\/para>"
+          "markdown": "# Methods Description\n\n**Forecast timestep**\n1 day\n\n**Forecast time horizon**\n\n**Data assimilation**\n\nData Assimilation used: No\nIf, DA used - type of method: N/A\nIf, DA used - Number of parameters calibrated: N/A\nIf, DA used - Sources of training data (DOI, GitHub): N/A\n\n**Model Description**\n\nType of model (Empirical, process-based, machine learning): Empirical\nModel name: discrete Lotka–Volterra model\nLocation of repository with model code: https://github.com/somewhere or https://doi.org/10.xxx\nModel citation: N/A\nTotal number of model process parameters: 3\n\n**Model Covariates**\n\nType (i.e., meteorology): N/A\nSource (i.e., NOAA GEFS): N/A\n\n**Uncertainty**\n\nAnswers: No, Derived from data, Propagates, Assimilates\n\nInitial conditions:\nParameter:\nParameter Random Effects:\nProcess (within model):\nMulti-model:\nDriver:\nScenario:\n\nMethod for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric\nIf Analytic, specific method\nIf ensemble numeric, number of ensembles: 10\n\n\n"
         }
       }
     },
@@ -72,7 +72,7 @@
         },
         "authentication": {
           "method": "MD5",
-          "authentication": "513384d6f529de0fa15aeffe4f7c2f19"
+          "authentication": "ea348edf584c17e39038f4ecda2127eb"
         },
         "dataFormat": {
           "textFormat": {

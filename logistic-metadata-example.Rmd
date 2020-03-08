@@ -11,6 +11,7 @@ https://github.com/cboettig/forecast-standards
 library(EML)
 library(tidyverse)
 library(uuid)
+emld::eml_version("eml-2.2.0")
 ```
 
 A simple, example forecast of population Growth of two interacting species
@@ -386,14 +387,14 @@ Items in the "methods.md"
  * If ensemble numeric, number of ensembles: 10
  
 ```{r}
-abstract <- set_TextType("abstract.md")
-methods <- set_methods("methods.md")
+abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
+methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))
 ```
 
 
 ```{r}
 dataset = eml$dataset(
-               title = "A vey silly logistic forecast",
+               title = "A very silly logistic forecast",
                creator = me,
                contact = list(references="https://orcid.org/0000-0003-1282-7825"),
                pubDate = forecast_issue_time,

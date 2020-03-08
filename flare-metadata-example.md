@@ -9,7 +9,10 @@ library(tidyverse)
 library(uuid)
 library(ncdf4)
 library(lubridate)
+emld::eml_version("eml-2.2.0")
 ```
+
+    ## [1] "eml-2.2.0"
 
 First, set the forecast identifiers
 
@@ -493,13 +496,20 @@ import a methods section that was written in Markdown.
   - Method for propagating uncertainty (Analytic, ensemble numeric):
     ensemble numeric
   - If Analytic, specific method
-  - If ensemble numeric, number of ensembles: 210
+  - If ensemble numeric, number of ensembles:
+210
 
 <!-- end list -->
 
 ``` r
-abstract <- set_TextType("abstract.md")
-methods <- set_methods("methods_flare.md")
+abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
+```
+
+    ## Warning in readLines("abstract.md"): incomplete final line found on
+    ## 'abstract.md'
+
+``` r
+methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))
 ```
 
 ``` r
@@ -541,20 +551,14 @@ eml_validate(my_eml)
 
     ## [1] FALSE
     ## attr(,"errors")
-    ##  [1] "Element 'pubDate': '2020-02-13T21:32:52-05:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'."
-    ##  [2] "Element 'calendarDate': '2019-05-27 12:00:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'." 
-    ##  [3] "Element 'calendarDate': '2019-05-27 12:00:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'." 
-    ##  [4] "Element 'emphasis', attribute 'role': The attribute 'role' is not allowed."                                                                      
-    ##  [5] "Element 'emphasis', attribute 'role': The attribute 'role' is not allowed."                                                                      
-    ##  [6] "Element 'emphasis', attribute 'role': The attribute 'role' is not allowed."                                                                      
-    ##  [7] "Element 'emphasis', attribute 'role': The attribute 'role' is not allowed."                                                                      
-    ##  [8] "Element 'emphasis', attribute 'role': The attribute 'role' is not allowed."                                                                      
-    ##  [9] "Element 'emphasis', attribute 'role': The attribute 'role' is not allowed."                                                                      
-    ## [10] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."                          
-    ## [11] "Element 'numberType': [facet 'enumeration'] The value 'character' is not an element of the set {'natural', 'whole', 'integer', 'real'}."         
-    ## [12] "Element 'numberType': 'character' is not a valid value of the atomic type '{https://eml.ecoinformatics.org/attribute-2.2.0}NumberType'."         
-    ## [13] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."                          
-    ## [14] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."
+    ## [1] "Element 'pubDate': '2020-02-13T21:32:52-05:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'."
+    ## [2] "Element 'calendarDate': '2019-05-27 12:00:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'." 
+    ## [3] "Element 'calendarDate': '2019-05-27 12:00:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'." 
+    ## [4] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."                          
+    ## [5] "Element 'numberType': [facet 'enumeration'] The value 'character' is not an element of the set {'natural', 'whole', 'integer', 'real'}."         
+    ## [6] "Element 'numberType': 'character' is not a valid value of the atomic type '{https://eml.ecoinformatics.org/attribute-2.2.0}NumberType'."         
+    ## [7] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."                          
+    ## [8] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."
 
 We are now ready to write out a valid EML document:
 
