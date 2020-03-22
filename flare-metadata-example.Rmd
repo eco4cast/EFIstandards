@@ -348,23 +348,38 @@ Let's document the metadata of the data table itself. It may well be that we dec
 Note one weakness of this format is that it assumes all data in a column have the same units.  This common assumption might be violoated by transformations to "long" form data, where you have columns like "variable", "value", and "units".  (The long form may be useful, but it exposes much less information in the metadata layer -- e.g. we no longer know what's actually being measured without looking at the data file itself).  
 
 ```{r}
+#attributes <- tibble::tribble(
+#  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType,
+#  "time",          "time",                       "year",     "YYYY-MM-DD%THH:MM_SS%Z", "numberType",
+#  "depth",         "depth in reservior",         "meter",   NA,          "real",
+#  "ensemble",      "index of ensemble member",   "dimensionless",    NA,         "integer",
+#  "scenario",      "forecast scenario",   "dimensionless",    NA, NA,  NA, "scenario name",
+#  
+#  ##### EDIT STARTING HERE
+#  "temperature",     "water temperature", "celsius", NA,  "real", NA,
+#  "oxygen",     "oxygen concentration", "numberPerMeterSquared", NA,  "real", NA,
+#  #### EDIT ENDING HERE
+#  
+#  "forecast_issue_time",     "time that forecast was created", "dimensionless", "YYYY-MM-DD",  "numberType",
+#  "data_assimilation",     "Flag whether time step included data assimilation", "dimensionless", NA, "integer",
+#  "Forecast_id",     "ID for specific forecast cycle", "dimensionless", NA,  "character",
+#  "ForecastProject_id",     "ID for forecasting project", "dimensionless", NA,  "character",
+#  )
+
 attributes <- tibble::tribble(
-  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType,
-  "time",          "time",                       "year",     "YYYY-MM-DD%THH:MM_SS%Z", "numberType",
-  "depth",         "depth in reservior",         "meter",   NA,          "real",
-  "ensemble",      "index of ensemble member",   "dimensionless",    NA,         "integer",
-  "scenario",      "forecast scenario",   "dimensionless",    NA,         "character",
-  
-  ##### EDIT STARTING HERE
-  "temperature",     "water temperature", "celsius", NA,  "real",
-  "oxygen",     "oxygen concentration", "numberPerMeterSquared", NA,  "real",
-  #### EDIT ENDING HERE
-  
-  "forecast_issue_time",     "time that forecast was created", "dimensionless", "YYYY-MM-DD",  "numberType",
-  "data_assimilation",     "Flag whether time step included data assimilation", "dimensionless", NA, "integer",
-  "Forecast_id",     "ID for specific forecast cycle", "dimensionless", NA,  "character",
-  "ForecastProject_id",     "ID for forecasting project", "dimensionless", NA,  "character",
-  )
+  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType, ~definition,
+  "time",          "time",                       "year",     "YYYY-MM-DD", "numberType", NA,
+  "depth",         "depth in reservior",         "meter",   NA,          "real", NA,
+  "ensemble",      "index of ensemble member",   "dimensionless",    NA,         "integer", NA,
+   "scenario",      "forecast scenario",    NA, NA,  NA, "scenario name",
+  "temperature",     "water temperature", "celsius", NA,  "real", NA,
+  "oxygen",     "oxygen concentration", "numberPerMeterSquared", NA,  "real", NA,
+  "forecast_issue_time",     "time that forecast was created", NA, "YYYY-MM-DD",  NA, NA,
+  "data_assimilation",     "Flag whether time step included data assimilation", "dimensionless", NA, "integer", NA,
+  "Forecast_id",     "ID for specific forecast cycle", NA, NA,  NA, "forecast id",
+  "ForecastProject_id",     "ID for forecasting project", NA, NA,  NA, "project id"
+)
+
 
 attrList <- set_attributes(attributes, 
                            col_classes = c("Date", "numeric", "character", "numeric", 

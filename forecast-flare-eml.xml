@@ -99,7 +99,7 @@ If ensemble numeric, number of ensembles: 10
       <physical>
         <objectName>flare-forecast-ensemble-multi-variable-1D.csv</objectName>
         <size unit="bytes">15686909</size>
-        <authentication method="MD5">ea348edf584c17e39038f4ecda2127eb</authentication>
+        <authentication method="MD5">116d53337a1e641ec2c99810f9de9393</authentication>
         <dataFormat>
           <textFormat>
             <recordDelimiter>
@@ -118,7 +118,7 @@ If ensemble numeric, number of ensembles: 10
           <storageType>date</storageType>
           <measurementScale>
             <dateTime>
-              <formatString>YYYY-MM-DD%THH:MM_SS%Z</formatString>
+              <formatString>YYYY-MM-DD</formatString>
               <dateTimeDomain/>
             </dateTime>
           </measurementScale>
@@ -154,12 +154,7 @@ If ensemble numeric, number of ensembles: 10
           <storageType>float</storageType>
           <measurementScale>
             <ratio>
-              <unit>
-                <standardUnit>dimensionless</standardUnit>
-              </unit>
-              <numericDomain>
-                <numberType>character</numberType>
-              </numericDomain>
+              <numericDomain/>
             </ratio>
           </measurementScale>
         </attribute>
@@ -225,7 +220,11 @@ If ensemble numeric, number of ensembles: 10
           <storageType>string</storageType>
           <measurementScale>
             <nominal>
-              <nonNumericDomain/>
+              <nonNumericDomain>
+                <textDomain>
+                  <definition>forecast id</definition>
+                </textDomain>
+              </nonNumericDomain>
             </nominal>
           </measurementScale>
         </attribute>
@@ -235,7 +234,11 @@ If ensemble numeric, number of ensembles: 10
           <storageType>string</storageType>
           <measurementScale>
             <nominal>
-              <nonNumericDomain/>
+              <nonNumericDomain>
+                <textDomain>
+                  <definition>project id</definition>
+                </textDomain>
+              </nonNumericDomain>
             </nominal>
           </measurementScale>
         </attribute>

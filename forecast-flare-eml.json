@@ -72,7 +72,7 @@
         },
         "authentication": {
           "method": "MD5",
-          "authentication": "ea348edf584c17e39038f4ecda2127eb"
+          "authentication": "116d53337a1e641ec2c99810f9de9393"
         },
         "dataFormat": {
           "textFormat": {
@@ -92,7 +92,7 @@
             "storageType": "date",
             "measurementScale": {
               "dateTime": {
-                "formatString": "YYYY-MM-DD%THH:MM_SS%Z",
+                "formatString": "YYYY-MM-DD",
                 "dateTimeDomain": []
               }
             }
@@ -128,12 +128,7 @@
             "storageType": "float",
             "measurementScale": {
               "ratio": {
-                "unit": {
-                  "standardUnit": "dimensionless"
-                },
-                "numericDomain": {
-                  "numberType": "character"
-                }
+                "numericDomain": []
               }
             }
           },
@@ -199,7 +194,11 @@
             "storageType": "string",
             "measurementScale": {
               "nominal": {
-                "nonNumericDomain": []
+                "nonNumericDomain": {
+                  "textDomain": {
+                    "definition": "forecast id"
+                  }
+                }
               }
             }
           },
@@ -209,7 +208,11 @@
             "storageType": "string",
             "measurementScale": {
               "nominal": {
-                "nonNumericDomain": []
+                "nonNumericDomain": {
+                  "textDomain": {
+                    "definition": "project id"
+                  }
+                }
               }
             }
           }

@@ -132,16 +132,16 @@ df_combined
     ## # A tibble: 270 x 9
     ##    time       depth ensemble species_1 species_2 forecast_issue_…
     ##    <date>     <dbl>    <int>     <dbl>     <dbl> <date>          
-    ##  1 2001-03-07     1        1     0.5        0.5  2001-03-04      
-    ##  2 2001-03-07     1        2     0.5        0.5  2001-03-04      
-    ##  3 2001-03-07     1        3     0.5        0.5  2001-03-04      
-    ##  4 2002-03-07     1        1     0.980      1.97 2001-03-04      
-    ##  5 2002-03-07     1        2     0.958      1.96 2001-03-04      
-    ##  6 2002-03-07     1        3     0.978      1.95 2001-03-04      
-    ##  7 2003-03-07     1        1     1.81       7.19 2001-03-04      
-    ##  8 2003-03-07     1        2     1.79       7.19 2001-03-04      
-    ##  9 2003-03-07     1        3     1.82       7.15 2001-03-04      
-    ## 10 2004-03-07     1        1     3.03      20.4  2001-03-04      
+    ##  1 2001-03-22     1        1     0.5        0.5  2001-03-04      
+    ##  2 2001-03-22     1        2     0.5        0.5  2001-03-04      
+    ##  3 2001-03-22     1        3     0.5        0.5  2001-03-04      
+    ##  4 2002-03-22     1        1     0.972      1.93 2001-03-04      
+    ##  5 2002-03-22     1        2     0.962      1.94 2001-03-04      
+    ##  6 2002-03-22     1        3     0.980      1.95 2001-03-04      
+    ##  7 2003-03-22     1        1     1.80       7.08 2001-03-04      
+    ##  8 2003-03-22     1        2     1.81       7.11 2001-03-04      
+    ##  9 2003-03-22     1        3     1.81       7.16 2001-03-04      
+    ## 10 2004-03-22     1        1     3.01      20.2  2001-03-04      
     ## # … with 260 more rows, and 3 more variables: data_assimilation <dbl>,
     ## #   ForecastProject_id <dbl>, Forecast_id <chr>
 
@@ -181,7 +181,8 @@ df_species_2 <- df_combined %>%
  df_summary <- right_join(df_species_1, df_species_2)
 ```
 
-    ## Joining, by = c("time", "depth", "forecast_issue_time", "data_assimilation", "ForecastProject_id", "Forecast_id", "Statistic")
+    ## Joining, by = c("time", "depth", "forecast_issue_time",
+    ## "data_assimilation", "ForecastProject_id", "Forecast_id", "Statistic")
 
 ``` r
  df_summary
@@ -192,16 +193,16 @@ df_species_2 <- df_combined %>%
     ## #   ForecastProject_id [90]
     ##    time       depth forecast_issue_… data_assimilati… ForecastProject…
     ##    <date>     <dbl> <date>                      <dbl>            <dbl>
-    ##  1 2001-03-07     1 2001-03-04                      0         30405043
-    ##  2 2001-03-07     1 2001-03-04                      0         30405043
-    ##  3 2001-03-07     1 2001-03-04                      0         30405043
-    ##  4 2001-03-07     3 2001-03-04                      0         30405043
-    ##  5 2001-03-07     3 2001-03-04                      0         30405043
-    ##  6 2001-03-07     3 2001-03-04                      0         30405043
-    ##  7 2001-03-07     5 2001-03-04                      0         30405043
-    ##  8 2001-03-07     5 2001-03-04                      0         30405043
-    ##  9 2001-03-07     5 2001-03-04                      0         30405043
-    ## 10 2002-03-07     1 2001-03-04                      0         30405043
+    ##  1 2001-03-22     1 2001-03-04                      0         30405043
+    ##  2 2001-03-22     1 2001-03-04                      0         30405043
+    ##  3 2001-03-22     1 2001-03-04                      0         30405043
+    ##  4 2001-03-22     3 2001-03-04                      0         30405043
+    ##  5 2001-03-22     3 2001-03-04                      0         30405043
+    ##  6 2001-03-22     3 2001-03-04                      0         30405043
+    ##  7 2001-03-22     5 2001-03-04                      0         30405043
+    ##  8 2001-03-22     5 2001-03-04                      0         30405043
+    ##  9 2001-03-22     5 2001-03-04                      0         30405043
+    ## 10 2002-03-22     1 2001-03-04                      0         30405043
     ## # … with 260 more rows, and 4 more variables: Forecast_id <chr>,
     ## #   Statistic <chr>, species_1 <dbl>, species_2 <dbl>
 
@@ -308,18 +309,17 @@ itself).
 
 ``` r
 attributes <- tibble::tribble(
-  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType,
-  "time",          "time",                       "year",     "YYYY-MM-DD", "numberType",
-  "depth",         "depth in reservior",         "meter",   NA,          "real",
-  "ensemble",      "index of ensemble member",   "dimensionless",    NA,         "integer",
-  "species_1",     "Population size of species 1", "numberPerMeterSquared", NA,  "real",
-  "species_2",     "Population size of species 2", "numberPerMeterSquared", NA,  "real",
-  "forecast_issue_time",     "time that forecast was created", "dimensionless", "YYYY-MM-DD",  "numberType",
-  "data_assimilation",     "Flag whether time step included data assimilation", "dimensionless", NA, "integer",
-  "Forecast_id",     "ID for specific forecast cycle", "dimensionless", NA,  "character",
-  "ForecastProject_id",     "ID for forecasting project", "dimensionless", NA,  "character",
-  )
-
+  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType, ~definition,
+  "time",          "time",                       "year",     "YYYY-MM-DD", "numberType", NA,
+  "depth",         "depth in reservior",         "meter",   NA,          "real", NA,
+  "ensemble",      "index of ensemble member",   "dimensionless",    NA,         "integer", NA,
+  "species_1",     "Population size of species 1", "numberPerMeterSquared", NA,  "real", NA,
+  "species_2",     "Population size of species 2", "numberPerMeterSquared", NA,  "real", NA,
+  "forecast_issue_time",     "time that forecast was created", NA, "YYYY-MM-DD",  NA, NA,
+  "data_assimilation",     "Flag whether time step included data assimilation", "dimensionless", NA, "integer", NA,
+  "Forecast_id",     "ID for specific forecast cycle", NA, NA,  NA, "forecast id",
+  "ForecastProject_id",     "ID for forecasting project", NA, NA,  NA, "project id"
+)
 attrList <- set_attributes(attributes, 
                            col_classes = c("Date", "numeric", "numeric", 
                                            "numeric","numeric", "Date",
@@ -493,10 +493,9 @@ file format it is in
 eml_validate(my_eml)
 ```
 
-    ## [1] FALSE
+    ## [1] TRUE
     ## attr(,"errors")
-    ## [1] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."
-    ## [2] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."
+    ## character(0)
 
 We are now ready to write out a valid EML document:
 

@@ -258,18 +258,17 @@ without looking at the data file itself).
 
 ```{r}
 attributes <- tibble::tribble(
-  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType,
-  "time",          "time",                       "year",     "YYYY-MM-DD", "numberType",
-  "depth",         "depth in reservior",         "meter",   NA,          "real",
-  "ensemble",      "index of ensemble member",   "dimensionless",    NA,         "integer",
-  "species_1",     "Population size of species 1", "numberPerMeterSquared", NA,  "real",
-  "species_2",     "Population size of species 2", "numberPerMeterSquared", NA,  "real",
-  "forecast_issue_time",     "time that forecast was created", "dimensionless", "YYYY-MM-DD",  "numberType",
-  "data_assimilation",     "Flag whether time step included data assimilation", "dimensionless", NA, "integer",
-  "Forecast_id",     "ID for specific forecast cycle", "dimensionless", NA,  "character",
-  "ForecastProject_id",     "ID for forecasting project", "dimensionless", NA,  "character",
-  )
-
+  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType, ~definition,
+  "time",          "time",                       "year",     "YYYY-MM-DD", "numberType", NA,
+  "depth",         "depth in reservior",         "meter",   NA,          "real", NA,
+  "ensemble",      "index of ensemble member",   "dimensionless",    NA,         "integer", NA,
+  "species_1",     "Population size of species 1", "numberPerMeterSquared", NA,  "real", NA,
+  "species_2",     "Population size of species 2", "numberPerMeterSquared", NA,  "real", NA,
+  "forecast_issue_time",     "time that forecast was created", NA, "YYYY-MM-DD",  NA, NA,
+  "data_assimilation",     "Flag whether time step included data assimilation", "dimensionless", NA, "integer", NA,
+  "Forecast_id",     "ID for specific forecast cycle", NA, NA,  NA, "forecast id",
+  "ForecastProject_id",     "ID for forecasting project", NA, NA,  NA, "project id"
+)
 attrList <- set_attributes(attributes, 
                            col_classes = c("Date", "numeric", "numeric", 
                                            "numeric","numeric", "Date",

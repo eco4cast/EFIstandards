@@ -366,23 +366,38 @@ know what’s actually being measured without looking at the data file
 itself).
 
 ``` r
+#attributes <- tibble::tribble(
+#  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType,
+#  "time",          "time",                       "year",     "YYYY-MM-DD%THH:MM_SS%Z", "numberType",
+#  "depth",         "depth in reservior",         "meter",   NA,          "real",
+#  "ensemble",      "index of ensemble member",   "dimensionless",    NA,         "integer",
+#  "scenario",      "forecast scenario",   "dimensionless",    NA, NA,  NA, "scenario name",
+#  
+#  ##### EDIT STARTING HERE
+#  "temperature",     "water temperature", "celsius", NA,  "real", NA,
+#  "oxygen",     "oxygen concentration", "numberPerMeterSquared", NA,  "real", NA,
+#  #### EDIT ENDING HERE
+#  
+#  "forecast_issue_time",     "time that forecast was created", "dimensionless", "YYYY-MM-DD",  "numberType",
+#  "data_assimilation",     "Flag whether time step included data assimilation", "dimensionless", NA, "integer",
+#  "Forecast_id",     "ID for specific forecast cycle", "dimensionless", NA,  "character",
+#  "ForecastProject_id",     "ID for forecasting project", "dimensionless", NA,  "character",
+#  )
+
 attributes <- tibble::tribble(
-  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType,
-  "time",          "time",                       "year",     "YYYY-MM-DD%THH:MM_SS%Z", "numberType",
-  "depth",         "depth in reservior",         "meter",   NA,          "real",
-  "ensemble",      "index of ensemble member",   "dimensionless",    NA,         "integer",
-  "scenario",      "forecast scenario",   "dimensionless",    NA,         "character",
-  
-  ##### EDIT STARTING HERE
-  "temperature",     "water temperature", "celsius", NA,  "real",
-  "oxygen",     "oxygen concentration", "numberPerMeterSquared", NA,  "real",
-  #### EDIT ENDING HERE
-  
-  "forecast_issue_time",     "time that forecast was created", "dimensionless", "YYYY-MM-DD",  "numberType",
-  "data_assimilation",     "Flag whether time step included data assimilation", "dimensionless", NA, "integer",
-  "Forecast_id",     "ID for specific forecast cycle", "dimensionless", NA,  "character",
-  "ForecastProject_id",     "ID for forecasting project", "dimensionless", NA,  "character",
-  )
+  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType, ~definition,
+  "time",          "time",                       "year",     "YYYY-MM-DD", "numberType", NA,
+  "depth",         "depth in reservior",         "meter",   NA,          "real", NA,
+  "ensemble",      "index of ensemble member",   "dimensionless",    NA,         "integer", NA,
+   "scenario",      "forecast scenario",    NA, NA,  NA, "scenario name",
+  "temperature",     "water temperature", "celsius", NA,  "real", NA,
+  "oxygen",     "oxygen concentration", "numberPerMeterSquared", NA,  "real", NA,
+  "forecast_issue_time",     "time that forecast was created", NA, "YYYY-MM-DD",  NA, NA,
+  "data_assimilation",     "Flag whether time step included data assimilation", "dimensionless", NA, "integer", NA,
+  "Forecast_id",     "ID for specific forecast cycle", NA, NA,  NA, "forecast id",
+  "ForecastProject_id",     "ID for forecasting project", NA, NA,  NA, "project id"
+)
+
 
 attrList <- set_attributes(attributes, 
                            col_classes = c("Date", "numeric", "character", "numeric", 
@@ -391,6 +406,15 @@ attrList <- set_attributes(attributes,
                                            #EDIT ENDING HERE
                                            "Date",
                                            "numeric", "character", "character"))
+```
+
+    ## Warning in set_attribute(attributes[i, ], factors = factors, missingValues
+    ## = missingValues): Unit 'NA' is not a recognized standard unit; treating
+    ## as custom unit. Please be sure you also define a custom unit in your EML
+    ## record, or replace with a recognized standard unit. For unitless values,
+    ## use "dimensionless" as the unit. See set_unitList() for details.
+
+``` r
 physical <- set_physical("flare-forecast-ensemble-multi-variable-1D.csv")
 ```
 
@@ -555,10 +579,7 @@ eml_validate(my_eml)
     ## [2] "Element 'calendarDate': '2019-05-27 12:00:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'." 
     ## [3] "Element 'calendarDate': '2019-05-27 12:00:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'." 
     ## [4] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."                          
-    ## [5] "Element 'numberType': [facet 'enumeration'] The value 'character' is not an element of the set {'natural', 'whole', 'integer', 'real'}."         
-    ## [6] "Element 'numberType': 'character' is not a valid value of the atomic type '{https://eml.ecoinformatics.org/attribute-2.2.0}NumberType'."         
-    ## [7] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."                          
-    ## [8] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."
+    ## [5] "Element 'numericDomain': This element is not expected. Expected is ( unit )."
 
 We are now ready to write out a valid EML document:
 
