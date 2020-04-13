@@ -65,7 +65,37 @@ forecast_validator <- function(eml){
   if(all(UQbool)) usethis::ui_done("All uncertainty class attributes valid")
   else usethis::ui_stop(paste("invalid uncertainty class attribute",names(UQ[!UQbool])))
 
+  UQnum <- match(UQ,UQoptions)
+
   ## Check CONDITIONALLY REQUIRED FORECAST elements
+
+  #complexity
+  if(any(UQnum>1)){
+    check_exists(AM,"complexity")
+    UQname <- sort(names(UQ[UQnum>1]))
+    Cname  <- sort(names(AM[["complexity"]]))
+    if(all(UQname == Cname)) usethis::ui_done("All complexity class matched")
+    else usethis::ui_stop(paste0("invalid complexity classes [",paste(Cname,collapse = ", "),
+                                "] do not match uncertainty classes: ",paste(UQname,collapse=", ")))
+## add is.integer and positive check
+  }
+
+  #propagation_method
+  if(any(UQnum>3)){
+    check_exists(AM,"propagation_method")
+    check_exists(AM[["propagation_method"]],"type")
+## add check for valid type
+    if(tolower(AM[["propagation_method"]][["type"]]) == "ensemble"){
+      check_exists(AM[["propagation_method"]],"size")
+## add is.integer and positivecheck
+    }
+  }
+
+  #assimilation_method
+  if(any(UQnum>4)){
+    check_exists(AM,"assimilation_method")
+  }
+
 
   ## Check OPTIONAL FORECAST elements
 

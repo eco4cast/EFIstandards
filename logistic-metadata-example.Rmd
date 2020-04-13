@@ -352,10 +352,10 @@ additionalMetadata <- eml$additionalMetadata(
       initial_conditions = "contains",
       parameters = "contains",
       random_effects = "no",
-      process_error = "contains",
+      process_error = "propagates",
       drivers = "no"
     ),
-    uncertainty_method = list( ## required if any uncertainty >= propagates
+    propagation_method = list( ## required if any uncertainty >= propagates
       type = "ensemble", # ensemble vs. analytic
       size = 10          # required if ensemble
       ## if analytic: `method` is required
@@ -364,7 +364,7 @@ additionalMetadata <- eml$additionalMetadata(
     complexity = list( # required for any uncertainty > no; records dimension
       initial_conditions = 2, # number of state variables
       parameters = 3,         # number of parameters
-      process = 1             # *** need to discuss how to record this (e.g. diag vs cov?) ***
+      process_error = 1             # *** need to discuss how to record this (e.g. diag vs cov?) ***
     )
   )
   )

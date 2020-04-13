@@ -32,6 +32,10 @@ emld::eml_version("eml-2.2.0")
 
     ## [1] "eml-2.2.0"
 
+``` r
+set.seed(42)
+```
+
 A simple, example forecast of population Growth of two interacting species
 
 ========================================================
@@ -236,13 +240,13 @@ df_combined
     ##  1 2001-04-13     1        1     0.5        0.5  2001-03-04      
     ##  2 2001-04-13     1        2     0.5        0.5  2001-03-04      
     ##  3 2001-04-13     1        3     0.5        0.5  2001-03-04      
-    ##  4 2002-04-13     1        1     0.986      1.97 2001-03-04      
-    ##  5 2002-04-13     1        2     0.975      1.97 2001-03-04      
-    ##  6 2002-04-13     1        3     0.986      1.95 2001-03-04      
-    ##  7 2003-04-13     1        1     1.83       7.20 2001-03-04      
-    ##  8 2003-04-13     1        2     1.80       7.19 2001-03-04      
-    ##  9 2003-04-13     1        3     1.83       7.14 2001-03-04      
-    ## 10 2004-04-13     1        1     3.05      20.4  2001-03-04      
+    ##  4 2002-04-13     1        1     0.984      1.95 2001-03-04      
+    ##  5 2002-04-13     1        2     0.967      1.93 2001-03-04      
+    ##  6 2002-04-13     1        3     0.972      1.95 2001-03-04      
+    ##  7 2003-04-13     1        1     1.83       7.13 2001-03-04      
+    ##  8 2003-04-13     1        2     1.82       7.09 2001-03-04      
+    ##  9 2003-04-13     1        3     1.82       7.15 2001-03-04      
+    ## 10 2004-04-13     1        1     3.05      20.3  2001-03-04      
     ## # … with 260 more rows, and 3 more variables: data_assimilation <dbl>,
     ## #   ForecastProject_id <dbl>, Forecast_id <chr>
 
@@ -395,28 +399,29 @@ We envision having additional required metadata sections. However, we need to fi
 
 ``` r
 additionalMetadata <- eml$additionalMetadata(
-  describes="methods",  ## not sure how to find the correct ID for this to be valid
-  metadata=list(
+  #  describes="forecast",  ## not sure how to find the correct ID for this to be valid
+  metadata=list(forecast=list(
     timestep = "1 year", ## should be udunits parsable; already in coverage -> temporalCoverage?
     forecast_horizon = "30 years",
     uncertainty = list( ## answers to all elements are required. Options: no, contains, data_driven, propagates, assimilates
       initial_conditions = "contains",
       parameters = "contains",
       random_effects = "no",
-      process_error = "contains",
+      process_error = "propagates",
       drivers = "no"
     ),
-    uncertainty_method = list( ## required if any uncertainty >= propagates
+    propagation_method = list( ## required if any uncertainty >= propagates
       type = "ensemble", # ensemble vs. analytic
       size = 10          # required if ensemble
       ## if analytic: `method` is required
     ),
-#    assimilation_method ## required if any uncertainty = assimilates
+    #    assimilation_method ## required if any uncertainty = assimilates
     complexity = list( # required for any uncertainty > no; records dimension
       initial_conditions = 2, # number of state variables
       parameters = 3,         # number of parameters
-      process = 1             # *** need to discuss how to record this (e.g. diag vs cov?) ***
+      process_error = 1             # *** need to discuss how to record this (e.g. diag vs cov?) ***
     )
+  )
   )
 )
 ```
@@ -467,7 +472,7 @@ abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
     ## 'abstract.md'
 
 ``` r
-methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))  ## to be dropped
+methods <- list(id="forecast",methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))  ## to be dropped
 ```
 
 ``` r
@@ -504,13 +509,9 @@ This will catch any missing elements. (Recall that what is 'required' depends on
 eml_validate(my_eml)
 ```
 
-    ## Warning in eml_additional_validation(doc, encoding = encoding): Document is invalid. Found the following errors:
-    ##  not all 'describes' values match defined id attributes
-
-    ## [1] FALSE
+    ## [1] TRUE
     ## attr(,"errors")
-    ## [1] "not all 'describes' values match defined id attributes"   
-    ## [2] "Element 'forecast_horizon': This element is not expected."
+    ## character(0)
 
 We are now ready to write out a valid EML document:
 
