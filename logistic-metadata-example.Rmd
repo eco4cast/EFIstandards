@@ -72,92 +72,7 @@ for(t in 2:NT){
 
 ## Saving to a standardized output format
 
-# Standard Option 1: 
-
-Convert to a flat file format (CSV) with one column for each variable and all
-ensemble members saved
-
-```{r}
-time <- as.Date(as.character(2000 + 1:NT), format = "%Y")
-state_names <- c("species_1", "species_2")
-n_states <- length(state_names)
-states <- list(n[1, , , ], n[2, , ,])
-
-#No data assimilation was used for any of forecast results archived
-
-df_combined <- list()
-
-for(k in 1:n_states){
-  for(i in 1:n_depths){
-    df <- as_tibble(states[[k]][, ,i])
-    names(df) <- as.character(seq(1, ncol(states[[k]][, ,i])))
-    df <- cbind(time, df, data_assimilation)
-    df <- df %>% 
-      pivot_longer(cols = -c(time,data_assimilation), 
-                   names_to = "ensemble", 
-                   values_to = state_names[k]) %>% 
-      mutate(ensemble = as.integer(ensemble)) %>% 
-      mutate(depth = depths[i])
-    if(i == 1){
-      running_df <- df
-    }else{
-      running_df <- rbind(running_df, df)
-    }
-  }
-  df_combined[[k]] <- running_df
-}
-
-df_combined <- right_join(df_combined[[1]], df_combined[[2]], 
-                          by = c("time", "ensemble", "depth", "data_assimilation")) %>% 
-  mutate(forecast_issue_time = forecast_issue_time,
-         Forecast_id = Forecast_id,
-         ForecastProject_id = ForecastProject_id) %>% 
-  select(time, depth, ensemble, state_names[1], 
-         state_names[2], forecast_issue_time, 
-         data_assimilation, ForecastProject_id, Forecast_id) 
-
-df_combined
-
-write.csv(df_combined, 
-          file = "logistic-forecast-ensemble-multi-variable-multi-depth.csv")
-```
-
-# Standard Option 2: 
-
-Convert to a flat file format (CSV) with forecast distribution summaries saved
-
-```{r}
-df_species_1 <- df_combined %>% 
-  select(-species_2) %>% 
-  group_by(time, depth, forecast_issue_time, data_assimilation, 
-           ForecastProject_id, Forecast_id) %>% 
-  summarize(mean = mean(species_1),
-            Conf_interv_02.5 = quantile(species_1, 0.025),
-            Conf_interv_97.5 = quantile(species_1, 0.975)) %>% 
-  pivot_longer(cols = c("mean","Conf_interv_02.5","Conf_interv_97.5"),
-               names_to = "Statistic",
-               values_to = "species_1")
-
-df_species_2 <- df_combined %>% 
-  select(-species_1) %>% 
-  group_by(time, depth, forecast_issue_time, data_assimilation, 
-           ForecastProject_id, Forecast_id) %>% 
-  summarize(mean = mean(species_2),
-            Conf_interv_02.5 = quantile(species_2, 0.025),
-            Conf_interv_97.5 = quantile(species_2, 0.975)) %>% 
-  pivot_longer(cols = c("mean","Conf_interv_02.5","Conf_interv_97.5"),
-               names_to = "Statistic",
-               values_to = "species_2")
-
- df_summary <- right_join(df_species_1, df_species_2)
- 
- df_summary
- 
-write.csv(df_summary, 
-          file = "logistic-forecast-summary-multi-variable-multi-depth.csv")
-
-```
-# Standard Option 3:
+# Standard Option 1: netCDF
 
 Convert to a netcdf format 
 
@@ -235,6 +150,92 @@ ncatt_put(ncout,0,"Forecast_id",as.character(Forecast_id),
 ncatt_put(ncout,0,"forecast_issue_time",as.character(forecast_issue_time), 
           prec =  "text")
 nc_close(ncout)
+```
+
+# Standard Option 2: ensemble CSV
+
+Convert to a flat file format (CSV) with one column for each variable and all
+ensemble members saved
+
+```{r}
+time <- as.Date(as.character(2000 + 1:NT), format = "%Y")
+state_names <- c("species_1", "species_2")
+n_states <- length(state_names)
+states <- list(n[1, , , ], n[2, , ,])
+
+#No data assimilation was used for any of forecast results archived
+
+df_combined <- list()
+
+for(k in 1:n_states){
+  for(i in 1:n_depths){
+    df <- as_tibble(states[[k]][, ,i])
+    names(df) <- as.character(seq(1, ncol(states[[k]][, ,i])))
+    df <- cbind(time, df, data_assimilation)
+    df <- df %>% 
+      pivot_longer(cols = -c(time,data_assimilation), 
+                   names_to = "ensemble", 
+                   values_to = state_names[k]) %>% 
+      mutate(ensemble = as.integer(ensemble)) %>% 
+      mutate(depth = depths[i])
+    if(i == 1){
+      running_df <- df
+    }else{
+      running_df <- rbind(running_df, df)
+    }
+  }
+  df_combined[[k]] <- running_df
+}
+
+df_combined <- right_join(df_combined[[1]], df_combined[[2]], 
+                          by = c("time", "ensemble", "depth", "data_assimilation")) %>% 
+  mutate(forecast_issue_time = forecast_issue_time,
+         Forecast_id = Forecast_id,
+         ForecastProject_id = ForecastProject_id) %>% 
+  select(time, depth, ensemble, state_names[1], 
+         state_names[2], forecast_issue_time, 
+         data_assimilation, ForecastProject_id, Forecast_id) 
+
+df_combined
+
+write.csv(df_combined, 
+          file = "logistic-forecast-ensemble-multi-variable-multi-depth.csv")
+```
+
+# Standard Option 3: summary CSV
+
+Convert to a flat file format (CSV) with forecast distribution summaries saved
+
+```{r}
+df_species_1 <- df_combined %>% 
+  select(-species_2) %>% 
+  group_by(time, depth, forecast_issue_time, data_assimilation, 
+           ForecastProject_id, Forecast_id) %>% 
+  summarize(mean = mean(species_1),
+            Conf_interv_02.5 = quantile(species_1, 0.025),
+            Conf_interv_97.5 = quantile(species_1, 0.975)) %>% 
+  pivot_longer(cols = c("mean","Conf_interv_02.5","Conf_interv_97.5"),
+               names_to = "Statistic",
+               values_to = "species_1")
+
+df_species_2 <- df_combined %>% 
+  select(-species_1) %>% 
+  group_by(time, depth, forecast_issue_time, data_assimilation, 
+           ForecastProject_id, Forecast_id) %>% 
+  summarize(mean = mean(species_2),
+            Conf_interv_02.5 = quantile(species_2, 0.025),
+            Conf_interv_97.5 = quantile(species_2, 0.975)) %>% 
+  pivot_longer(cols = c("mean","Conf_interv_02.5","Conf_interv_97.5"),
+               names_to = "Statistic",
+               values_to = "species_2")
+
+ df_summary <- right_join(df_species_1, df_species_2)
+ 
+ df_summary
+ 
+write.csv(df_summary, 
+          file = "logistic-forecast-summary-multi-variable-multi-depth.csv")
+
 ```
 
 ## Standardized Metadata
