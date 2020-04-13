@@ -1,0 +1,598 @@
+Forecasting Metadata
+================
+
+\#Example using output from a FLARE forecast
+
+``` r
+library(EML)
+library(tidyverse)
+library(uuid)
+library(ncdf4)
+library(lubridate)
+emld::eml_version("eml-2.2.0")
+```
+
+    ## [1] "eml-2.2.0"
+
+First, set the forecast identifiers
+
+ForecastProject\_id represents the launch of an automated, iterative
+forecast. It is created each time a human modifies the forecast code. It
+can be a DOI because this is the level that we envision citations
+occuring.
+
+Forecast\_id represents each forecast cycle within a ForecastProject\_id
+
+For example, if you have a forecast code base on GitHub and launch a
+forecast from that code that runs daily for 365 days, then there will be
+one ForecastProject\_id and 365 Forecast\_ids. A paper analyzing the
+forecasts would cite the
+ForecastProject\_id.
+
+``` r
+ForecastProject_id <- 30405043 #Some ID that applies to a bunch of forecasts
+Forecast_id <- uuid::UUIDgenerate() #The ID that applies to the specific forecast in the cycel
+```
+
+# Scenario 1: Oxygen System turned on
+
+## Generating the forecast
+
+First, get the output as we are currently saving
+it
+
+``` r
+nc <- nc_open("IW2_1_SSSon_H_2019_05_27_2019_06_03_F_16_2132020_21_32.nc")
+
+#Dimnesions
+depth <- ncvar_get(nc, "z")
+time <- ncvar_get(nc,'time')
+local_tzone <- ncatt_get(nc, 0)$time_zone_of_simulation
+time <- as.POSIXct(time, origin = '1970-01-01 00:00.00 UTC', tz = local_tzone)
+time <-  strftime(time , "%Y-%m-%dT%H:%M:%S%z")
+
+#States
+temperature <- ncvar_get(nc, "temp")
+oxygen <- ncvar_get(nc, "OXY_oxy")
+zone1temp <- ncvar_get(nc, "zone1temp")
+zone2temp <- ncvar_get(nc, "zone2temp")
+sw_factor <- ncvar_get(nc, "sw_factor")
+inflow_factor <- ncvar_get(nc, "inflow_factor")
+
+#Forecast timings
+forecasted <- ncvar_get(nc, "forecasted")
+data_assimilation <- if_else(forecasted == 0, 1, 0)
+#This doesn't work but we need to update our writing script to just have the date
+forecast_issue_time <- ncatt_get(nc, varid=0, attname = "history") 
+
+forecast_issue_time <- "2020-02-13T21:32:52-05:00"
+
+nc_close(nc)
+```
+
+## Saving to a standardized output format (Option 1)
+
+Second, build a data frame for all variables with a depth dimension
+
+``` r
+n_depths <- length(depth)
+state_names <- c("temperature", "oxygen")
+states <- list(temperature, oxygen)
+n_states <- length(state_names)
+df_combined <- list()
+
+for(k in 1:n_states){
+for(i in 1:n_depths){
+    df <- as_tibble(states[[k]][, ,i])
+    names(df) <- as.character(seq(1, ncol(states[[k]][, ,i])))
+    df <- cbind(time, df, data_assimilation)
+    df <- df %>% 
+      pivot_longer(cols = -c(time,data_assimilation), 
+                   names_to = "ensemble", 
+                   values_to = state_names[k]) %>% 
+      mutate(ensemble = as.integer(ensemble)) %>% 
+      mutate(depth = depth[i])
+    if(i == 1){
+    running_df <- df
+    }else{
+      running_df <- rbind(running_df, df)
+    }
+}
+      df_combined[[k]] <- running_df
+}
+```
+
+    ## Warning: `as_tibble.matrix()` requires a matrix with column names or a `.name_repair` argument. Using compatibility `.name_repair`.
+    ## This warning is displayed once per session.
+
+``` r
+df_combined <- right_join(df_combined[[1]], df_combined[[2]], 
+                          by = c("time", "ensemble", "depth", "data_assimilation")) %>% 
+    mutate(forecast_issue_time = forecast_issue_time,
+         ForecastProject_id = ForecastProject_id,
+         Forecast_id = Forecast_id,
+         scenario = "oxygen_on") %>% 
+  select(time, depth, scenario, ensemble, temperature, 
+         oxygen, forecast_issue_time, 
+         data_assimilation, Forecast_id, ForecastProject_id) 
+
+df_combined_scenario_1 <- df_combined
+```
+
+Second, build a data frame for all variables without a depth dimension
+(parameters).
+
+``` r
+df <- as_tibble(zone1temp[ , ])
+names(df) <- as.character(seq(1, ncol(zone1temp)))
+df <- cbind(time, data_assimilation, df)
+df_combined_p1 <- df %>% 
+      pivot_longer(cols = -c("time", "data_assimilation"), 
+                   names_to = "ensemble", 
+                   values_to = "zone1temp") %>% 
+      mutate(ensemble = as.integer(ensemble),
+             scenario = "oxygen_on") 
+
+df <- as_tibble(zone2temp[ , ])
+names(df) <- as.character(seq(1, ncol(zone2temp)))
+df <- cbind(time, data_assimilation, df)
+df_combined_p2 <- df %>% 
+      pivot_longer(cols = -c("time", "data_assimilation"), 
+                   names_to = "ensemble", 
+                   values_to = "zone2temp") %>% 
+      mutate(ensemble = as.integer(ensemble),
+             scenario = "oxygen_on") 
+
+df <- as_tibble(sw_factor[ , ])
+names(df) <- as.character(seq(1, ncol(sw_factor)))
+df <- cbind(time, data_assimilation, df)
+df_combined_p3 <- df %>% 
+      pivot_longer(cols = -c("time", "data_assimilation"), 
+                   names_to = "ensemble", 
+                   values_to = "sw_factor") %>% 
+      mutate(ensemble = as.integer(ensemble),
+             scenario = "oxygen_on") 
+
+df <- as_tibble(inflow_factor[ , ])
+names(df) <- as.character(seq(1, ncol(inflow_factor)))
+df <- cbind(time, data_assimilation, df)
+df_combined_p4 <- df %>% 
+      pivot_longer(cols = -c("time", "data_assimilation"), 
+                   names_to = "ensemble", 
+                   values_to = "inflow_factor") %>% 
+      mutate(ensemble = as.integer(ensemble),
+             scenario = "oxygen_on") 
+
+df_parameters_1 <- right_join(df_combined_p1, 
+                              df_combined_p2, 
+                              by = c("time",
+                                     "data_assimilation",
+                                     "ensemble",
+                                     "scenario")) %>% 
+                  right_join(df_combined_p3, 
+                              by = c("time",
+                                     "data_assimilation",
+                                     "ensemble",
+                                     "scenario")) %>%
+                  right_join(df_combined_p4, 
+                              by = c("time",
+                                     "data_assimilation",
+                                     "ensemble",
+                                     "scenario")) %>% 
+  mutate(forecast_issue_time = forecast_issue_time,
+         Forecast_id = Forecast_id,
+         ForecastProject_id = ForecastProject_id) %>% 
+  select(time, scenario, ensemble, forecast_issue_time, 
+         data_assimilation, Forecast_id, ForecastProject_id, 
+         zone1temp, zone2temp, sw_factor, inflow_factor) 
+```
+
+# Scenario 2: Oxygen System turned off
+
+## Generating the forecast
+
+First, get the output as we are currently saving
+it
+
+``` r
+nc <- nc_open("IW2_1_SSSoff_H_2019_05_27_2019_06_03_F_16_2132020_21_19.nc")
+
+#Dimnesions
+depth <- ncvar_get(nc, "z")
+time <- ncvar_get(nc,'time')
+local_tzone <- ncatt_get(nc, 0)$time_zone_of_simulation
+time <- as.POSIXct(time, origin = '1970-01-01 00:00.00 UTC', tz = local_tzone)
+time <-  strftime(time , "%Y-%m-%dT%H:%M:%S%z")
+
+#States
+temperature <- ncvar_get(nc, "temp")
+oxygen <- ncvar_get(nc, "OXY_oxy")
+zone1temp <- ncvar_get(nc, "zone1temp")
+zone2temp <- ncvar_get(nc, "zone2temp")
+sw_factor <- ncvar_get(nc, "sw_factor")
+inflow_factor <- ncvar_get(nc, "inflow_factor")
+
+#Forecast timings
+forecasted <- ncvar_get(nc, "forecasted")
+data_assimilation <- if_else(forecasted == 0, 1, 0)
+#This doesn't work but we need to update our writing script to just have the date
+forecast_issue_time <- ncatt_get(nc, varid=0, attname = "history") 
+forecast_issue_time <- "2020-02-13T21:32:52-05:00"
+
+nc_close(nc)
+```
+
+## Saving to a standardized output format (Option 1)
+
+``` r
+n_depths <- length(depth)
+state_names <- c("temperature", "oxygen")
+states <- list(temperature, oxygen)
+n_states <- length(state_names)
+df_combined <- list()
+
+for(k in 1:n_states){
+for(i in 1:n_depths){
+    df <- as_tibble(states[[k]][, ,i])
+    names(df) <- as.character(seq(1, ncol(states[[k]][, ,i])))
+    df <- cbind(time, df, data_assimilation)
+    df <- df %>% 
+      pivot_longer(cols = -c(time,data_assimilation), 
+                   names_to = "ensemble", 
+                   values_to = state_names[k]) %>% 
+      mutate(ensemble = as.integer(ensemble)) %>% 
+      mutate(depth = depth[i])
+    if(i == 1){
+    running_df <- df
+    }else{
+      running_df <- rbind(running_df, df)
+    }
+}
+      df_combined[[k]] <- running_df
+}
+
+df_combined <- right_join(df_combined[[1]], df_combined[[2]], 
+                          by = c("time", "ensemble", "depth", "data_assimilation")) %>% 
+    mutate(forecast_issue_time = forecast_issue_time,
+         Forecast_id = Forecast_id,
+         ForecastProject_id = ForecastProject_id,
+         scenario = "oxygen_off") %>% 
+  select(time, depth, scenario, ensemble, temperature, 
+         oxygen, forecast_issue_time, 
+         data_assimilation, Forecast_id, ForecastProject_id) 
+
+df_combined_scenario_2 <- df_combined
+```
+
+Second, build a data frame for all variables without a depth dimension
+(parameters).
+
+``` r
+df <- as_tibble(zone1temp[ , ])
+names(df) <- as.character(seq(1, ncol(zone1temp)))
+df <- cbind(time, data_assimilation, df)
+df_combined_p1 <- df %>% 
+      pivot_longer(cols = -c("time", "data_assimilation"), 
+                   names_to = "ensemble", 
+                   values_to = "zone1temp") %>% 
+      mutate(ensemble = as.integer(ensemble),
+             scenario = "oxygen_off") 
+
+df <- as_tibble(zone2temp[ , ])
+names(df) <- as.character(seq(1, ncol(zone2temp)))
+df <- cbind(time, data_assimilation, df)
+df_combined_p2 <- df %>% 
+      pivot_longer(cols = -c("time", "data_assimilation"), 
+                   names_to = "ensemble", 
+                   values_to = "zone2temp") %>% 
+      mutate(ensemble = as.integer(ensemble),
+             scenario = "oxygen_off") 
+
+df <- as_tibble(sw_factor[ , ])
+names(df) <- as.character(seq(1, ncol(sw_factor)))
+df <- cbind(time, data_assimilation, df)
+df_combined_p3 <- df %>% 
+      pivot_longer(cols = -c("time", "data_assimilation"), 
+                   names_to = "ensemble", 
+                   values_to = "sw_factor") %>% 
+      mutate(ensemble = as.integer(ensemble),
+             scenario = "oxygen_off") 
+
+df <- as_tibble(inflow_factor[ , ])
+names(df) <- as.character(seq(1, ncol(inflow_factor)))
+df <- cbind(time, data_assimilation, df)
+df_combined_p4 <- df %>% 
+      pivot_longer(cols = -c("time", "data_assimilation"), 
+                   names_to = "ensemble", 
+                   values_to = "inflow_factor") %>% 
+      mutate(ensemble = as.integer(ensemble),
+             scenario = "oxygen_off") 
+
+df_parameters_2 <- right_join(df_combined_p1, 
+                              df_combined_p2, 
+                              by = c("time",
+                                     "data_assimilation",
+                                     "ensemble",
+                                     "scenario")) %>% 
+                  right_join(df_combined_p3, 
+                              by = c("time",
+                                     "data_assimilation",
+                                     "ensemble",
+                                     "scenario")) %>%
+                  right_join(df_combined_p4, 
+                              by = c("time",
+                                     "data_assimilation",
+                                     "ensemble",
+                                     "scenario")) %>% 
+  mutate(forecast_issue_time = forecast_issue_time,
+         Forecast_id = Forecast_id,
+         ForecastProject_id = ForecastProject_id) %>% 
+  select(time, scenario, ensemble, forecast_issue_time, 
+         data_assimilation, Forecast_id, ForecastProject_id, 
+         zone1temp, zone2temp, sw_factor, inflow_factor) 
+```
+
+## Saving to a standardized output format (Option 1)
+
+Create the 1D and 0D tables
+
+``` r
+df_combined_0D <- rbind(df_parameters_1, df_parameters_2)
+df_combined_1D <- rbind(df_combined_scenario_1, df_combined_scenario_2)
+```
+
+Write tables to
+CSV.
+
+``` r
+write.csv(df_combined_1D, "flare-forecast-ensemble-multi-variable-1D.csv", row.names = FALSE)
+write.csv(df_combined_0D, "flare-forecast-ensemble-parameters-0D.csv", row.names = FALSE)
+```
+
+## Standardized Metadata
+
+Let’s document the metadata of the data table itself. It may well be
+that we decide an Ecological Forecast has to have specific columns like
+the ones described above, which would thus correspond to a partially
+pre-defined attributes table (e.g. the units would probably still be
+allowed to vary, but format would be the same.)
+
+Note one weakness of this format is that it assumes all data in a column
+have the same units. This common assumption might be violoated by
+transformations to “long” form data, where you have columns like
+“variable”, “value”, and “units”. (The long form may be useful, but it
+exposes much less information in the metadata layer – e.g. we no longer
+know what’s actually being measured without looking at the data file
+itself).
+
+``` r
+#attributes <- tibble::tribble(
+#  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType,
+#  "time",          "time",                       "year",     "YYYY-MM-DD%THH:MM_SS%Z", "numberType",
+#  "depth",         "depth in reservior",         "meter",   NA,          "real",
+#  "ensemble",      "index of ensemble member",   "dimensionless",    NA,         "integer",
+#  "scenario",      "forecast scenario",   "dimensionless",    NA, NA,  NA, "scenario name",
+#  
+#  ##### EDIT STARTING HERE
+#  "temperature",     "water temperature", "celsius", NA,  "real", NA,
+#  "oxygen",     "oxygen concentration", "numberPerMeterSquared", NA,  "real", NA,
+#  #### EDIT ENDING HERE
+#  
+#  "forecast_issue_time",     "time that forecast was created", "dimensionless", "YYYY-MM-DD",  "numberType",
+#  "data_assimilation",     "Flag whether time step included data assimilation", "dimensionless", NA, "integer",
+#  "Forecast_id",     "ID for specific forecast cycle", "dimensionless", NA,  "character",
+#  "ForecastProject_id",     "ID for forecasting project", "dimensionless", NA,  "character",
+#  )
+
+attributes <- tibble::tribble(
+  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType, ~definition,
+  "time",          "time",                       "year",     "YYYY-MM-DD", "numberType", NA,
+  "depth",         "depth in reservior",         "meter",   NA,          "real", NA,
+  "ensemble",      "index of ensemble member",   "dimensionless",    NA,         "integer", NA,
+   "scenario",      "forecast scenario",    NA, NA,  NA, "scenario name",
+  "temperature",     "water temperature", "celsius", NA,  "real", NA,
+  "oxygen",     "oxygen concentration", "numberPerMeterSquared", NA,  "real", NA,
+  "forecast_issue_time",     "time that forecast was created", NA, "YYYY-MM-DD",  NA, NA,
+  "data_assimilation",     "Flag whether time step included data assimilation", "dimensionless", NA, "integer", NA,
+  "Forecast_id",     "ID for specific forecast cycle", NA, NA,  NA, "forecast id",
+  "ForecastProject_id",     "ID for forecasting project", NA, NA,  NA, "project id"
+)
+
+
+attrList <- set_attributes(attributes, 
+                           col_classes = c("Date", "numeric", "character", "numeric", 
+                                           #EDIT STARTING HERE 
+                                           "numeric","numeric",
+                                           #EDIT ENDING HERE
+                                           "Date",
+                                           "numeric", "character", "character"))
+```
+
+    ## Warning in set_attribute(attributes[i, ], factors = factors, missingValues
+    ## = missingValues): Unit 'NA' is not a recognized standard unit; treating
+    ## as custom unit. Please be sure you also define a custom unit in your EML
+    ## record, or replace with a recognized standard unit. For unitless values,
+    ## use "dimensionless" as the unit. See set_unitList() for details.
+
+``` r
+physical <- set_physical("flare-forecast-ensemble-multi-variable-1D.csv")
+```
+
+    ## Automatically calculated file size using file.size("flare-forecast-ensemble-multi-variable-1D.csv")
+
+    ## Automatically calculated authentication size using digest::digest("flare-forecast-ensemble-multi-variable-1D.csv", algo = "md5", file = TRUE)
+
+``` r
+dataTable <- eml$dataTable(
+                 entityName = "flare-forecast-ensemble-multi-variable-1D.csv",
+                 entityDescription = "Falling Creek Reservior Forecast",
+                 physical = physical,
+                 attributeList = attrList)
+```
+
+There’s a lot more optional terminology that could be exploited here –
+for instance, the specification lets us define different missing value
+codes (and explanations) for each column, and allows us to indicate
+`precision`, `minimum` and `maximum`.
+
+Note that `physical` type can document almost any formats as well,
+including NetCDF etc. A NetCDF file would still document the variables
+measured in much the same way regardless of the underlying
+representation. Note that
+
+Now that we’ve documented the actual data.frame itself, we can add
+additional metadata to the record describing our forecast, which is
+essential for citing, discovering, and interpreting the result. We start
+with some authorship information.
+
+``` r
+me <- list(individualName = list(givenName = "Quinn", 
+                                 surName = "Thomas"),
+           electronicMailAddress = "rqthomas@vt.edu",
+           id = "https://orcid.org/0000-0003-1282-7825")
+```
+
+Set Taxonomic, Temporal, and Geographic Coverage.
+
+``` r
+coverage <- 
+  set_coverage(begin = as_datetime(time[1]), 
+               end = as_datetime(tail((time)[1])),
+               geographicDescription = "Falling Creek Reservior",
+               west = -79.9, east = -79.9, 
+               north = 37.27, south = 37.27)
+```
+
+Set key words. We will need to develop a EFI controlled vocabulary
+
+``` r
+keywordSet <- list(
+    list(
+        keywordThesaurus = "EFI controlled vocabulary",
+        keyword = list("forecast",
+                    "ecosystem",
+                    "timeseries")
+    ))
+```
+
+Our dataset needs an abstract describing what this is all about. Also, a
+methods section is not required but it’s probably a good idea. Here we
+import a methods section that was written in Markdown.
+
+**Forecast timestep**: 1 day
+
+**Forecast time horizon** 16 days
+
+**Data assimilation**
+
+  - Data Assimilation used: Yes
+  - If, DA used - type of method: EnKF
+  - If, DA used - Number of parameters calibrated: 3
+  - If, DA used - Sources of training data (DOI, GitHub):
+    <https://github.com/CareyLabVT/SCCData/tree/carina-data>
+
+**Model Description**
+
+  - Type of model (Empirical, process-based, machine learning):
+    Process-based
+  - Model name: General Lake Model-AED V3
+  - Location of repository with model code: \* GLM:
+    <https://github.com/AquaticEcoDynamics/GLM> \* AED:
+    <https://github.com/AquaticEcoDynamics/libaed2>
+  - Model citation: Hipsey et al. 2019 GMD
+  - Total number of model process parameters: Hard to count
+
+**Model Covariates**
+
+  - Type (i.e., meteorology): meteorology, Stream Inflow
+  - Source (i.e., NOAA GEFS): NOAA GEFS 16-day,
+    <https://github.com/CareyLabVT/SCCData/tree/diana-data>
+
+**Uncertainty (No, Derived from data, Propagates, Assimilates)**
+
+  - Initial conditions: Assimilates
+  - Parameter: Assimilates
+  - Parameter Random Effects: No
+  - Process (within model): Propagates, Assimilates
+  - Multi-model: No
+  - Driver: Derived from data
+  - Scenario: Yes - oxygen system on and off
+  - Method for propagating uncertainty (Analytic, ensemble numeric):
+    ensemble numeric
+  - If Analytic, specific method
+  - If ensemble numeric, number of ensembles:
+210
+
+<!-- end list -->
+
+``` r
+abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
+```
+
+    ## Warning in readLines("abstract.md"): incomplete final line found on
+    ## 'abstract.md'
+
+``` r
+methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))
+```
+
+``` r
+dataset = eml$dataset(
+               title = "FLARE forecast",
+               creator = me,
+               contact = list(references="https://orcid.org/0000-0003-1282-7825"),
+               pubDate = forecast_issue_time,
+               intellectualRights = "http://www.lternet.edu/data/netpolicy.html.",
+               abstract =  "An illustration of how we might use EML metadata to describe an ecological forecast",
+               dataTable = dataTable,
+               keywordSet = keywordSet,
+               coverage = coverage,
+               methods = methods
+               )
+```
+
+All we need now is to add a unique identifier for the project and we are
+good to go\! This could be a DOI or merely an identifier we create,
+e.g. a UUID.
+
+``` r
+my_eml <- eml$eml(dataset = dataset,
+           packageId = ForecastProject_id,  
+           system = "uuid"
+           )
+```
+
+Once we have finished building our EML metadata, we can confirm it is
+valid. This will catch any missing elements. (Recall that what is
+‘required’ depends on what you include – for example, you don’t have
+to document a `dataTable` at all, but if you do, you have to document
+the “physical” file format it is in (e.g. `csv`) and the attributes and
+units it uses\!)
+
+``` r
+eml_validate(my_eml)
+```
+
+    ## [1] FALSE
+    ## attr(,"errors")
+    ## [1] "Element 'pubDate': '2020-02-13T21:32:52-05:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'."
+    ## [2] "Element 'calendarDate': '2019-05-27 12:00:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'." 
+    ## [3] "Element 'calendarDate': '2019-05-27 12:00:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'." 
+    ## [4] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."                          
+    ## [5] "Element 'numericDomain': This element is not expected. Expected is ( unit )."
+
+We are now ready to write out a valid EML document:
+
+``` r
+write_eml(my_eml, "forecast-flare-eml.xml")
+```
+
+At this point, we could easily upload this metadata along with the data
+itself to DataONE via the API (or `dataone` R package.)
+
+We can also generate a JSON-LD version of
+EML:
+
+``` r
+emld::as_json(as_emld("forecast-flare-eml.xml"), file = "forecast-flare-eml.json")
+```

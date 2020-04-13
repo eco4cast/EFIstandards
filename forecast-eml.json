@@ -10,16 +10,16 @@
   },
   "@type": "EML",
   "dataset": {
-    "title": "A vey silly logistic forecast",
+    "title": "A very silly logistic forecast",
     "creator": {
-      "id": "http://orcid.org/0000-0002-1642-628X",
+      "id": "https://orcid.org/0000-0003-1282-7825",
       "individualName": {
-        "givenName": "Carl",
-        "surName": "Boettiger"
+        "givenName": "Quinn",
+        "surName": "Thomas"
       },
-      "electronicMailAddress": "cboettig@gmail.com"
+      "electronicMailAddress": "rqthomas@vt.edu"
     },
-    "pubDate": "2020-03-07",
+    "pubDate": "2001-03-04",
     "abstract": "An illustration of how we might use EML metadata to describe an ecological forecast",
     "keywordSet": {
       "keywordThesaurus": "EFI controlled vocabulary",
@@ -67,27 +67,27 @@
       }
     },
     "contact": {
-      "references": "http://orcid.org/0000-0002-1642-628X"
+      "references": "https://orcid.org/0000-0003-1282-7825"
     },
     "methods": {
       "methodStep": {
         "description": {
-          "markdown": "# Overview\n\nThis data was simulated using a logistic map in R. The code can be found at https://github.com/somewhere or https://doi.org/10.xxx\n\n"
+          "markdown": "# Methods Description\n\n**Forecast timestep**\n1 day\n\n**Forecast time horizon**\n\n**Data assimilation**\n\nData Assimilation used: No\nIf, DA used - type of method: N/A\nIf, DA used - Number of parameters calibrated: N/A\nIf, DA used - Sources of training data (DOI, GitHub): N/A\n\n**Model Description**\n\nType of model (Empirical, process-based, machine learning): Empirical\nModel name: discrete Lotka–Volterra model\nLocation of repository with model code: https://github.com/somewhere or https://doi.org/10.xxx\nModel citation: N/A\nTotal number of model process parameters: 3\n\n**Model Covariates**\n\nType (i.e., meteorology): N/A\nSource (i.e., NOAA GEFS): N/A\n\n**Uncertainty**\n\nAnswers: No, Derived from data, Propagates, Assimilates\n\nInitial conditions:\nParameter:\nParameter Random Effects:\nProcess (within model):\nMulti-model:\nDriver:\nScenario:\n\nMethod for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric\nIf Analytic, specific method\nIf ensemble numeric, number of ensembles: 10\n\n\n"
         }
       }
     },
     "dataTable": {
-      "entityName": "logistic-forecast.csv",
-      "entityDescription": "Forecast of population size under a few models",
+      "entityName": "logistic-forecast-ensemble-multi-variable-multi-depth.csv",
+      "entityDescription": "Forecast of population size using a depth specific model",
       "physical": {
-        "objectName": "logistic-forecast.csv",
+        "objectName": "logistic-forecast-ensemble-multi-variable-multi-depth.csv",
         "size": {
           "unit": "bytes",
-          "size": "926"
+          "size": "31053"
         },
         "authentication": {
           "method": "MD5",
-          "authentication": "499a5c3fe4c91bf630bc6d8b8fe441d2"
+          "authentication": "5ff6f959baaa4470c72deb299d1df116"
         },
         "dataFormat": {
           "textFormat": {
@@ -102,7 +102,7 @@
       "attributeList": {
         "attribute": [
           {
-            "attributeName": "t",
+            "attributeName": "time",
             "attributeDefinition": "time",
             "storageType": "date",
             "measurementScale": {
@@ -113,8 +113,38 @@
             }
           },
           {
-            "attributeName": "n",
-            "attributeDefinition": "population size (logistic)",
+            "attributeName": "depth",
+            "attributeDefinition": "depth in reservior",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "meter"
+                },
+                "numericDomain": {
+                  "numberType": "real"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "ensemble",
+            "attributeDefinition": "index of ensemble member",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "dimensionless"
+                },
+                "numericDomain": {
+                  "numberType": "integer"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "species_1",
+            "attributeDefinition": "Population size of species 1",
             "storageType": "float",
             "measurementScale": {
               "ratio": {
@@ -128,8 +158,8 @@
             }
           },
           {
-            "attributeName": "ne",
-            "attributeDefinition": "population size (exp)",
+            "attributeName": "species_2",
+            "attributeDefinition": "Population size of species 2",
             "storageType": "float",
             "measurementScale": {
               "ratio": {
@@ -141,12 +171,66 @@
                 }
               }
             }
+          },
+          {
+            "attributeName": "forecast_issue_time",
+            "attributeDefinition": "time that forecast was created",
+            "storageType": "date",
+            "measurementScale": {
+              "dateTime": {
+                "formatString": "YYYY-MM-DD",
+                "dateTimeDomain": []
+              }
+            }
+          },
+          {
+            "attributeName": "data_assimilation",
+            "attributeDefinition": "Flag whether time step included data assimilation",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "dimensionless"
+                },
+                "numericDomain": {
+                  "numberType": "integer"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "Forecast_id",
+            "attributeDefinition": "ID for specific forecast cycle",
+            "storageType": "string",
+            "measurementScale": {
+              "nominal": {
+                "nonNumericDomain": {
+                  "textDomain": {
+                    "definition": "forecast id"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "ForecastProject_id",
+            "attributeDefinition": "ID for forecasting project",
+            "storageType": "string",
+            "measurementScale": {
+              "nominal": {
+                "nonNumericDomain": {
+                  "textDomain": {
+                    "definition": "project id"
+                  }
+                }
+              }
+            }
           }
         ]
       }
     }
   },
-  "packageId": "c8f2cef9-036e-4f4e-b56a-e3cab349afe6",
+  "packageId": "fcc55bab-9224-4724-8f5c-6b9fb4927349",
   "schemaLocation": "https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd",
   "system": "uuid"
 }
