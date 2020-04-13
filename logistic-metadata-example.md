@@ -91,143 +91,8 @@ for(t in 2:NT){
 Saving to a standardized output format
 --------------------------------------
 
-Standard Option 1:
-==================
-
-Convert to a flat file format (CSV) with one column for each variable and all ensemble members saved
-
-``` r
-time <- as.Date(as.character(2000 + 1:NT), format = "%Y")
-state_names <- c("species_1", "species_2")
-n_states <- length(state_names)
-states <- list(n[1, , , ], n[2, , ,])
-
-#No data assimilation was used for any of forecast results archived
-
-df_combined <- list()
-
-for(k in 1:n_states){
-  for(i in 1:n_depths){
-    df <- as_tibble(states[[k]][, ,i])
-    names(df) <- as.character(seq(1, ncol(states[[k]][, ,i])))
-    df <- cbind(time, df, data_assimilation)
-    df <- df %>% 
-      pivot_longer(cols = -c(time,data_assimilation), 
-                   names_to = "ensemble", 
-                   values_to = state_names[k]) %>% 
-      mutate(ensemble = as.integer(ensemble)) %>% 
-      mutate(depth = depths[i])
-    if(i == 1){
-      running_df <- df
-    }else{
-      running_df <- rbind(running_df, df)
-    }
-  }
-  df_combined[[k]] <- running_df
-}
-```
-
-    ## Warning: The `x` argument of `as_tibble.matrix()` must have column names if `.name_repair` is omitted as of tibble 2.0.0.
-    ## Using compatibility `.name_repair`.
-    ## This warning is displayed once every 8 hours.
-    ## Call `lifecycle::last_warnings()` to see where this warning was generated.
-
-``` r
-df_combined <- right_join(df_combined[[1]], df_combined[[2]], 
-                          by = c("time", "ensemble", "depth", "data_assimilation")) %>% 
-  mutate(forecast_issue_time = forecast_issue_time,
-         Forecast_id = Forecast_id,
-         ForecastProject_id = ForecastProject_id) %>% 
-  select(time, depth, ensemble, state_names[1], 
-         state_names[2], forecast_issue_time, 
-         data_assimilation, ForecastProject_id, Forecast_id) 
-
-df_combined
-```
-
-    ## # A tibble: 270 x 9
-    ##    time       depth ensemble species_1 species_2 forecast_issue_…
-    ##    <date>     <dbl>    <int>     <dbl>     <dbl> <date>          
-    ##  1 2001-04-13     1        1     0.5        0.5  2001-03-04      
-    ##  2 2001-04-13     1        2     0.5        0.5  2001-03-04      
-    ##  3 2001-04-13     1        3     0.5        0.5  2001-03-04      
-    ##  4 2002-04-13     1        1     0.950      1.95 2001-03-04      
-    ##  5 2002-04-13     1        2     0.965      1.93 2001-03-04      
-    ##  6 2002-04-13     1        3     0.973      1.92 2001-03-04      
-    ##  7 2003-04-13     1        1     1.78       7.17 2001-03-04      
-    ##  8 2003-04-13     1        2     1.80       7.08 2001-03-04      
-    ##  9 2003-04-13     1        3     1.81       7.06 2001-03-04      
-    ## 10 2004-04-13     1        1     2.99      20.4  2001-03-04      
-    ## # … with 260 more rows, and 3 more variables: data_assimilation <dbl>,
-    ## #   ForecastProject_id <dbl>, Forecast_id <chr>
-
-``` r
-write.csv(df_combined, 
-          file = "logistic-forecast-ensemble-multi-variable-multi-depth.csv")
-```
-
-Standard Option 2:
-==================
-
-Convert to a flat file format (CSV) with forecast distribution summaries saved
-
-``` r
-df_species_1 <- df_combined %>% 
-  select(-species_2) %>% 
-  group_by(time, depth, forecast_issue_time, data_assimilation, 
-           ForecastProject_id, Forecast_id) %>% 
-  summarize(mean = mean(species_1),
-            Conf_interv_02.5 = quantile(species_1, 0.025),
-            Conf_interv_97.5 = quantile(species_1, 0.975)) %>% 
-  pivot_longer(cols = c("mean","Conf_interv_02.5","Conf_interv_97.5"),
-               names_to = "Statistic",
-               values_to = "species_1")
-
-df_species_2 <- df_combined %>% 
-  select(-species_1) %>% 
-  group_by(time, depth, forecast_issue_time, data_assimilation, 
-           ForecastProject_id, Forecast_id) %>% 
-  summarize(mean = mean(species_2),
-            Conf_interv_02.5 = quantile(species_2, 0.025),
-            Conf_interv_97.5 = quantile(species_2, 0.975)) %>% 
-  pivot_longer(cols = c("mean","Conf_interv_02.5","Conf_interv_97.5"),
-               names_to = "Statistic",
-               values_to = "species_2")
-
- df_summary <- right_join(df_species_1, df_species_2)
-```
-
-    ## Joining, by = c("time", "depth", "forecast_issue_time", "data_assimilation", "ForecastProject_id", "Forecast_id", "Statistic")
-
-``` r
- df_summary
-```
-
-    ## # A tibble: 270 x 9
-    ## # Groups:   time, depth, forecast_issue_time, data_assimilation,
-    ## #   ForecastProject_id [90]
-    ##    time       depth forecast_issue_… data_assimilati… ForecastProject…
-    ##    <date>     <dbl> <date>                      <dbl>            <dbl>
-    ##  1 2001-04-13     1 2001-03-04                      0         30405043
-    ##  2 2001-04-13     1 2001-03-04                      0         30405043
-    ##  3 2001-04-13     1 2001-03-04                      0         30405043
-    ##  4 2001-04-13     3 2001-03-04                      0         30405043
-    ##  5 2001-04-13     3 2001-03-04                      0         30405043
-    ##  6 2001-04-13     3 2001-03-04                      0         30405043
-    ##  7 2001-04-13     5 2001-03-04                      0         30405043
-    ##  8 2001-04-13     5 2001-03-04                      0         30405043
-    ##  9 2001-04-13     5 2001-03-04                      0         30405043
-    ## 10 2002-04-13     1 2001-03-04                      0         30405043
-    ## # … with 260 more rows, and 4 more variables: Forecast_id <chr>,
-    ## #   Statistic <chr>, species_1 <dbl>, species_2 <dbl>
-
-``` r
-write.csv(df_summary, 
-          file = "logistic-forecast-summary-multi-variable-multi-depth.csv")
-```
-
-Standard Option 3:
-==================
+Standard Option 1: netCDF
+=========================
 
 Convert to a netcdf format
 
@@ -311,6 +176,141 @@ ncatt_put(ncout,0,"forecast_issue_time",as.character(forecast_issue_time),
 nc_close(ncout)
 ```
 
+Standard Option 2: ensemble CSV
+===============================
+
+Convert to a flat file format (CSV) with one column for each variable and all ensemble members saved
+
+``` r
+time <- as.Date(as.character(2000 + 1:NT), format = "%Y")
+state_names <- c("species_1", "species_2")
+n_states <- length(state_names)
+states <- list(n[1, , , ], n[2, , ,])
+
+#No data assimilation was used for any of forecast results archived
+
+df_combined <- list()
+
+for(k in 1:n_states){
+  for(i in 1:n_depths){
+    df <- as_tibble(states[[k]][, ,i])
+    names(df) <- as.character(seq(1, ncol(states[[k]][, ,i])))
+    df <- cbind(time, df, data_assimilation)
+    df <- df %>% 
+      pivot_longer(cols = -c(time,data_assimilation), 
+                   names_to = "ensemble", 
+                   values_to = state_names[k]) %>% 
+      mutate(ensemble = as.integer(ensemble)) %>% 
+      mutate(depth = depths[i])
+    if(i == 1){
+      running_df <- df
+    }else{
+      running_df <- rbind(running_df, df)
+    }
+  }
+  df_combined[[k]] <- running_df
+}
+```
+
+    ## Warning: The `x` argument of `as_tibble.matrix()` must have column names if `.name_repair` is omitted as of tibble 2.0.0.
+    ## Using compatibility `.name_repair`.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_warnings()` to see where this warning was generated.
+
+``` r
+df_combined <- right_join(df_combined[[1]], df_combined[[2]], 
+                          by = c("time", "ensemble", "depth", "data_assimilation")) %>% 
+  mutate(forecast_issue_time = forecast_issue_time,
+         Forecast_id = Forecast_id,
+         ForecastProject_id = ForecastProject_id) %>% 
+  select(time, depth, ensemble, state_names[1], 
+         state_names[2], forecast_issue_time, 
+         data_assimilation, ForecastProject_id, Forecast_id) 
+
+df_combined
+```
+
+    ## # A tibble: 270 x 9
+    ##    time       depth ensemble species_1 species_2 forecast_issue_…
+    ##    <date>     <int>    <int>     <dbl>     <dbl> <date>          
+    ##  1 2001-04-13     1        1     0.5        0.5  2001-03-04      
+    ##  2 2001-04-13     1        2     0.5        0.5  2001-03-04      
+    ##  3 2001-04-13     1        3     0.5        0.5  2001-03-04      
+    ##  4 2002-04-13     1        1     0.986      1.97 2001-03-04      
+    ##  5 2002-04-13     1        2     0.975      1.97 2001-03-04      
+    ##  6 2002-04-13     1        3     0.986      1.95 2001-03-04      
+    ##  7 2003-04-13     1        1     1.83       7.20 2001-03-04      
+    ##  8 2003-04-13     1        2     1.80       7.19 2001-03-04      
+    ##  9 2003-04-13     1        3     1.83       7.14 2001-03-04      
+    ## 10 2004-04-13     1        1     3.05      20.4  2001-03-04      
+    ## # … with 260 more rows, and 3 more variables: data_assimilation <dbl>,
+    ## #   ForecastProject_id <dbl>, Forecast_id <chr>
+
+``` r
+write.csv(df_combined, 
+          file = "logistic-forecast-ensemble-multi-variable-multi-depth.csv")
+```
+
+Standard Option 3: summary CSV
+==============================
+
+Convert to a flat file format (CSV) with forecast distribution summaries saved
+
+``` r
+df_species_1 <- df_combined %>% 
+  select(-species_2) %>% 
+  group_by(time, depth, forecast_issue_time, data_assimilation, 
+           ForecastProject_id, Forecast_id) %>% 
+  summarize(mean = mean(species_1),
+            Conf_interv_02.5 = quantile(species_1, 0.025),
+            Conf_interv_97.5 = quantile(species_1, 0.975)) %>% 
+  pivot_longer(cols = c("mean","Conf_interv_02.5","Conf_interv_97.5"),
+               names_to = "Statistic",
+               values_to = "species_1")
+
+df_species_2 <- df_combined %>% 
+  select(-species_1) %>% 
+  group_by(time, depth, forecast_issue_time, data_assimilation, 
+           ForecastProject_id, Forecast_id) %>% 
+  summarize(mean = mean(species_2),
+            Conf_interv_02.5 = quantile(species_2, 0.025),
+            Conf_interv_97.5 = quantile(species_2, 0.975)) %>% 
+  pivot_longer(cols = c("mean","Conf_interv_02.5","Conf_interv_97.5"),
+               names_to = "Statistic",
+               values_to = "species_2")
+
+ df_summary <- right_join(df_species_1, df_species_2)
+```
+
+    ## Joining, by = c("time", "depth", "forecast_issue_time", "data_assimilation", "ForecastProject_id", "Forecast_id", "Statistic")
+
+``` r
+ df_summary
+```
+
+    ## # A tibble: 270 x 9
+    ## # Groups:   time, depth, forecast_issue_time, data_assimilation,
+    ## #   ForecastProject_id [90]
+    ##    time       depth forecast_issue_… data_assimilati… ForecastProject…
+    ##    <date>     <int> <date>                      <dbl>            <dbl>
+    ##  1 2001-04-13     1 2001-03-04                      0         30405043
+    ##  2 2001-04-13     1 2001-03-04                      0         30405043
+    ##  3 2001-04-13     1 2001-03-04                      0         30405043
+    ##  4 2001-04-13     2 2001-03-04                      0         30405043
+    ##  5 2001-04-13     2 2001-03-04                      0         30405043
+    ##  6 2001-04-13     2 2001-03-04                      0         30405043
+    ##  7 2001-04-13     3 2001-03-04                      0         30405043
+    ##  8 2001-04-13     3 2001-03-04                      0         30405043
+    ##  9 2001-04-13     3 2001-03-04                      0         30405043
+    ## 10 2002-04-13     1 2001-03-04                      0         30405043
+    ## # … with 260 more rows, and 4 more variables: Forecast_id <chr>,
+    ## #   Statistic <chr>, species_1 <dbl>, species_2 <dbl>
+
+``` r
+write.csv(df_summary, 
+          file = "logistic-forecast-summary-multi-variable-multi-depth.csv")
+```
+
 Standardized Metadata
 ---------------------
 
@@ -389,9 +389,37 @@ keywordSet <- list(
     ))
 ```
 
-Our dataset needs an abstract describing what this is all about. Also, a methods section is not required but it's probably a good idea. Here we import a methods section that was written in Markdown.
+Our dataset needs an abstract describing what this is all about. Also, a methods section is not required but it's probably a good idea.
 
-We envision having required sections in the methods section. However, we need to figure out the formatting of the Markdown file so that it is represented cleanly in the EML. If there is formatting and paragraphs in the Markdown file then that gets translated to the EML.
+We envision having additional required metadata sections. However, we need to figure out the formatting of the Markdown file so that it is represented cleanly in the EML.
+
+``` r
+additionalMetadata <- eml$additionalMetadata(
+  describes="methods",  ## not sure how to find the correct ID for this to be valid
+  metadata=list(
+    timestep = "1 year", ## should be udunits parsable; already in coverage -> temporalCoverage?
+    forecast_horizon = "30 years",
+    uncertainty = list( ## answers to all elements are required. Options: no, contains, data_driven, propagates, assimilates
+      initial_conditions = "contains",
+      parameters = "contains",
+      random_effects = "no",
+      process_error = "contains",
+      drivers = "no"
+    ),
+    uncertainty_method = list( ## required if any uncertainty >= propagates
+      type = "ensemble", # ensemble vs. analytic
+      size = 10          # required if ensemble
+      ## if analytic: `method` is required
+    ),
+#    assimilation_method ## required if any uncertainty = assimilates
+    complexity = list( # required for any uncertainty > no; records dimension
+      initial_conditions = 2, # number of state variables
+      parameters = 3,         # number of parameters
+      process = 1             # *** need to discuss how to record this (e.g. diag vs cov?) ***
+    )
+  )
+)
+```
 
 Items in the "methods.md"
 
@@ -419,15 +447,14 @@ Items in the "methods.md"
 -   Type (i.e., meteorology): N/A
 -   Source (i.e., NOAA GEFS): N/A
 
-**Uncertainty (No, Derived from data, Propagates, Assimilates)**
+**Uncertainty (No, Contains, Derived from data, Propagates, Assimilates)**
 
--   Initial conditions: No
--   Parameter: No
+-   Initial conditions: Contains
+-   Parameter: Contains
 -   Parameter Random Effects: No
--   Process (within model): Yes
+-   Process (within model): Contains
 -   Multi-model: No
 -   Driver: No
--   Scenario:
 -   Method for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric
 -   If Analytic, specific method
 -   If ensemble numeric, number of ensembles: 10
@@ -440,7 +467,7 @@ abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
     ## 'abstract.md'
 
 ``` r
-methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))
+methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))  ## to be dropped
 ```
 
 ``` r
@@ -462,6 +489,7 @@ All we need now is to add a unique identifier for the project and we are good to
 
 ``` r
 my_eml <- eml$eml(dataset = dataset,
+           additionalMetadata = additionalMetadata,
            packageId = Forecast_id,  #Is this the ForecastProject_ID?
            #What about the Forecast_ID
            system = "uuid"
@@ -476,9 +504,13 @@ This will catch any missing elements. (Recall that what is 'required' depends on
 eml_validate(my_eml)
 ```
 
-    ## [1] TRUE
+    ## Warning in eml_additional_validation(doc, encoding = encoding): Document is invalid. Found the following errors:
+    ##  not all 'describes' values match defined id attributes
+
+    ## [1] FALSE
     ## attr(,"errors")
-    ## character(0)
+    ## [1] "not all 'describes' values match defined id attributes"   
+    ## [2] "Element 'forecast_horizon': This element is not expected."
 
 We are now ready to write out a valid EML document:
 

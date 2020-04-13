@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<eml:eml xmlns:eml="https://eml.ecoinformatics.org/eml-2.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stmml="http://www.xml-cml.org/schema/stmml-1.2" packageId="fcc55bab-9224-4724-8f5c-6b9fb4927349" system="uuid" xsi:schemaLocation="https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd">
+<eml:eml xmlns:eml="https://eml.ecoinformatics.org/eml-2.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stmml="http://www.xml-cml.org/schema/stmml-1.2" packageId="e1428f4c-af61-4d13-b373-d9abc237f235" system="uuid" xsi:schemaLocation="https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd">
   <dataset>
     <title>A very silly logistic forecast</title>
     <creator id="https://orcid.org/0000-0003-1282-7825">
@@ -113,8 +113,8 @@ If ensemble numeric, number of ensembles: 10
       <entityDescription>Forecast of population size using a depth specific model</entityDescription>
       <physical>
         <objectName>logistic-forecast-ensemble-multi-variable-multi-depth.csv</objectName>
-        <size unit="bytes">31053</size>
-        <authentication method="MD5">5ff6f959baaa4470c72deb299d1df116</authentication>
+        <size unit="bytes">31072</size>
+        <authentication method="MD5">9bb4e3e6e2d0d1f5eb0cb3ac10fe0a4e</authentication>
         <dataFormat>
           <textFormat>
             <recordDelimiter>
@@ -255,4 +255,27 @@ If ensemble numeric, number of ensembles: 10
       </attributeList>
     </dataTable>
   </dataset>
+  <additionalMetadata>
+    <describes>methods</describes>
+    <metadata>
+      <complexity>
+        <initial_conditions>2</initial_conditions>
+        <parameters>3</parameters>
+        <process>1</process>
+      </complexity>
+      <forecast_horizon>30 years</forecast_horizon>
+      <timestep>1 year</timestep>
+      <uncertainty>
+        <drivers>no</drivers>
+        <initial_conditions>contains</initial_conditions>
+        <parameters>contains</parameters>
+        <process_error>contains</process_error>
+        <random_effects>no</random_effects>
+      </uncertainty>
+      <uncertainty_method>
+        <size>10</size>
+        <type>ensemble</type>
+      </uncertainty_method>
+    </metadata>
+  </additionalMetadata>
 </eml:eml>

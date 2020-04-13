@@ -9,6 +9,29 @@
     "@base": "eml://"
   },
   "@type": "EML",
+  "additionalMetadata": {
+    "describes": "methods",
+    "metadata": {
+      "complexity": {
+        "initial_conditions": "2",
+        "parameters": "3",
+        "process": "1"
+      },
+      "forecast_horizon": "30 years",
+      "timestep": "1 year",
+      "uncertainty": {
+        "drivers": "no",
+        "initial_conditions": "contains",
+        "parameters": "contains",
+        "process_error": "contains",
+        "random_effects": "no"
+      },
+      "uncertainty_method": {
+        "size": "10",
+        "type": "ensemble"
+      }
+    }
+  },
   "dataset": {
     "title": "A very silly logistic forecast",
     "creator": {
@@ -83,11 +106,11 @@
         "objectName": "logistic-forecast-ensemble-multi-variable-multi-depth.csv",
         "size": {
           "unit": "bytes",
-          "size": "31053"
+          "size": "31072"
         },
         "authentication": {
           "method": "MD5",
-          "authentication": "5ff6f959baaa4470c72deb299d1df116"
+          "authentication": "9bb4e3e6e2d0d1f5eb0cb3ac10fe0a4e"
         },
         "dataFormat": {
           "textFormat": {
@@ -230,7 +253,7 @@
       }
     }
   },
-  "packageId": "fcc55bab-9224-4724-8f5c-6b9fb4927349",
+  "packageId": "e1428f4c-af61-4d13-b373-d9abc237f235",
   "schemaLocation": "https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd",
   "system": "uuid"
 }
