@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<eml:eml xmlns:eml="https://eml.ecoinformatics.org/eml-2.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stmml="http://www.xml-cml.org/schema/stmml-1.2" packageId="c8f2cef9-036e-4f4e-b56a-e3cab349afe6" system="uuid" xsi:schemaLocation="https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd">
+<eml:eml xmlns:eml="https://eml.ecoinformatics.org/eml-2.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stmml="http://www.xml-cml.org/schema/stmml-1.2" packageId="fcc55bab-9224-4724-8f5c-6b9fb4927349" system="uuid" xsi:schemaLocation="https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd">
   <dataset>
-    <title>A vey silly logistic forecast</title>
-    <creator id="http://orcid.org/0000-0002-1642-628X">
+    <title>A very silly logistic forecast</title>
+    <creator id="https://orcid.org/0000-0003-1282-7825">
       <individualName>
-        <givenName>Carl</givenName>
-        <surName>Boettiger</surName>
+        <givenName>Quinn</givenName>
+        <surName>Thomas</surName>
       </individualName>
-      <electronicMailAddress>cboettig@gmail.com</electronicMailAddress>
+      <electronicMailAddress>rqthomas@vt.edu</electronicMailAddress>
     </creator>
-    <pubDate>2020-03-07</pubDate>
+    <pubDate>2001-03-04</pubDate>
     <abstract>An illustration of how we might use EML metadata to describe an ecological forecast</abstract>
     <keywordSet>
       <keyword>forecast</keyword>
@@ -55,26 +55,66 @@
       </taxonomicCoverage>
     </coverage>
     <contact>
-      <references>http://orcid.org/0000-0002-1642-628X</references>
+      <references>https://orcid.org/0000-0003-1282-7825</references>
     </contact>
     <methods>
       <methodStep>
         <description>
-          <markdown># Overview
+          <markdown># Methods Description
 
-This data was simulated using a logistic map in R. The code can be found at https://github.com/somewhere or https://doi.org/10.xxx
+**Forecast timestep**
+1 day
+
+**Forecast time horizon**
+
+**Data assimilation**
+
+Data Assimilation used: No
+If, DA used - type of method: N/A
+If, DA used - Number of parameters calibrated: N/A
+If, DA used - Sources of training data (DOI, GitHub): N/A
+
+**Model Description**
+
+Type of model (Empirical, process-based, machine learning): Empirical
+Model name: discrete Lotka–Volterra model
+Location of repository with model code: https://github.com/somewhere or https://doi.org/10.xxx
+Model citation: N/A
+Total number of model process parameters: 3
+
+**Model Covariates**
+
+Type (i.e., meteorology): N/A
+Source (i.e., NOAA GEFS): N/A
+
+**Uncertainty**
+
+Answers: No, Derived from data, Propagates, Assimilates
+
+Initial conditions:
+Parameter:
+Parameter Random Effects:
+Process (within model):
+Multi-model:
+Driver:
+Scenario:
+
+Method for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric
+If Analytic, specific method
+If ensemble numeric, number of ensembles: 10
+
 
 </markdown>
         </description>
       </methodStep>
     </methods>
     <dataTable>
-      <entityName>logistic-forecast.csv</entityName>
-      <entityDescription>Forecast of population size under a few models</entityDescription>
+      <entityName>logistic-forecast-ensemble-multi-variable-multi-depth.csv</entityName>
+      <entityDescription>Forecast of population size using a depth specific model</entityDescription>
       <physical>
-        <objectName>logistic-forecast.csv</objectName>
-        <size unit="bytes">926</size>
-        <authentication method="MD5">499a5c3fe4c91bf630bc6d8b8fe441d2</authentication>
+        <objectName>logistic-forecast-ensemble-multi-variable-multi-depth.csv</objectName>
+        <size unit="bytes">31053</size>
+        <authentication method="MD5">5ff6f959baaa4470c72deb299d1df116</authentication>
         <dataFormat>
           <textFormat>
             <recordDelimiter>
@@ -88,7 +128,7 @@ This data was simulated using a logistic map in R. The code can be found at http
       </physical>
       <attributeList>
         <attribute>
-          <attributeName>t</attributeName>
+          <attributeName>time</attributeName>
           <attributeDefinition>time</attributeDefinition>
           <storageType>date</storageType>
           <measurementScale>
@@ -99,8 +139,38 @@ This data was simulated using a logistic map in R. The code can be found at http
           </measurementScale>
         </attribute>
         <attribute>
-          <attributeName>n</attributeName>
-          <attributeDefinition>population size (logistic)</attributeDefinition>
+          <attributeName>depth</attributeName>
+          <attributeDefinition>depth in reservior</attributeDefinition>
+          <storageType>float</storageType>
+          <measurementScale>
+            <ratio>
+              <unit>
+                <standardUnit>meter</standardUnit>
+              </unit>
+              <numericDomain>
+                <numberType>real</numberType>
+              </numericDomain>
+            </ratio>
+          </measurementScale>
+        </attribute>
+        <attribute>
+          <attributeName>ensemble</attributeName>
+          <attributeDefinition>index of ensemble member</attributeDefinition>
+          <storageType>float</storageType>
+          <measurementScale>
+            <ratio>
+              <unit>
+                <standardUnit>dimensionless</standardUnit>
+              </unit>
+              <numericDomain>
+                <numberType>integer</numberType>
+              </numericDomain>
+            </ratio>
+          </measurementScale>
+        </attribute>
+        <attribute>
+          <attributeName>species_1</attributeName>
+          <attributeDefinition>Population size of species 1</attributeDefinition>
           <storageType>float</storageType>
           <measurementScale>
             <ratio>
@@ -114,8 +184,8 @@ This data was simulated using a logistic map in R. The code can be found at http
           </measurementScale>
         </attribute>
         <attribute>
-          <attributeName>ne</attributeName>
-          <attributeDefinition>population size (exp)</attributeDefinition>
+          <attributeName>species_2</attributeName>
+          <attributeDefinition>Population size of species 2</attributeDefinition>
           <storageType>float</storageType>
           <measurementScale>
             <ratio>
@@ -126,6 +196,60 @@ This data was simulated using a logistic map in R. The code can be found at http
                 <numberType>real</numberType>
               </numericDomain>
             </ratio>
+          </measurementScale>
+        </attribute>
+        <attribute>
+          <attributeName>forecast_issue_time</attributeName>
+          <attributeDefinition>time that forecast was created</attributeDefinition>
+          <storageType>date</storageType>
+          <measurementScale>
+            <dateTime>
+              <formatString>YYYY-MM-DD</formatString>
+              <dateTimeDomain/>
+            </dateTime>
+          </measurementScale>
+        </attribute>
+        <attribute>
+          <attributeName>data_assimilation</attributeName>
+          <attributeDefinition>Flag whether time step included data assimilation</attributeDefinition>
+          <storageType>float</storageType>
+          <measurementScale>
+            <ratio>
+              <unit>
+                <standardUnit>dimensionless</standardUnit>
+              </unit>
+              <numericDomain>
+                <numberType>integer</numberType>
+              </numericDomain>
+            </ratio>
+          </measurementScale>
+        </attribute>
+        <attribute>
+          <attributeName>Forecast_id</attributeName>
+          <attributeDefinition>ID for specific forecast cycle</attributeDefinition>
+          <storageType>string</storageType>
+          <measurementScale>
+            <nominal>
+              <nonNumericDomain>
+                <textDomain>
+                  <definition>forecast id</definition>
+                </textDomain>
+              </nonNumericDomain>
+            </nominal>
+          </measurementScale>
+        </attribute>
+        <attribute>
+          <attributeName>ForecastProject_id</attributeName>
+          <attributeDefinition>ID for forecasting project</attributeDefinition>
+          <storageType>string</storageType>
+          <measurementScale>
+            <nominal>
+              <nonNumericDomain>
+                <textDomain>
+                  <definition>project id</definition>
+                </textDomain>
+              </nonNumericDomain>
+            </nominal>
           </measurementScale>
         </attribute>
       </attributeList>
