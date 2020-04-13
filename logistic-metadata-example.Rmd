@@ -8,6 +8,7 @@ library(EML)
 library(tidyverse)
 library(uuid)
 emld::eml_version("eml-2.2.0")
+set.seed(42)
 ```
 
 A simple, example forecast of population Growth of two interacting species
@@ -343,8 +344,8 @@ cleanly in the EML.
 
 ```{r}
 additionalMetadata <- eml$additionalMetadata(
-  describes="methods",  ## not sure how to find the correct ID for this to be valid
-  metadata=list(
+  #  describes="forecast",  ## not sure how to find the correct ID for this to be valid
+  metadata=list(forecast=list(
     timestep = "1 year", ## should be udunits parsable; already in coverage -> temporalCoverage?
     forecast_horizon = "30 years",
     uncertainty = list( ## answers to all elements are required. Options: no, contains, data_driven, propagates, assimilates
@@ -359,12 +360,13 @@ additionalMetadata <- eml$additionalMetadata(
       size = 10          # required if ensemble
       ## if analytic: `method` is required
     ),
-#    assimilation_method ## required if any uncertainty = assimilates
+    #    assimilation_method ## required if any uncertainty = assimilates
     complexity = list( # required for any uncertainty > no; records dimension
       initial_conditions = 2, # number of state variables
       parameters = 3,         # number of parameters
       process = 1             # *** need to discuss how to record this (e.g. diag vs cov?) ***
     )
+  )
   )
 )
 
@@ -411,7 +413,7 @@ Items in the "methods.md"
  
 ```{r}
 abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
-methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))  ## to be dropped
+methods <- list(id="forecast",methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))  ## to be dropped
 ```
 
 
