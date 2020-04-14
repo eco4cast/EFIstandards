@@ -8,6 +8,7 @@ library(EML)
 library(tidyverse)
 library(uuid)
 emld::eml_version("eml-2.2.0")
+set.seed(42)
 ```
 
 A simple, example forecast of population Growth of two interacting species
@@ -335,13 +336,42 @@ keywordSet <- list(
 
 
 Our dataset needs an abstract describing what this is all about.  Also, a 
-methods section is not required but it's probably a good idea.  Here we import 
-a methods section that was written in Markdown.
+methods section is not required but it's probably a good idea.
 
-We envision having required sections in the methods section.  However, we need
+We envision having additional required metadata sections.  However, we need
 to figure out the formatting of the Markdown file so that it is represented 
-cleanly in the EML.  If there is formatting and paragraphs in the Markdown
-file then that gets translated to the EML.
+cleanly in the EML.  
+
+```{r}
+additionalMetadata <- eml$additionalMetadata(
+  #  describes="forecast",  ## not sure how to find the correct ID for this to be valid
+  metadata=list(forecast=list(
+    timestep = "1 year", ## should be udunits parsable; already in coverage -> temporalCoverage?
+    forecast_horizon = "30 years",
+    uncertainty = list( ## answers to all elements are required. Options: no, contains, data_driven, propagates, assimilates
+      initial_conditions = "contains",
+      parameters = "contains",
+      random_effects = "no",
+      process_error = "propagates",
+      drivers = "no"
+    ),
+    propagation_method = list( ## required if any uncertainty >= propagates
+      type = "ensemble", # ensemble vs. analytic
+      size = 10          # required if ensemble
+      ## if analytic: `method` is required
+    ),
+    #    assimilation_method ## required if any uncertainty = assimilates
+    complexity = list( # required for any uncertainty > no; records dimension
+      initial_conditions = 2, # number of state variables
+      parameters = 3,         # number of parameters
+      process_error = 1             # *** need to discuss how to record this (e.g. diag vs cov?) ***
+    )
+  )
+  )
+)
+
+```
+
 
 Items in the "methods.md"
 
@@ -369,22 +399,21 @@ Items in the "methods.md"
   * Type (i.e., meteorology): N/A
   * Source (i.e., NOAA GEFS): N/A
   
-**Uncertainty (No, Derived from data, Propagates, Assimilates)**
+**Uncertainty (No, Contains, Derived from data, Propagates, Assimilates)**
 
- * Initial conditions: No
- * Parameter: No
+ * Initial conditions: Contains
+ * Parameter: Contains
  * Parameter Random Effects: No
- * Process (within model): Yes
+ * Process (within model): Contains
  * Multi-model: No
  * Driver: No
- * Scenario:
  * Method for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric
  * If Analytic, specific method
  * If ensemble numeric, number of ensembles: 10
  
 ```{r}
 abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
-methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))
+methods <- list(id="forecast",methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))  ## to be dropped
 ```
 
 
@@ -409,6 +438,7 @@ go!  This could be a DOI or merely an identifier we create, e.g. a UUID.
 
 ```{r}
 my_eml <- eml$eml(dataset = dataset,
+           additionalMetadata = additionalMetadata,
            packageId = Forecast_id,  #Is this the ForecastProject_ID?
            #What about the Forecast_ID
            system = "uuid"
