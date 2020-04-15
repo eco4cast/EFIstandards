@@ -46,10 +46,48 @@ forecast_validator <- function(eml){
 
   check_parsable(AM,"forecast_horizon")
 
+  UQclass <- c(
+    "initial_conditions",
+    "parameters",
+    "drivers",
+    "process_error",
+    "random_effects"
+  )
+
+  validate_uqclass <- function(parent, element) {
+    check_exists(parent, element)
+    uqlist <- parent[[element]]
+    check_exists(uqlist, "uncertainty")
+    uqunc <- uqlist[["uncertainty"]]
+    UQoptions <- c("no", "contains", "data_driven", "propagates", "assimilates")
+    if (!uqunc %in% UQoptions) {
+      usethis::ui_stop(sprintf(
+        "Invalid uncertainty class '%s'",
+        uqlist[["uncertainty"]]
+      ))
+    } else{
+      usethis::ui_done("All uncertainty class attributes valid.")
+    }
+
+    uqunc_f <- factor(uqunc, UQoptions, ordered = TRUE)
+
+    if (uqunc_f >= "contains") {
+      # Check complexity
+    }
+    if (uqunc_f >= "propagates") {
+      # Check propagation method
+    }
+
+    if (uqunc_f >= "assimilates") {
+      # Check assimilation method
+    }
+  }
+
+  for (UQc in UQclass) validate_uqclass(parent, element)
+
   # check uncertainty classes exist
   check_exists(AM,"uncertainty")
   UQ <- AM$uncertainty
-  UQclass <- c("initial_conditions","parameters","drivers","process_error","random_effects")
   for(i in seq_along(UQclass)){
     check_exists(UQ,UQclass[i])
   }
