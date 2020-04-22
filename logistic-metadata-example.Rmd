@@ -346,30 +346,38 @@ cleanly in the EML.
 ```{r}
 additionalMetadata <- eml$additionalMetadata(
   #  describes="forecast",  ## not sure how to find the correct ID for this to be valid
-  metadata=list(forecast=list(
-    timestep = "1 year", ## should be udunits parsable; already in coverage -> temporalCoverage?
-    forecast_horizon = "30 years",
-    uncertainty = list( ## answers to all elements are required. Options: no, contains, data_driven, propagates, assimilates
-      initial_conditions = "contains",
-      parameters = "contains",
-      random_effects = "no",
-      process_error = "propagates",
-      drivers = "no"
-    ),
-    propagation_method = list( ## required if any uncertainty >= propagates
-      type = "ensemble", # ensemble vs. analytic
-      size = 10          # required if ensemble
-      ## if analytic: `method` is required
-    ),
-    #    assimilation_method ## required if any uncertainty = assimilates
-    complexity = list( # required for any uncertainty > no; records dimension
-      initial_conditions = 2, # number of state variables
-      parameters = 3,         # number of parameters
-      process_error = 1             # *** need to discuss how to record this (e.g. diag vs cov?) ***
-    )
-  )
-  )
-)
+  metadata = list(
+    forecast = list(
+      timestep = "1 year", ## should be udunits parsable; already in coverage -> temporalCoverage?
+      forecast_horizon = "30 years",
+      initial_conditions = list(
+        # Possible values: no, contains, data_driven, propagates, assimilates
+        uncertainty = "contains",
+        # Number of parameters / dimensionality
+        complexity = 2
+      ),
+      parameters = list(
+        uncertainty = "contains",
+        complexity = 3
+      ),
+      random_effects = list(
+        uncertainty = "no"
+      ),
+      process_error = list(
+        uncertainty = "propagates",
+        propagation = list(
+          type = "ensemble", # ensemble vs analytic
+          size = 10          # required if ensemble
+        ),
+        complexity = 1
+      ),
+      drivers = list(
+        uncertainty = "no"
+      )
+      # assimilation_method ## required if any uncertainty = assimilates
+    ) # forecast
+  ) # metadata
+) # eml$additionalMetadata
 
 ```
 
