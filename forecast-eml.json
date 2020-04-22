@@ -107,11 +107,11 @@
         "objectName": "logistic-forecast-ensemble-multi-variable-multi-depth.csv",
         "size": {
           "unit": "bytes",
-          "size": "31059"
+          "size": "25389"
         },
         "authentication": {
           "method": "MD5",
-          "authentication": "ff36303fbf1f4b4cc146716b9a002f26"
+          "authentication": "64d6b35a2261795eed90e75ba7aa238c"
         },
         "dataFormat": {
           "textFormat": {
@@ -254,7 +254,7 @@
       }
     }
   },
-  "packageId": "c0c0e439-fda0-430a-9a07-50bc48af63f7",
+  "packageId": "20010304T060000",
   "schemaLocation": "https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd",
   "system": "uuid"
 }

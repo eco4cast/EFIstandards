@@ -30,7 +30,8 @@ analyzing the forecasts would cite the ForecastProject_id.
 
 ``` {r}
 forecast_issue_time <- as.Date("2001-03-04")
-Forecast_id <- uuid::UUIDgenerate() #ID that applies to the specific forecast
+#Forecast_id <- uuid::UUIDgenerate() #ID that applies to the specific forecast
+Forecast_id <- "20010304T060000"     # ISO datetime should make a valid Forecast_id
 ForecastProject_id <- 30405043 #Some ID that applies to a set of forecasts
 ```
 
