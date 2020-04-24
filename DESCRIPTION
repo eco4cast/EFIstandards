@@ -1,0 +1,13 @@
+Package: EFIstandards
+Type: Package
+Title: EFI ecological forecasting output and metadata standards
+Version: 0.1.0
+Author: Carl Boettiger, Quinn Thomas, Michael Dietze, Alexey Shiklomanov
+Maintainer: Carl Boettiger <cboettig at gmail.com>
+Description: 
+     Community standard for the common formatting and archiving of ecological forecasts
+developed by the Ecological Forecasting Initiative (EFI). This package contains a description
+of the standards, a metadata validator, helper functions, and example vignettes.
+License: BSD 2-Clause
+Encoding: UTF-8
+LazyData: true
