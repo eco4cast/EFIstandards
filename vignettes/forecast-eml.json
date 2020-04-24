@@ -12,24 +12,30 @@
   "additionalMetadata": {
     "metadata": {
       "forecast": {
-        "complexity": {
-          "initial_conditions": "2",
-          "parameters": "3",
-          "process_error": "1"
+        "drivers": {
+          "uncertainty": "no"
         },
         "forecast_horizon": "30 years",
-        "propagation_method": {
-          "size": "10",
-          "type": "ensemble"
+        "initial_conditions": {
+          "complexity": "2",
+          "uncertainty": "contains"
         },
-        "timestep": "1 year",
-        "uncertainty": {
-          "drivers": "no",
-          "initial_conditions": "contains",
-          "parameters": "contains",
-          "process_error": "propagates",
-          "random_effects": "no"
-        }
+        "parameters": {
+          "complexity": "3",
+          "uncertainty": "contains"
+        },
+        "process_error": {
+          "complexity": "1",
+          "propagation": {
+            "size": "10",
+            "type": "ensemble"
+          },
+          "uncertainty": "propagates"
+        },
+        "random_effects": {
+          "uncertainty": "no"
+        },
+        "timestep": "1 year"
       }
     }
   },
@@ -107,11 +113,11 @@
         "objectName": "logistic-forecast-ensemble-multi-variable-multi-depth.csv",
         "size": {
           "unit": "bytes",
-          "size": "31059"
+          "size": "25389"
         },
         "authentication": {
           "method": "MD5",
-          "authentication": "ff36303fbf1f4b4cc146716b9a002f26"
+          "authentication": "83c4ceffe9a2722958208e8f9da12afc"
         },
         "dataFormat": {
           "textFormat": {
@@ -254,7 +260,7 @@
       }
     }
   },
-  "packageId": "c0c0e439-fda0-430a-9a07-50bc48af63f7",
+  "packageId": "20010304T060000",
   "schemaLocation": "https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd",
   "system": "uuid"
 }

@@ -1,13 +1,38 @@
----
-output: github_document
-title: Forecasting Metadata
----
+Forecasting Metadata
+================
 
-```{r setup, message=FALSE}
+``` r
 library(EML)
+```
+
+    ## Warning: package 'EML' was built under R version 3.5.2
+
+``` r
 library(tidyverse)
+```
+
+    ## Warning: package 'tidyverse' was built under R version 3.5.2
+
+    ## Warning: package 'ggplot2' was built under R version 3.5.2
+
+    ## Warning: package 'tidyr' was built under R version 3.5.2
+
+    ## Warning: package 'purrr' was built under R version 3.5.2
+
+    ## Warning: package 'dplyr' was built under R version 3.5.2
+
+    ## Warning: package 'stringr' was built under R version 3.5.2
+
+    ## Warning: package 'forcats' was built under R version 3.5.2
+
+``` r
 library(uuid)
 emld::eml_version("eml-2.2.0")
+```
+
+    ## [1] "eml-2.2.0"
+
+``` r
 set.seed(42)
 ```
 
@@ -17,28 +42,25 @@ A simple, example forecast of population Growth of two interacting species
 
 First, set the forecast identifiers
 
-ForecastProject_id represents the launch of an automated, iterative forecast.  It is created
-each time a human modifies the forecast code.  It can be a DOI because this is the level that
-we envision citations occuring.
+ForecastProject\_id represents the launch of an automated, iterative forecast. It is created each time a human modifies the forecast code. It can be a DOI because this is the level that we envision citations occuring.
 
-Forecast_id represents each forecast cycle within a ForecastProject_id
+Forecast\_id represents each forecast cycle within a ForecastProject\_id
 
-For example, if you have a forecast code base on GitHub and launch a forecast from that code that
-runs daily for 365 days, then there will be one ForecastProject_id and 365 Forecast_ids. A paper 
-analyzing the forecasts would cite the ForecastProject_id.
+For example, if you have a forecast code base on GitHub and launch a forecast from that code that runs daily for 365 days, then there will be one ForecastProject\_id and 365 Forecast\_ids. A paper analyzing the forecasts would cite the ForecastProject\_id.
 
-
-``` {r}
+``` r
 forecast_issue_time <- as.Date("2001-03-04")
-Forecast_id <- uuid::UUIDgenerate() #ID that applies to the specific forecast
+#Forecast_id <- uuid::UUIDgenerate() #ID that applies to the specific forecast
+Forecast_id <- "20010304T060000"     # ISO datetime should make a valid Forecast_id
 ForecastProject_id <- 30405043 #Some ID that applies to a set of forecasts
 ```
 
-## Generating the forecast
+Generating the forecast
+-----------------------
 
 Multi-species growth for multiple depths with process uncertainty
 
-```{r}
+``` r
 NT <- 30
 n_ensembles <- 10
 n_depths <- 3
@@ -71,15 +93,21 @@ for(t in 2:NT){
 }
 ```
 
-## Saving to a standardized output format
+Saving to a standardized output format
+--------------------------------------
 
-# Standard Option 1: netCDF
+Standard Option 1: netCDF
+=========================
 
-Convert to a netcdf format 
+Convert to a netcdf format
 
-```{r}
+``` r
 library(ncdf4)
+```
 
+    ## Warning: package 'ncdf4' was built under R version 3.5.2
+
+``` r
 ncfname <- "logistic-forecast-ensemble-multi-variable-space-long.nc"
 
 time <- as.Date(as.character(2000 + 1:NT), format = "%Y")
@@ -153,12 +181,12 @@ ncatt_put(ncout,0,"forecast_issue_time",as.character(forecast_issue_time),
 nc_close(ncout)
 ```
 
-# Standard Option 2: ensemble CSV
+Standard Option 2: ensemble CSV
+===============================
 
-Convert to a flat file format (CSV) with one column for each variable and all
-ensemble members saved
+Convert to a flat file format (CSV) with one column for each variable and all ensemble members saved
 
-```{r}
+``` r
 time <- as.Date(as.character(2000 + 1:NT), format = "%Y")
 state_names <- c("species_1", "species_2")
 n_states <- length(state_names)
@@ -187,7 +215,14 @@ for(k in 1:n_states){
   }
   df_combined[[k]] <- running_df
 }
+```
 
+    ## Warning: The `x` argument of `as_tibble.matrix()` must have column names if `.name_repair` is omitted as of tibble 2.0.0.
+    ## Using compatibility `.name_repair`.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_warnings()` to see where this warning was generated.
+
+``` r
 df_combined <- right_join(df_combined[[1]], df_combined[[2]], 
                           by = c("time", "ensemble", "depth", "data_assimilation")) %>% 
   mutate(forecast_issue_time = forecast_issue_time,
@@ -198,16 +233,35 @@ df_combined <- right_join(df_combined[[1]], df_combined[[2]],
          data_assimilation, ForecastProject_id, Forecast_id) 
 
 df_combined
+```
 
+    ## # A tibble: 270 x 9
+    ##    time       depth ensemble species_1 species_2 forecast_issue_…
+    ##    <date>     <int>    <int>     <dbl>     <dbl> <date>          
+    ##  1 2001-04-24     1        1     0.5        0.5  2001-03-04      
+    ##  2 2001-04-24     1        2     0.5        0.5  2001-03-04      
+    ##  3 2001-04-24     1        3     0.5        0.5  2001-03-04      
+    ##  4 2002-04-24     1        1     0.984      1.95 2001-03-04      
+    ##  5 2002-04-24     1        2     0.967      1.93 2001-03-04      
+    ##  6 2002-04-24     1        3     0.972      1.95 2001-03-04      
+    ##  7 2003-04-24     1        1     1.83       7.13 2001-03-04      
+    ##  8 2003-04-24     1        2     1.82       7.09 2001-03-04      
+    ##  9 2003-04-24     1        3     1.82       7.15 2001-03-04      
+    ## 10 2004-04-24     1        1     3.05      20.3  2001-03-04      
+    ## # … with 260 more rows, and 3 more variables: data_assimilation <dbl>,
+    ## #   ForecastProject_id <dbl>, Forecast_id <chr>
+
+``` r
 write.csv(df_combined, 
           file = "logistic-forecast-ensemble-multi-variable-multi-depth.csv")
 ```
 
-# Standard Option 3: summary CSV
+Standard Option 3: summary CSV
+==============================
 
 Convert to a flat file format (CSV) with forecast distribution summaries saved
 
-```{r}
+``` r
 df_species_1 <- df_combined %>% 
   select(-species_2) %>% 
   group_by(time, depth, forecast_issue_time, data_assimilation, 
@@ -231,30 +285,45 @@ df_species_2 <- df_combined %>%
                values_to = "species_2")
 
  df_summary <- right_join(df_species_1, df_species_2)
- 
- df_summary
- 
-write.csv(df_summary, 
-          file = "logistic-forecast-summary-multi-variable-multi-depth.csv")
-
 ```
 
-## Standardized Metadata
+    ## Joining, by = c("time", "depth", "forecast_issue_time", "data_assimilation", "ForecastProject_id", "Forecast_id", "Statistic")
 
-Let's document the metadata of the data table itself. It may well be that we 
-decide an Ecological Forecast has to have specific columns like the ones 
-described above, which would thus correspond to a partially pre-defined 
-attributes table (e.g. the units would probably still be allowed to vary, but 
-format would be the same.)  
+``` r
+ df_summary
+```
 
-Note one weakness of this format is that it assumes all data in a column have 
-the same units.  This common assumption might be violoated by transformations 
-to "long" form data, where you have columns like "variable", "value", and 
-"units".  (The long form may be useful, but it exposes much less information in 
-the metadata layer -- e.g. we no longer know what's actually being measured 
-without looking at the data file itself).  
+    ## # A tibble: 270 x 9
+    ## # Groups:   time, depth, forecast_issue_time, data_assimilation,
+    ## #   ForecastProject_id [90]
+    ##    time       depth forecast_issue_… data_assimilati… ForecastProject…
+    ##    <date>     <int> <date>                      <dbl>            <dbl>
+    ##  1 2001-04-24     1 2001-03-04                      0         30405043
+    ##  2 2001-04-24     1 2001-03-04                      0         30405043
+    ##  3 2001-04-24     1 2001-03-04                      0         30405043
+    ##  4 2001-04-24     2 2001-03-04                      0         30405043
+    ##  5 2001-04-24     2 2001-03-04                      0         30405043
+    ##  6 2001-04-24     2 2001-03-04                      0         30405043
+    ##  7 2001-04-24     3 2001-03-04                      0         30405043
+    ##  8 2001-04-24     3 2001-03-04                      0         30405043
+    ##  9 2001-04-24     3 2001-03-04                      0         30405043
+    ## 10 2002-04-24     1 2001-03-04                      0         30405043
+    ## # … with 260 more rows, and 4 more variables: Forecast_id <chr>,
+    ## #   Statistic <chr>, species_1 <dbl>, species_2 <dbl>
 
-```{r}
+``` r
+write.csv(df_summary, 
+          file = "logistic-forecast-summary-multi-variable-multi-depth.csv")
+```
+
+Standardized Metadata
+---------------------
+
+Let's document the metadata of the data table itself. It may well be that we decide an Ecological Forecast has to have specific columns like the ones described above, which would thus correspond to a partially pre-defined attributes table (e.g. the units would probably still be allowed to vary, but format would be the same.)
+
+Note one weakness of this format is that it assumes all data in a column have the same units. This common assumption might be violoated by transformations to "long" form data, where you have columns like "variable", "value", and "units". (The long form may be useful, but it exposes much less information in the metadata layer -- e.g. we no longer know what's actually being measured without looking at the data file itself).
+
+``` r
 attributes <- tibble::tribble(
   ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType, ~definition,
   "time",          "time",                       "year",     "YYYY-MM-DD", "numberType", NA,
@@ -272,7 +341,13 @@ attrList <- set_attributes(attributes,
                                            "numeric","numeric", "Date",
                                            "numeric", "character", "character"))
 physical <- set_physical("logistic-forecast-ensemble-multi-variable-multi-depth.csv")
+```
 
+    ## Automatically calculated file size using file.size("logistic-forecast-ensemble-multi-variable-multi-depth.csv")
+
+    ## Automatically calculated authentication size using digest::digest("logistic-forecast-ensemble-multi-variable-multi-depth.csv", algo = "md5", file = TRUE)
+
+``` r
 dataTable <- eml$dataTable(
                  entityName = "logistic-forecast-ensemble-multi-variable-multi-depth.csv",
                  entityDescription = "Forecast of population size using a depth specific model",
@@ -280,37 +355,22 @@ dataTable <- eml$dataTable(
                  attributeList = attrList)
 ```
 
+There's a lot more optional terminology that could be exploited here -- for instance, the specification lets us define different missing value codes (and explanations) for each column, and allows us to indicate `precision`, `minimum` and `maximum`.
 
-There's a lot more optional terminology that could be exploited here -- for 
-instance, the specification lets us define different missing value codes (and 
-explanations) for each column, and allows us to indicate `precision`, `minimum`
-and `maximum`.  
+Note that `physical` type can document almost any formats as well, including NetCDF etc. A NetCDF file would still document the variables measured in much the same way regardless of the underlying representation. Note that
 
-Note that `physical` type can document almost any formats as well, including 
-NetCDF etc.  A NetCDF file would still document the variables measured in much 
-the same way regardless of the underlying representation.  Note that 
+Now that we've documented the actual data.frame itself, we can add additional metadata to the record describing our forecast, which is essential for citing, discovering, and interpreting the result. We start with some authorship information.
 
-Now that we've documented the actual data.frame itself, we can add additional 
-metadata to the record describing our forecast, which is essential for citing, 
-discovering, and interpreting the result.  We start with some authorship 
-information. 
-
-```{r}
-
+``` r
 me <- list(individualName = list(givenName = "Quinn", 
                                  surName = "Thomas"),
            electronicMailAddress = "rqthomas@vt.edu",
            id = "https://orcid.org/0000-0003-1282-7825")
-
-
 ```
 
+Set Taxonomic, Temporal, and Geographic Coverage. (Look, apparently we're modeling population densities of *Sarracenia purpurea* in Harvard Forest starting in about 2012!)
 
-Set Taxonomic, Temporal, and Geographic Coverage.  (Look, apparently we're 
-modeling population densities of *Sarracenia purpurea* in Harvard Forest 
-starting in about 2012!)
-
-```{r}
+``` r
 coverage <- 
   set_coverage(begin = '2012-06-01', 
                end = '2013-12-31',
@@ -322,9 +382,9 @@ coverage <-
                altitudeUnits = "meter")
 ```
 
-Set key words.  We will need to develop a EFI controlled vocabulary
+Set key words. We will need to develop a EFI controlled vocabulary
 
-```{r}
+``` r
 keywordSet <- list(
     list(
         keywordThesaurus = "EFI controlled vocabulary",
@@ -334,90 +394,72 @@ keywordSet <- list(
     ))
 ```
 
+Our dataset needs an abstract describing what this is all about. Also, a methods section is not required but it's probably a good idea.
 
-Our dataset needs an abstract describing what this is all about.  Also, a 
-methods section is not required but it's probably a good idea.
+We envision having additional required metadata sections. However, we need to figure out the formatting of the Markdown file so that it is represented cleanly in the EML.
 
-We envision having additional required metadata sections.  However, we need
-to figure out the formatting of the Markdown file so that it is represented 
-cleanly in the EML.  
-
-```{r}
+``` r
 additionalMetadata <- eml$additionalMetadata(
   #  describes="forecast",  ## not sure how to find the correct ID for this to be valid
-  metadata=list(forecast=list(
-    timestep = "1 year", ## should be udunits parsable; already in coverage -> temporalCoverage?
-    forecast_horizon = "30 years",
-    uncertainty = list( ## answers to all elements are required. Options: no, contains, data_driven, propagates, assimilates
-      initial_conditions = "contains",
-      parameters = "contains",
-      random_effects = "no",
-      process_error = "propagates",
-      drivers = "no"
-    ),
-    propagation_method = list( ## required if any uncertainty >= propagates
-      type = "ensemble", # ensemble vs. analytic
-      size = 10          # required if ensemble
-      ## if analytic: `method` is required
-    ),
-    #    assimilation_method ## required if any uncertainty = assimilates
-    complexity = list( # required for any uncertainty > no; records dimension
-      initial_conditions = 2, # number of state variables
-      parameters = 3,         # number of parameters
-      process_error = 1             # *** need to discuss how to record this (e.g. diag vs cov?) ***
-    )
-  )
-  )
-)
-
+  metadata = list(
+    forecast = list(
+      timestep = "1 year", ## should be udunits parsable; already in coverage -> temporalCoverage?
+      forecast_horizon = "30 years",
+      initial_conditions = list(
+        # Possible values: no, contains, data_driven, propagates, assimilates
+        uncertainty = "contains",
+        # Number of parameters / dimensionality
+        complexity = 2
+      ),
+      parameters = list(
+        uncertainty = "contains",
+        complexity = 3
+      ),
+      random_effects = list(
+        uncertainty = "no"
+      ),
+      process_error = list(
+        uncertainty = "propagates",
+        propagation = list(
+          type = "ensemble", # ensemble vs analytic
+          size = 10          # required if ensemble
+        ),
+        complexity = 1
+      ),
+      drivers = list(
+        uncertainty = "no"
+      )
+      # assimilation_method ## required if any uncertainty = assimilates
+    ) # forecast
+  ) # metadata
+) # eml$additionalMetadata
 ```
 
-
-Items in the "methods.md"
-
-**Forecast timestep**: 1 year
-
-**Forecast time horizon** 30 years
-
-**Data assimilation**
-
-  * Data Assimilation used: No
-  * If, DA used - type of method: N/A
-  * If, DA used - Number of parameters calibrated: N/A
-  * If, DA used - Sources of training data (DOI, GitHub): N/A
-  
 **Model Description**
 
-  * Type of model (Empirical, process-based, machine learning): Process-based
-  * Model name: discrete Lotka–Volterra model
-  * Location of repository with model code: https://github.com/somewhere or https://doi.org/10.xxx
-  * Model citation: N/A
-  * Total number of model process parameters: 3
-  
+-   Type of model (Empirical, process-based, machine learning): Process-based
+-   Model name: discrete Lotka–Volterra model
+-   Location of repository with model code: <https://github.com/somewhere> or <https://doi.org/10.xxx>
+-   Model citation: N/A
+-   Total number of model process parameters: 3
+
 **Model Covariates**
 
-  * Type (i.e., meteorology): N/A
-  * Source (i.e., NOAA GEFS): N/A
-  
-**Uncertainty (No, Contains, Derived from data, Propagates, Assimilates)**
+-   Type (i.e., meteorology): N/A
+-   Source (i.e., NOAA GEFS): N/A
 
- * Initial conditions: Contains
- * Parameter: Contains
- * Parameter Random Effects: No
- * Process (within model): Contains
- * Multi-model: No
- * Driver: No
- * Method for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric
- * If Analytic, specific method
- * If ensemble numeric, number of ensembles: 10
- 
-```{r}
+``` r
 abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
+```
+
+    ## Warning in readLines("abstract.md"): incomplete final line found on
+    ## 'abstract.md'
+
+``` r
 methods <- list(id="forecast",methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))  ## to be dropped
 ```
 
-
-```{r}
+``` r
 dataset = eml$dataset(
                title = "A very silly logistic forecast",
                creator = me,
@@ -432,11 +474,9 @@ dataset = eml$dataset(
                )
 ```
 
+All we need now is to add a unique identifier for the project and we are good to go! This could be a DOI or merely an identifier we create, e.g. a UUID.
 
-All we need now is to add a unique identifier for the project and we are good to
-go!  This could be a DOI or merely an identifier we create, e.g. a UUID.
-
-```{r}
+``` r
 my_eml <- eml$eml(dataset = dataset,
            additionalMetadata = additionalMetadata,
            packageId = Forecast_id,  #Is this the ForecastProject_ID?
@@ -445,29 +485,30 @@ my_eml <- eml$eml(dataset = dataset,
            )
 ```
 
-
-Once we have finished building our EML metadata, we can confirm it is valid.  
-This will catch any missing elements.  (Recall that what is 'required' depends 
-on what you include -- for example, you don't have to document a `dataTable` at 
-all, but if you do, you have to document the "physical" file format it is in  
+Once we have finished building our EML metadata, we can confirm it is valid.
+This will catch any missing elements. (Recall that what is 'required' depends on what you include -- for example, you don't have to document a `dataTable` at all, but if you do, you have to document the "physical" file format it is in
 (e.g. `csv`) and the attributes and units it uses!)
 
-```{r}
+``` r
 eml_validate(my_eml)
 ```
 
-We are now ready to write out a valid EML document: 
+    ## [1] TRUE
+    ## attr(,"errors")
+    ## character(0)
 
-```{r}
+We are now ready to write out a valid EML document:
+
+``` r
 write_eml(my_eml, "forecast-eml.xml")
 ```
 
-At this point, we could easily upload this metadata along with the data itself 
-to DataONE via the API (or `dataone` R package.)
+    ## NULL
+
+At this point, we could easily upload this metadata along with the data itself to DataONE via the API (or `dataone` R package.)
 
 We can also generate a JSON-LD version of EML:
 
-```{r}
+``` r
 emld::as_json(as_emld("forecast-eml.xml"), file = "forecast-eml.json")
 ```
-
