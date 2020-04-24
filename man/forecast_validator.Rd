@@ -7,7 +7,7 @@
 forecast_validator(eml)
 }
 \arguments{
-\item{eml}{}
+\item{eml}{EML file path}
 }
 \value{
 boolean
@@ -16,7 +16,7 @@ boolean
 EFI forecast standard EML metadata validator
 }
 \examples{
-
-forecast_validator(system.file("vignettes", "forecast-eml.xml",package="EFIstandards"))
-
+\dontrun{
+forecast_validator(system.file("vignettes", "forecast-eml.xml", package="EFIstandards"))
+}
 }

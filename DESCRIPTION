@@ -11,7 +11,7 @@ Imports:
     EML,
     udunits2,
     usethis
-License: BSD 2-Clause + file LICENSE
+License: BSD 2-clause License + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1

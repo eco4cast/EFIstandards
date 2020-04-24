@@ -1,14 +1,14 @@
 #' EFI forecast standard EML metadata validator
 #'
-#' @param eml
+#' @param eml EML file path
 #'
 #' @return boolean
 #' @export
 #'
 #' @examples
-#'
-#' forecast_validator(system.file("vignettes", "forecast-eml.xml",package="EFIstandards"))
-#'
+#'\dontrun{
+#' forecast_validator(system.file("vignettes", "forecast-eml.xml", package="EFIstandards"))
+#'}
 forecast_validator <- function(eml){
 
   meta <- EML::read_eml(eml)
