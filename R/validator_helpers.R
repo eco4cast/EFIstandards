@@ -2,6 +2,10 @@ lexists <- function(list,name){
   name %in% names(list)
 }
 
+#' Check that element exists in a list
+#'
+#' @param list list to check
+#' @param name element
 check_exists <- function(list,name){
   if(lexists(list,name)) usethis::ui_done(paste(name,"found"))
   else usethis::ui_stop(paste("file missing",name))

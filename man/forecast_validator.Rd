@@ -9,6 +9,9 @@ forecast_validator(eml)
 \arguments{
 \item{eml}{}
 }
+\value{
+boolean
+}
 \description{
 EFI forecast standard EML metadata validator
 }
