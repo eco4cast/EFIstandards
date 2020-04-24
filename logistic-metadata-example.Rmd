@@ -369,7 +369,8 @@ additionalMetadata <- eml$additionalMetadata(
           type = "ensemble", # ensemble vs analytic
           size = 10          # required if ensemble
         ),
-        complexity = 1
+        complexity = 2,
+        covariance = FALSE
       ),
       drivers = list(
         uncertainty = "no"
@@ -382,19 +383,6 @@ additionalMetadata <- eml$additionalMetadata(
 ```
 
 
-Items in the "methods.md"
-
-**Forecast timestep**: 1 year
-
-**Forecast time horizon** 30 years
-
-**Data assimilation**
-
-  * Data Assimilation used: No
-  * If, DA used - type of method: N/A
-  * If, DA used - Number of parameters calibrated: N/A
-  * If, DA used - Sources of training data (DOI, GitHub): N/A
-  
 **Model Description**
 
   * Type of model (Empirical, process-based, machine learning): Process-based
@@ -408,18 +396,6 @@ Items in the "methods.md"
   * Type (i.e., meteorology): N/A
   * Source (i.e., NOAA GEFS): N/A
   
-**Uncertainty (No, Contains, Derived from data, Propagates, Assimilates)**
-
- * Initial conditions: Contains
- * Parameter: Contains
- * Parameter Random Effects: No
- * Process (within model): Contains
- * Multi-model: No
- * Driver: No
- * Method for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric
- * If Analytic, specific method
- * If ensemble numeric, number of ensembles: 10
- 
 ```{r}
 abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
 methods <- list(id="forecast",methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))  ## to be dropped

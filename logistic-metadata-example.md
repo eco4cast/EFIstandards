@@ -238,16 +238,16 @@ df_combined
     ## # A tibble: 270 x 9
     ##    time       depth ensemble species_1 species_2 forecast_issue_…
     ##    <date>     <int>    <int>     <dbl>     <dbl> <date>          
-    ##  1 2001-04-14     1        1     0.5        0.5  2001-03-04      
-    ##  2 2001-04-14     1        2     0.5        0.5  2001-03-04      
-    ##  3 2001-04-14     1        3     0.5        0.5  2001-03-04      
-    ##  4 2002-04-14     1        1     0.984      1.95 2001-03-04      
-    ##  5 2002-04-14     1        2     0.967      1.93 2001-03-04      
-    ##  6 2002-04-14     1        3     0.972      1.95 2001-03-04      
-    ##  7 2003-04-14     1        1     1.83       7.13 2001-03-04      
-    ##  8 2003-04-14     1        2     1.82       7.09 2001-03-04      
-    ##  9 2003-04-14     1        3     1.82       7.15 2001-03-04      
-    ## 10 2004-04-14     1        1     3.05      20.3  2001-03-04      
+    ##  1 2001-04-24     1        1     0.5        0.5  2001-03-04      
+    ##  2 2001-04-24     1        2     0.5        0.5  2001-03-04      
+    ##  3 2001-04-24     1        3     0.5        0.5  2001-03-04      
+    ##  4 2002-04-24     1        1     0.984      1.95 2001-03-04      
+    ##  5 2002-04-24     1        2     0.967      1.93 2001-03-04      
+    ##  6 2002-04-24     1        3     0.972      1.95 2001-03-04      
+    ##  7 2003-04-24     1        1     1.83       7.13 2001-03-04      
+    ##  8 2003-04-24     1        2     1.82       7.09 2001-03-04      
+    ##  9 2003-04-24     1        3     1.82       7.15 2001-03-04      
+    ## 10 2004-04-24     1        1     3.05      20.3  2001-03-04      
     ## # … with 260 more rows, and 3 more variables: data_assimilation <dbl>,
     ## #   ForecastProject_id <dbl>, Forecast_id <chr>
 
@@ -298,16 +298,16 @@ df_species_2 <- df_combined %>%
     ## #   ForecastProject_id [90]
     ##    time       depth forecast_issue_… data_assimilati… ForecastProject…
     ##    <date>     <int> <date>                      <dbl>            <dbl>
-    ##  1 2001-04-14     1 2001-03-04                      0         30405043
-    ##  2 2001-04-14     1 2001-03-04                      0         30405043
-    ##  3 2001-04-14     1 2001-03-04                      0         30405043
-    ##  4 2001-04-14     2 2001-03-04                      0         30405043
-    ##  5 2001-04-14     2 2001-03-04                      0         30405043
-    ##  6 2001-04-14     2 2001-03-04                      0         30405043
-    ##  7 2001-04-14     3 2001-03-04                      0         30405043
-    ##  8 2001-04-14     3 2001-03-04                      0         30405043
-    ##  9 2001-04-14     3 2001-03-04                      0         30405043
-    ## 10 2002-04-14     1 2001-03-04                      0         30405043
+    ##  1 2001-04-24     1 2001-03-04                      0         30405043
+    ##  2 2001-04-24     1 2001-03-04                      0         30405043
+    ##  3 2001-04-24     1 2001-03-04                      0         30405043
+    ##  4 2001-04-24     2 2001-03-04                      0         30405043
+    ##  5 2001-04-24     2 2001-03-04                      0         30405043
+    ##  6 2001-04-24     2 2001-03-04                      0         30405043
+    ##  7 2001-04-24     3 2001-03-04                      0         30405043
+    ##  8 2001-04-24     3 2001-03-04                      0         30405043
+    ##  9 2001-04-24     3 2001-03-04                      0         30405043
+    ## 10 2002-04-24     1 2001-03-04                      0         30405043
     ## # … with 260 more rows, and 4 more variables: Forecast_id <chr>,
     ## #   Statistic <chr>, species_1 <dbl>, species_2 <dbl>
 
@@ -401,44 +401,39 @@ We envision having additional required metadata sections. However, we need to fi
 ``` r
 additionalMetadata <- eml$additionalMetadata(
   #  describes="forecast",  ## not sure how to find the correct ID for this to be valid
-  metadata=list(forecast=list(
-    timestep = "1 year", ## should be udunits parsable; already in coverage -> temporalCoverage?
-    forecast_horizon = "30 years",
-    uncertainty = list( ## answers to all elements are required. Options: no, contains, data_driven, propagates, assimilates
-      initial_conditions = "contains",
-      parameters = "contains",
-      random_effects = "no",
-      process_error = "propagates",
-      drivers = "no"
-    ),
-    propagation_method = list( ## required if any uncertainty >= propagates
-      type = "ensemble", # ensemble vs. analytic
-      size = 10          # required if ensemble
-      ## if analytic: `method` is required
-    ),
-    #    assimilation_method ## required if any uncertainty = assimilates
-    complexity = list( # required for any uncertainty > no; records dimension
-      initial_conditions = 2, # number of state variables
-      parameters = 3,         # number of parameters
-      process_error = 1             # *** need to discuss how to record this (e.g. diag vs cov?) ***
-    )
-  )
-  )
-)
+  metadata = list(
+    forecast = list(
+      timestep = "1 year", ## should be udunits parsable; already in coverage -> temporalCoverage?
+      forecast_horizon = "30 years",
+      initial_conditions = list(
+        # Possible values: no, contains, data_driven, propagates, assimilates
+        uncertainty = "contains",
+        # Number of parameters / dimensionality
+        complexity = 2
+      ),
+      parameters = list(
+        uncertainty = "contains",
+        complexity = 3
+      ),
+      random_effects = list(
+        uncertainty = "no"
+      ),
+      process_error = list(
+        uncertainty = "propagates",
+        propagation = list(
+          type = "ensemble", # ensemble vs analytic
+          size = 10          # required if ensemble
+        ),
+        complexity = 1
+      ),
+      drivers = list(
+        uncertainty = "no"
+      )
+      # assimilation_method ## required if any uncertainty = assimilates
+    ) # forecast
+  ) # metadata
+) # eml$additionalMetadata
 ```
-
-Items in the "methods.md"
-
-**Forecast timestep**: 1 year
-
-**Forecast time horizon** 30 years
-
-**Data assimilation**
-
--   Data Assimilation used: No
--   If, DA used - type of method: N/A
--   If, DA used - Number of parameters calibrated: N/A
--   If, DA used - Sources of training data (DOI, GitHub): N/A
 
 **Model Description**
 
@@ -452,18 +447,6 @@ Items in the "methods.md"
 
 -   Type (i.e., meteorology): N/A
 -   Source (i.e., NOAA GEFS): N/A
-
-**Uncertainty (No, Contains, Derived from data, Propagates, Assimilates)**
-
--   Initial conditions: Contains
--   Parameter: Contains
--   Parameter Random Effects: No
--   Process (within model): Contains
--   Multi-model: No
--   Driver: No
--   Method for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric
--   If Analytic, specific method
--   If ensemble numeric, number of ensembles: 10
 
 ``` r
 abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))

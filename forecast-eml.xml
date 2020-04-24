@@ -114,7 +114,7 @@ If ensemble numeric, number of ensembles: 10
       <physical>
         <objectName>logistic-forecast-ensemble-multi-variable-multi-depth.csv</objectName>
         <size unit="bytes">25389</size>
-        <authentication method="MD5">64d6b35a2261795eed90e75ba7aa238c</authentication>
+        <authentication method="MD5">83c4ceffe9a2722958208e8f9da12afc</authentication>
         <dataFormat>
           <textFormat>
             <recordDelimiter>
@@ -258,24 +258,30 @@ If ensemble numeric, number of ensembles: 10
   <additionalMetadata>
     <metadata>
       <forecast>
-        <complexity>
-          <initial_conditions>2</initial_conditions>
-          <parameters>3</parameters>
-          <process_error>1</process_error>
-        </complexity>
+        <drivers>
+          <uncertainty>no</uncertainty>
+        </drivers>
         <forecast_horizon>30 years</forecast_horizon>
-        <propagation_method>
-          <size>10</size>
-          <type>ensemble</type>
-        </propagation_method>
+        <initial_conditions>
+          <complexity>2</complexity>
+          <uncertainty>contains</uncertainty>
+        </initial_conditions>
+        <parameters>
+          <complexity>3</complexity>
+          <uncertainty>contains</uncertainty>
+        </parameters>
+        <process_error>
+          <complexity>1</complexity>
+          <propagation>
+            <size>10</size>
+            <type>ensemble</type>
+          </propagation>
+          <uncertainty>propagates</uncertainty>
+        </process_error>
+        <random_effects>
+          <uncertainty>no</uncertainty>
+        </random_effects>
         <timestep>1 year</timestep>
-        <uncertainty>
-          <drivers>no</drivers>
-          <initial_conditions>contains</initial_conditions>
-          <parameters>contains</parameters>
-          <process_error>propagates</process_error>
-          <random_effects>no</random_effects>
-        </uncertainty>
       </forecast>
     </metadata>
   </additionalMetadata>
