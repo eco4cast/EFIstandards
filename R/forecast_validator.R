@@ -17,6 +17,32 @@ check_parsable <- function(list,name,required=TRUE){
   } else if(required) usethis::ui_stop(paste("file missing",name))
 }
 
+check_whole <- function(list,name,required=TRUE){
+  is.whole <- function(x){
+    x = as.numeric(x)
+    is.numeric(x) && floor(x)==x
+  }
+  if(lexists(list,name)){
+    if(is.whole(list[[name]])){
+      usethis::ui_done(paste(name,"valid"))
+    } else {
+      usethis::ui_stop(paste(name,list[[name]],"not valid, must be a whole number"))
+    }
+  } else if(required) usethis::ui_stop(paste("file missing",name))
+}
+
+
+#' EFI forecast standard EML metadata validator
+#'
+#' @param eml
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+#' forecast_validator("forecast-eml.xml")
+#'
 forecast_validator <- function(eml){
 
   meta <- EML::read_eml(eml)
@@ -26,11 +52,13 @@ forecast_validator <- function(eml){
 
   valid <- EML::eml_validate(eml)
 
-  if(valid) usethis::ui_done("EML is valid")
-  else usethis::ui_oops(paste("EML is not valid",                    ## revert to ui_stop once sort out additionalMetadata$describes
-                              "found the following problems:\n",
-                              attr(valid, "errors")))
-
+  if(valid) {
+    usethis::ui_done("EML is valid")
+  }else{
+    usethis::ui_stop(paste("EML is not valid",
+                           "found the following problems:\n",
+                           attr(valid, "errors")))
+  }
 
   ## Check that additonalMetadata exists
 
@@ -54,9 +82,12 @@ forecast_validator <- function(eml){
     "random_effects"
   )
 
+  ## Check UNCERTAINTY CLASS elements
   validate_uqclass <- function(parent, element) {
     check_exists(parent, element)
     uqlist <- parent[[element]]
+
+    ## Check UNCERTAINTY tag
     check_exists(uqlist, "uncertainty")
     uqunc <- uqlist[["uncertainty"]]
     UQoptions <- c("no", "contains", "data_driven", "propagates", "assimilates")
@@ -66,74 +97,55 @@ forecast_validator <- function(eml){
         uqlist[["uncertainty"]]
       ))
     } else{
-      usethis::ui_done("All uncertainty class attributes valid.")
+      usethis::ui_done(paste0(element," uncertainty class valid: ",uqlist[["uncertainty"]]))
     }
 
+    ## Check CONDITIONALLY DEPENDENT tags
     uqunc_f <- factor(uqunc, UQoptions, ordered = TRUE)
 
     if (uqunc_f >= "contains") {
       # Check complexity
+      check_whole(uqlist,"complexity")
+
+      ## ADD special cases for process_error
+        # covariance
+        # localization
     }
     if (uqunc_f >= "propagates") {
       # Check propagation method
+      check_exists(uqlist,"propagation")
+      plist <- uqlist[["propagation"]]
+
+      ## type
+      check_exists(plist,"type")
+      if (!tolower(plist[["type"]]) %in% c("ensemble","analytic")) {
+        usethis::ui_stop(sprintf(
+          "'%s' Invalid uncertainty <propagation> <type> '%s'",
+          element,plist[["type"]]
+        ))
+      } else{
+        usethis::ui_done(paste0(element," propagation type valid: ",plist[["type"]]))
+      }
+
+      ## ensemble size
+      if(tolower(plist[["type"]]) == "ensemble"){
+        check_whole(plist,"size")
+      } else {
+
+      ## ADD check on analytic <method>
+      }
     }
 
     if (uqunc_f >= "assimilates") {
       # Check assimilation method
+      check_exists(uqlist,"assimilation")
+
+      ## ADD DETAIL HERE
+
     }
   }
 
-  for (UQc in UQclass) validate_uqclass(parent, element)
-
-  # check uncertainty classes exist
-  check_exists(AM,"uncertainty")
-  UQ <- AM$uncertainty
-  for(i in seq_along(UQclass)){
-    check_exists(UQ,UQclass[i])
-  }
-  UQbool <- tolower(names(UQ)) %in% UQclass
-  if(!all(UQbool)) usethis::ui_stop(paste("invalid uncertainty class",names(UQ[!UQbool])))
-
-  # check uncertainty class attribute values are valid
-  UQ <- tolower(as.character(unlist(UQ)))
-  names(UQ) <- names(AM$uncertainty)
-  UQoptions <- c("no","contains","data_driven","propagates","assimilates")
-  UQbool <- UQ %in% UQoptions
-  if(any(is.na(UQbool))|any(is.null(UQbool))) usethis::ui_stop(paste("NA or NULL uncertainty value",names(UQ[!UQbool])))
-  if(all(UQbool)) usethis::ui_done("All uncertainty class attributes valid")
-  else usethis::ui_stop(paste("invalid uncertainty class attribute",names(UQ[!UQbool])))
-
-  UQnum <- match(UQ,UQoptions)
-
-  ## Check CONDITIONALLY REQUIRED FORECAST elements
-
-  #complexity
-  if(any(UQnum>1)){
-    check_exists(AM,"complexity")
-    UQname <- sort(names(UQ[UQnum>1]))
-    Cname  <- sort(names(AM[["complexity"]]))
-    if(all(UQname == Cname)) usethis::ui_done("All complexity class matched")
-    else usethis::ui_stop(paste0("invalid complexity classes [",paste(Cname,collapse = ", "),
-                                "] do not match uncertainty classes: ",paste(UQname,collapse=", ")))
-## add is.integer and positive check
-  }
-
-  #propagation_method
-  if(any(UQnum>3)){
-    check_exists(AM,"propagation_method")
-    check_exists(AM[["propagation_method"]],"type")
-## add check for valid type
-    if(tolower(AM[["propagation_method"]][["type"]]) == "ensemble"){
-      check_exists(AM[["propagation_method"]],"size")
-## add is.integer and positivecheck
-    }
-  }
-
-  #assimilation_method
-  if(any(UQnum>4)){
-    check_exists(AM,"assimilation_method")
-  }
-
+  for (UQc in UQclass) validate_uqclass(AM, UQc)
 
   ## Check OPTIONAL FORECAST elements
 
