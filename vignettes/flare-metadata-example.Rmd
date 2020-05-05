@@ -1,16 +1,22 @@
 ---
-output: github_document
-title: Forecasting Metadata
+title: "Example metadata for a FLARE forecast"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example metadata for a FLARE forecast}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-#Example using output from a FLARE forecast
 
 ```{r setup, message=FALSE}
 library(EML)
-library(tidyverse)
 library(uuid)
 library(ncdf4)
+library(emld)
 library(lubridate)
+library(tibble)
+library(dplyr)
+library(tidyr)
 emld::eml_version("eml-2.2.0")
 ```
 
@@ -39,7 +45,9 @@ Forecast_id <- uuid::UUIDgenerate() #The ID that applies to the specific forecas
 First, get the output as we are currently saving it
 
 ```{r}
-nc <- nc_open("IW2_1_SSSon_H_2019_05_27_2019_06_03_F_16_2132020_21_32.nc")
+netcdf_file <- system.file("extdata", "IW2_1_SSSon_H_2019_05_27_2019_06_03_F_16_2132020_21_32.nc", 
+                           package="EFIstandards", mustWork = TRUE)
+nc <- nc_open(netcdf_file)
 
 #Dimnesions
 depth <- ncvar_get(nc, "z")
@@ -187,7 +195,8 @@ df_parameters_1 <- right_join(df_combined_p1,
 First, get the output as we are currently saving it
 
 ```{r}
-nc <- nc_open("IW2_1_SSSoff_H_2019_05_27_2019_06_03_F_16_2132020_21_19.nc")
+netcdf_file2 <- system.file("extdata", "IW2_1_SSSoff_H_2019_05_27_2019_06_03_F_16_2132020_21_19.nc", package="EFIstandards")
+nc <- nc_open(netcdf_file2)
 
 #Dimnesions
 depth <- ncvar_get(nc, "z")
@@ -480,8 +489,14 @@ Our dataset needs an abstract describing what this is all about.  Also, a method
   * If ensemble numeric, number of ensembles: 210
  
 ```{r}
-abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
-methods <- list(methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))
+abstract_text <- system.file("extdata", "abstract.md", package="EFIstandards")
+methods_text <- system.file("extdata", "methods.md",  package="EFIstandards")
+
+abstract <- list(markdown = paste(readLines(abstract_text), collapse = "\n"))
+methods <- list(id="forecast", 
+                methodStep = list(description = 
+                                    list(markdown = paste(readLines(methods_text), 
+                                                          collapse = "\n"))))  ## to be dropped
 ```
 
 
@@ -529,3 +544,13 @@ We can also generate a JSON-LD version of EML:
 emld::as_json(as_emld("forecast-flare-eml.xml"), file = "forecast-flare-eml.json")
 ```
 
+
+
+
+```{r include=FALSE}
+## Cleanup
+lapply(list.files(pattern = "[.]csv"), unlink)
+lapply(list.files(pattern = "[.]json"), unlink)
+lapply(list.files(pattern = "[.]xml"), unlink)
+
+```

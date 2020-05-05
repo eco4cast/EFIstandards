@@ -1,1 +1,0 @@
-This is the abstract.  It is written in *markdown*

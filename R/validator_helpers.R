@@ -1,3 +1,5 @@
+#' @importFrom udunits2 ud.is.parseable
+
 lexists <- function(list,name){
   name %in% names(list)
 }

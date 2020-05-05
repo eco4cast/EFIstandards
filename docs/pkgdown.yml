@@ -1,0 +1,8 @@
+pandoc: 2.3.1
+pkgdown: 1.5.1
+pkgdown_sha: ~
+articles:
+  flare-metadata-example: flare-metadata-example.html
+  logistic-metadata-example: logistic-metadata-example.html
+last_built: 2020-05-05T17:31Z
+
