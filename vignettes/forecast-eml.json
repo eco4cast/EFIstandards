@@ -25,7 +25,8 @@
           "uncertainty": "contains"
         },
         "process_error": {
-          "complexity": "1",
+          "complexity": "2",
+          "covariance": "FALSE",
           "propagation": {
             "size": "10",
             "type": "ensemble"
@@ -117,7 +118,7 @@
         },
         "authentication": {
           "method": "MD5",
-          "authentication": "83c4ceffe9a2722958208e8f9da12afc"
+          "authentication": "3e3c8f87d864948381c607c7f17ed1e8"
         },
         "dataFormat": {
           "textFormat": {

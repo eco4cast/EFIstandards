@@ -114,7 +114,7 @@ If ensemble numeric, number of ensembles: 10
       <physical>
         <objectName>logistic-forecast-ensemble-multi-variable-multi-depth.csv</objectName>
         <size unit="bytes">25389</size>
-        <authentication method="MD5">83c4ceffe9a2722958208e8f9da12afc</authentication>
+        <authentication method="MD5">3e3c8f87d864948381c607c7f17ed1e8</authentication>
         <dataFormat>
           <textFormat>
             <recordDelimiter>
@@ -271,7 +271,8 @@ If ensemble numeric, number of ensembles: 10
           <uncertainty>contains</uncertainty>
         </parameters>
         <process_error>
-          <complexity>1</complexity>
+          <complexity>2</complexity>
+          <covariance>FALSE</covariance>
           <propagation>
             <size>10</size>
             <type>ensemble</type>
