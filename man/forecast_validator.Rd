@@ -17,6 +17,6 @@ EFI forecast standard EML metadata validator
 }
 \examples{
 \dontrun{
-forecast_validator(system.file("vignettes", "forecast-eml.xml", package="EFIstandards"))
+forecast_validator(system.file("extdata", "forecast-eml.xml", package="EFIstandards"))
 }
 }
