@@ -1,12 +1,22 @@
 ---
-output: github_document
-title: Forecasting Metadata
+title: "Example metadata for a logistic population growth forecast"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Logistic Growth Simulation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+
 
 ```{r setup, message=FALSE}
 library(EML)
-library(tidyverse)
 library(uuid)
+library(ncdf4)
+library(emld)
+library(lubridate)
+library(tibble)
+library(dplyr)
+library(tidyr)
 emld::eml_version("eml-2.2.0")
 set.seed(42)
 ```
@@ -81,7 +91,7 @@ Convert to a netcdf format
 ```{r}
 library(ncdf4)
 
-ncfname <- "logistic-forecast-ensemble-multi-variable-space-long.nc"
+ncfname <- system.file("extdata", "logistic-forecast-ensemble-multi-variable-space-long.nc", package="EFIstandards")
 
 time <- as.Date(as.character(2000 + 1:NT), format = "%Y")
 
@@ -397,8 +407,14 @@ additionalMetadata <- eml$additionalMetadata(
   * Source (i.e., NOAA GEFS): N/A
   
 ```{r}
-abstract <- list(markdown = paste(readLines("abstract.md"), collapse = "\n"))
-methods <- list(id="forecast",methodStep = list(description = list(markdown = paste(readLines("methods.md"), collapse = "\n"))))  ## to be dropped
+abstract_text <- system.file("extdata", "abstract.md", package="EFIstandards", mustWork = TRUE)
+methods_text <- system.file("extdata", "methods.md",  package="EFIstandards", mustWork = TRUE)
+
+abstract <- list(markdown = paste(readLines(abstract_text), collapse = "\n"))
+methods <- list(id="forecast", 
+                methodStep = list(description = 
+                                    list(markdown = paste(readLines(methods_text), 
+                                                          collapse = "\n"))))  ## to be dropped
 ```
 
 
@@ -456,3 +472,14 @@ We can also generate a JSON-LD version of EML:
 emld::as_json(as_emld("forecast-eml.xml"), file = "forecast-eml.json")
 ```
 
+
+
+
+
+```{r include=FALSE}
+## Cleanup
+lapply(list.files(pattern = "[.]csv"), unlink)
+lapply(list.files(pattern = "[.]json"), unlink)
+lapply(list.files(pattern = "[.]xml"), unlink)
+
+```

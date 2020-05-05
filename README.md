@@ -1,5 +1,5 @@
   <!-- badges: start -->
-  [![R build status](https://github.com/cboettig/forecast-standards/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/forecast-standards/actions)
+  [![R build status](https://github.com/cboettig/forecast-standards/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/forecast-standards/actions) 
   [![CRAN status](https://www.r-pkg.org/badges/version/EFIstandards)](https://CRAN.R-project.org/package=EFIstandards)
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
   <!-- badges: end -->

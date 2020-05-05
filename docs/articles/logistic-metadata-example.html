@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forecasting Metadata • EFIstandards</title>
+<title>Example metadata for a logistic population growth forecast • EFIstandards</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Forecasting Metadata">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Example metadata for a logistic population growth forecast">
 <meta property="og:description" content="EFIstandards">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -54,10 +54,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/flare-metadata-example.html">Forecasting Metadata</a>
+      <a href="../articles/flare-metadata-example.html">Example metadata for a FLARE forecast</a>
     </li>
     <li>
-      <a href="../articles/logistic-metadata-example.html">Forecasting Metadata</a>
+      <a href="../articles/logistic-metadata-example.html">Example metadata for a logistic population growth forecast</a>
     </li>
   </ul>
 </li>
@@ -75,7 +75,7 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Forecasting Metadata</h1>
+      <h1 data-toc-skip>Example metadata for a logistic population growth forecast</h1>
             
       
       
@@ -86,8 +86,13 @@
     
     
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EML</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tidyverse</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">uuid</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ncdf4</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">emld</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">lubridate</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tibble</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tidyr</span>)
 <span class="kw pkg">emld</span><span class="kw ns">::</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/eml_version.html">eml_version</a></span>(<span class="st">"eml-2.2.0"</span>)</pre></body></html></div>
 <pre><code>## [1] "eml-2.2.0"</code></pre>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">42</span>)</pre></body></html></div>
@@ -146,7 +151,7 @@
 <p>Convert to a netcdf format</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ncdf4</span>)
 
-<span class="no">ncfname</span> <span class="kw">&lt;-</span> <span class="st">"logistic-forecast-ensemble-multi-variable-space-long.nc"</span>
+<span class="no">ncfname</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"logistic-forecast-ensemble-multi-variable-space-long.nc"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"EFIstandards"</span>)
 
 <span class="no">time</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fl">2000</span> + <span class="fl">1</span>:<span class="no">NT</span>), <span class="kw">format</span> <span class="kw">=</span> <span class="st">"%Y"</span>)
 
@@ -233,15 +238,15 @@
 
 <span class="kw">for</span>(<span class="no">k</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">n_states</span>){
   <span class="kw">for</span>(<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">n_depths</span>){
-    <span class="no">df</span> <span class="kw">&lt;-</span> <span class="fu">as_tibble</span>(<span class="no">states</span><span class="kw">[[</span><span class="no">k</span>]][, ,<span class="no">i</span>])
+    <span class="no">df</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span>(<span class="no">states</span><span class="kw">[[</span><span class="no">k</span>]][, ,<span class="no">i</span>])
     <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">df</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">states</span><span class="kw">[[</span><span class="no">k</span>]][, ,<span class="no">i</span>])))
     <span class="no">df</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="no">time</span>, <span class="no">df</span>, <span class="no">data_assimilation</span>)
     <span class="no">df</span> <span class="kw">&lt;-</span> <span class="no">df</span> <span class="kw">%&gt;%</span>
-      <span class="fu">pivot_longer</span>(<span class="kw">cols</span> <span class="kw">=</span> -<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">time</span>,<span class="no">data_assimilation</span>),
+      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="kw">cols</span> <span class="kw">=</span> -<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">time</span>,<span class="no">data_assimilation</span>),
                    <span class="kw">names_to</span> <span class="kw">=</span> <span class="st">"ensemble"</span>,
                    <span class="kw">values_to</span> <span class="kw">=</span> <span class="no">state_names</span>[<span class="no">k</span>]) <span class="kw">%&gt;%</span>
-      <span class="fu">mutate</span>(<span class="kw">ensemble</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span>(<span class="no">ensemble</span>)) <span class="kw">%&gt;%</span>
-      <span class="fu">mutate</span>(<span class="kw">depth</span> <span class="kw">=</span> <span class="no">depths</span>[<span class="no">i</span>])
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">ensemble</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span>(<span class="no">ensemble</span>)) <span class="kw">%&gt;%</span>
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">depth</span> <span class="kw">=</span> <span class="no">depths</span>[<span class="no">i</span>])
     <span class="kw">if</span>(<span class="no">i</span> <span class="kw">==</span> <span class="fl">1</span>){
       <span class="no">running_df</span> <span class="kw">&lt;-</span> <span class="no">df</span>
     }<span class="kw">else</span>{
@@ -254,12 +259,12 @@
 ## Using compatibility `.name_repair`.
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">df_combined</span> <span class="kw">&lt;-</span> <span class="fu">right_join</span>(<span class="no">df_combined</span><span class="kw">[[</span><span class="fl">1</span>]], <span class="no">df_combined</span><span class="kw">[[</span><span class="fl">2</span>]],
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">df_combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join.html">right_join</a></span>(<span class="no">df_combined</span><span class="kw">[[</span><span class="fl">1</span>]], <span class="no">df_combined</span><span class="kw">[[</span><span class="fl">2</span>]],
                           <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"time"</span>, <span class="st">"ensemble"</span>, <span class="st">"depth"</span>, <span class="st">"data_assimilation"</span>)) <span class="kw">%&gt;%</span>
-  <span class="fu">mutate</span>(<span class="kw">forecast_issue_time</span> <span class="kw">=</span> <span class="no">forecast_issue_time</span>,
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">forecast_issue_time</span> <span class="kw">=</span> <span class="no">forecast_issue_time</span>,
          <span class="kw">Forecast_id</span> <span class="kw">=</span> <span class="no">Forecast_id</span>,
          <span class="kw">ForecastProject_id</span> <span class="kw">=</span> <span class="no">ForecastProject_id</span>) <span class="kw">%&gt;%</span>
-  <span class="fu">select</span>(<span class="no">time</span>, <span class="no">depth</span>, <span class="no">ensemble</span>, <span class="no">state_names</span>[<span class="fl">1</span>],
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">time</span>, <span class="no">depth</span>, <span class="no">ensemble</span>, <span class="no">state_names</span>[<span class="fl">1</span>],
          <span class="no">state_names</span>[<span class="fl">2</span>], <span class="no">forecast_issue_time</span>,
          <span class="no">data_assimilation</span>, <span class="no">ForecastProject_id</span>, <span class="no">Forecast_id</span>)
 
@@ -287,28 +292,28 @@
 <a href="#standard-option-3-summary-csv" class="anchor"></a>Standard Option 3: summary CSV</h1>
 <p>Convert to a flat file format (CSV) with forecast distribution summaries saved</p>
 <div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">df_species_1</span> <span class="kw">&lt;-</span> <span class="no">df_combined</span> <span class="kw">%&gt;%</span>
-  <span class="fu">select</span>(-<span class="no">species_2</span>) <span class="kw">%&gt;%</span>
-  <span class="fu">group_by</span>(<span class="no">time</span>, <span class="no">depth</span>, <span class="no">forecast_issue_time</span>, <span class="no">data_assimilation</span>,
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">species_2</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">time</span>, <span class="no">depth</span>, <span class="no">forecast_issue_time</span>, <span class="no">data_assimilation</span>,
            <span class="no">ForecastProject_id</span>, <span class="no">Forecast_id</span>) <span class="kw">%&gt;%</span>
-  <span class="fu">summarize</span>(<span class="kw">mean</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">species_1</span>),
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(<span class="kw">mean</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">species_1</span>),
             <span class="kw">Conf_interv_02.5</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">species_1</span>, <span class="fl">0.025</span>),
             <span class="kw">Conf_interv_97.5</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">species_1</span>, <span class="fl">0.975</span>)) <span class="kw">%&gt;%</span>
-  <span class="fu">pivot_longer</span>(<span class="kw">cols</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"mean"</span>,<span class="st">"Conf_interv_02.5"</span>,<span class="st">"Conf_interv_97.5"</span>),
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="kw">cols</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"mean"</span>,<span class="st">"Conf_interv_02.5"</span>,<span class="st">"Conf_interv_97.5"</span>),
                <span class="kw">names_to</span> <span class="kw">=</span> <span class="st">"Statistic"</span>,
                <span class="kw">values_to</span> <span class="kw">=</span> <span class="st">"species_1"</span>)
 
 <span class="no">df_species_2</span> <span class="kw">&lt;-</span> <span class="no">df_combined</span> <span class="kw">%&gt;%</span>
-  <span class="fu">select</span>(-<span class="no">species_1</span>) <span class="kw">%&gt;%</span>
-  <span class="fu">group_by</span>(<span class="no">time</span>, <span class="no">depth</span>, <span class="no">forecast_issue_time</span>, <span class="no">data_assimilation</span>,
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">species_1</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">time</span>, <span class="no">depth</span>, <span class="no">forecast_issue_time</span>, <span class="no">data_assimilation</span>,
            <span class="no">ForecastProject_id</span>, <span class="no">Forecast_id</span>) <span class="kw">%&gt;%</span>
-  <span class="fu">summarize</span>(<span class="kw">mean</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">species_2</span>),
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(<span class="kw">mean</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">species_2</span>),
             <span class="kw">Conf_interv_02.5</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">species_2</span>, <span class="fl">0.025</span>),
             <span class="kw">Conf_interv_97.5</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">species_2</span>, <span class="fl">0.975</span>)) <span class="kw">%&gt;%</span>
-  <span class="fu">pivot_longer</span>(<span class="kw">cols</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"mean"</span>,<span class="st">"Conf_interv_02.5"</span>,<span class="st">"Conf_interv_97.5"</span>),
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="kw">cols</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"mean"</span>,<span class="st">"Conf_interv_02.5"</span>,<span class="st">"Conf_interv_97.5"</span>),
                <span class="kw">names_to</span> <span class="kw">=</span> <span class="st">"Statistic"</span>,
                <span class="kw">values_to</span> <span class="kw">=</span> <span class="st">"species_2"</span>)
 
- <span class="no">df_summary</span> <span class="kw">&lt;-</span> <span class="fu">right_join</span>(<span class="no">df_species_1</span>, <span class="no">df_species_2</span>)</pre></body></html></div>
+ <span class="no">df_summary</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join.html">right_join</a></span>(<span class="no">df_species_1</span>, <span class="no">df_species_2</span>)</pre></body></html></div>
 <pre><code>## Joining, by = c("time", "depth", "forecast_issue_time", "data_assimilation", "ForecastProject_id", "Forecast_id", "Statistic")</code></pre>
 <div class="sourceCode" id="cb14"><html><body><pre class="r"> <span class="no">df_summary</span></pre></body></html></div>
 <pre><code>## # A tibble: 270 x 9
@@ -435,10 +440,16 @@
 <li>Type (i.e., meteorology): N/A</li>
 <li>Source (i.e., NOAA GEFS): N/A</li>
 </ul>
-<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="no">abstract</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">markdown</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="st">"abstract.md"</span>), <span class="kw">collapse</span> <span class="kw">=</span> <span class="st">"\n"</span>))</pre></body></html></div>
-<pre><code>## Warning in readLines("abstract.md"): incomplete final line found on
-## 'abstract.md'</code></pre>
-<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="no">methods</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">id</span><span class="kw">=</span><span class="st">"forecast"</span>,<span class="kw">methodStep</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">description</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">markdown</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="st">"methods.md"</span>), <span class="kw">collapse</span> <span class="kw">=</span> <span class="st">"\n"</span>))))  <span class="co">## to be dropped</span></pre></body></html></div>
+<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="no">abstract_text</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"abstract.md"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"EFIstandards"</span>, <span class="kw">mustWork</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="no">methods_text</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"methods.md"</span>,  <span class="kw">package</span><span class="kw">=</span><span class="st">"EFIstandards"</span>, <span class="kw">mustWork</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+
+<span class="no">abstract</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">markdown</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="no">abstract_text</span>), <span class="kw">collapse</span> <span class="kw">=</span> <span class="st">"\n"</span>))</pre></body></html></div>
+<pre><code>## Warning in readLines(abstract_text): incomplete final line found on '/tmp/
+## Rtmpdjtp8s/temp_libpath8a3b17c957511/EFIstandards/extdata/abstract.md'</code></pre>
+<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="no">methods</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">id</span><span class="kw">=</span><span class="st">"forecast"</span>,
+                <span class="kw">methodStep</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">description</span> <span class="kw">=</span>
+                                    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">markdown</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="no">methods_text</span>),
+                                                          <span class="kw">collapse</span> <span class="kw">=</span> <span class="st">"\n"</span>))))  <span class="co">## to be dropped</span></pre></body></html></div>
 <div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="no">dataset</span> <span class="kw">=</span> <span class="no">eml</span>$<span class="fu">dataset</span>(
                <span class="kw">title</span> <span class="kw">=</span> <span class="st">"A very silly logistic forecast"</span>,
                <span class="kw">creator</span> <span class="kw">=</span> <span class="no">me</span>,
@@ -486,7 +497,7 @@ This will catch any missing elements. (Recall that what is ‘required’ depend
 
 
       <footer><div class="copyright">
-  <p>Developed by Carl Boettiger.</p>
+  <p>Developed by Carl Boettiger, Quinn Thomas, Michael Dietze, Alexey Shiklomanov.</p>
 </div>
 
 <div class="pkgdown">

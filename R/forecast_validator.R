@@ -4,7 +4,8 @@
 #'
 #' @return boolean
 #' @export
-#'
+#' @importFrom usethis ui_todo ui_done ui_stop
+#' @importFrom EML read_eml eml_validate
 #' @examples
 #'\dontrun{
 #' forecast_validator(system.file("vignettes", "forecast-eml.xml", package="EFIstandards"))
