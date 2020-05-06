@@ -8,7 +8,7 @@
 #' @importFrom EML read_eml eml_validate
 #' @examples
 #'\dontrun{
-#' forecast_validator(system.file("vignettes", "forecast-eml.xml", package="EFIstandards"))
+#' forecast_validator(system.file("extdata", "forecast-eml.xml", package="EFIstandards"))
 #'}
 forecast_validator <- function(eml){
 
