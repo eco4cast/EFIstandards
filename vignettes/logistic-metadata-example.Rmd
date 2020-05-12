@@ -368,8 +368,7 @@ dataset = eml$dataset(
                abstract =  "An illustration of how we might use EML metadata to describe an ecological forecast",
                dataTable = dataTable,
                keywordSet = keywordSet,
-               coverage = coverage,
-               methods = methods
+               coverage = coverage
                )
 ```
 
@@ -443,7 +442,11 @@ all, but if you do, you have to document the "physical" file format it is in
 (e.g. `csv`) and the attributes and units it uses!)
 
 ```{r}
+## check base EML
 eml_validate(my_eml)
+
+## check that the EML is also a valid EFI forecast
+EFIstandards::forecast_validator(my_eml)
 ```
 
 
