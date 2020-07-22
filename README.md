@@ -24,3 +24,9 @@ EFI envisions a three-tiered approach to forecast archiving. At the most basic l
 ### Vignettes:
 
 This package includes a number of vignettes illustrating the application of the EFI standards to different forecasts
+
+### Documentation:
+
+A more detailed description of the EFI standard can be found at [https://bit.ly/2yDbzbP](https://bit.ly/2yDbzbP). 
+
+Pkgdown rendered documentation of functions and vignettes can be found at https://eco4cast.github.io/EFIstandards/
