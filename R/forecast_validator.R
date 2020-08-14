@@ -36,10 +36,19 @@ forecast_validator <- function(eml){
 
   ## Check REQUIRED CORE EML elements
 
-
   ## Check REQUIRED FORECAST elements
 
+  check_parsable(AM,"timestep")
   check_parsable(AM,"forecast_horizon")
+  check_parsable(AM,"forecast_issue_time")
+  check_exists(AM,"forecast_iteration_id")
+  check_exists(AM,"forecast_project_id")
+  check_exists(AM,"metadata_standard_version")
+  check_exists(AM,"model_description")
+  check_exists(AM$model_description,"name")
+  check_exists(AM$model_description,"type")
+  check_exists(AM$model_description,"repository")
+
 
   UQclass <- c(
     "initial_conditions",
@@ -75,8 +84,14 @@ forecast_validator <- function(eml){
       check_whole(uqlist,"complexity")
 
       ## ADD special cases for process_error
-        # covariance
-        # localization
+      if(element == "process_error"){
+        check_exists(uqlist,"covariance")
+        if(lexists(uqlist,"covariance")){
+          if(uqlist[["covariance"]]){     ## if TRUE (full cov matrix), check for localization
+            check_exists(uqlist,"localization")
+          }
+        }
+      }
     }
     if (uqunc_f >= "propagates") {
       # Check propagation method
@@ -106,9 +121,19 @@ forecast_validator <- function(eml){
     if (uqunc_f >= "assimilates") {
       # Check assimilation method
       check_exists(uqlist,"assimilation")
+      alist <- uqlist[["assimilation"]]
 
-      ## ADD DETAIL HERE
+      ## type
+      check_exists(alist,"type")
 
+      ## reference
+      check_exists(alist,"reference")
+
+      ## complexity
+      check_whole(alist,"complexity")
+
+      ## attributeName (optional)
+      check_whole(alist,"attributeName",required = FALSE)
     }
   }
 
@@ -116,9 +141,8 @@ forecast_validator <- function(eml){
 
   ## Check OPTIONAL FORECAST elements
 
-  # timestep parsable (considering this flag optional until we sort out whether it can be stored in the main metadata)
-  check_parsable(AM,"timestep",required = FALSE)
 
+  ## return status
   valid
 }
 
