@@ -13,6 +13,7 @@ check_exists <- function(list,name){
   else usethis::ui_stop(paste("file missing",name))
 }
 
+#' Check that an element exists and is UDUNITS2 parsable
 check_parsable <- function(list,name,required=TRUE){
   if(lexists(list,name)){
     if(udunits2::ud.is.parseable(list[[name]])){
@@ -23,6 +24,7 @@ check_parsable <- function(list,name,required=TRUE){
   } else if(required) usethis::ui_stop(paste("file missing",name))
 }
 
+#' Check that an element exists and is a whole number
 check_whole <- function(list,name,required=TRUE){
   is.whole <- function(x){
     x = as.numeric(x)
