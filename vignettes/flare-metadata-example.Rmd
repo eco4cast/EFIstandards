@@ -1,8 +1,8 @@
 ---
-title: "Example metadata for a FLARE forecast"
+title: "Generating metadata from EFI NETCDF output"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Logistic Growth Simulation}
+  %\VignetteIndexEntry{Generating metadata from EFI NETCDF output}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -200,7 +200,7 @@ dataset <- eml$dataset(
 ### EFI specific attributes
 
 ```{r}
-initial_conditions < list(
+initial_conditions <- list(
   # Possible values: no, contains, data_driven, propagates, assimilates
   uncertainty = "assimilates",
   # Number of parameters / dimensionality
