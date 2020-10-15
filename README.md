@@ -27,6 +27,6 @@ This package includes a number of vignettes illustrating the application of the 
 
 ### Documentation:
 
-A more detailed description of the EFI standard can be found at [https://bit.ly/2yDbzbP](https://bit.ly/2yDbzbP). 
+A more detailed description of the EFI standard can be found at [https://bit.ly/2H0muAx](https://bit.ly/2H0muAx). 
 
 Pkgdown rendered documentation of functions and vignettes can be found at https://eco4cast.github.io/EFIstandards/
