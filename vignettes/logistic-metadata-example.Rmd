@@ -15,6 +15,7 @@ library(lubridate)
 library(tibble)
 library(dplyr)
 library(tidyr)
+library(reshape2)
 emld::eml_version("eml-2.2.0")
 set.seed(42)
 ```
@@ -30,7 +31,7 @@ To illustrate the application of the forecast standard, we'll consider the class
 ```{r}
 forecast_issue_time = as.Date("2001-03-04")  ## start date of our forecast
 n_time <- 30
-time = seq(from=forecast_issue_time,by="1 day",length=n_time)
+times = seq(from=forecast_issue_time,by="1 day",length=n_time)
 
 depths <- c(1, 3, 5)
 n_depths <- length(depths)
@@ -94,11 +95,11 @@ for(t in 2:n_time){
 Here's a simple visualization of our ensemble forecast at one depth
 
 ```{r}
-plot(time,n[,1,1,1,1],ylim=range(n),ylab="Population Density",type='l')
+plot(times,n[,1,1,1,1],ylim=range(n),ylab="Population Density",type='l')
 for(s in seq_along(species)){ ##species
   for(e in ensembles){
-    lines(time,n[,1,e,1,s],col=s)                                  ## latent
-    points(time+runif(n_time,-0.12,0.12),n[,1,e,2,s],col=s,cex=0.35)  ## pseudo-obs w/ jitter
+    lines(times,n[,1,e,1,s],col=s)                                  ## latent
+    points(times+runif(n_time,-0.12,0.12),n[,1,e,2,s],col=s,cex=0.35)  ## pseudo-obs w/ jitter
   }
 }
 legend("bottomright",legend=species,col = seq_along(species),lty = 1)
@@ -143,7 +144,7 @@ Once we have our ID's defined, we're going to use `ncdim_def` to define the dime
 timedim <- ncdim_def("time",   ## dimension name
                      units = paste('days since',forecast_issue_time),
                                ## size of timestep, with units and start date
-                     vals = as.numeric(time - forecast_issue_time),
+                     vals = as.numeric(times - forecast_issue_time),
                                ## sequence of values that defines the dimension.
                                ## netCDF expresses time dimensions relative to a
                                ## specified start date, in this case forecast_issue_time
@@ -242,35 +243,14 @@ Convert to a flat file format (CSV) with one column for each variable and all
 ensemble members saved
 
 ```{r}
-## wrangle data into the semi-long format
-df_combined <- list()
-for(k in 1:n_species){
-  for(i in 1:n_depths){
-    df <- as_tibble(n[k, ,i, ])
-    names(df) <- as.character(ensembles)
-    df <- cbind(time, df, data_assimilation)
-    df <- df %>% 
-      pivot_longer(cols = -c(time,data_assimilation), 
-                   names_to = "ensemble", 
-                   values_to = species[k]) %>% 
-      mutate(ensemble = as.integer(ensemble)) %>% 
-      mutate(depth = depths[i])
-    if(i == 1){
-      running_df <- df
-    }else{
-      running_df <- rbind(running_df, df)
-    }
-  }
-  df_combined[[k]] <- running_df
-}
+## wrangle data into a tidy format
+df_combined <- reshape2::melt(n,varnames=c("time","depth","ensemble","obs_flag","species")) %>%
+  pivot_wider(id_cols = 1:4,names_from = "species",names_prefix = "species_",values_from = "value") %>% 
+  mutate(time = times[time]) %>%
+  mutate(depth = depths[depth]) %>%
+  right_join(data_frame(time=times,forecast=forecast,data_assimilation = data_assimilation))
 
-df_combined <- right_join(df_combined[[1]], df_combined[[2]], 
-                          by = c("time", "ensemble", "depth", "data_assimilation")) %>% 
-  select(time, depth, ensemble, species[1], 
-         species[2], 
-         data_assimilation)
-
-df_combined
+head(df_combined)
 
 write.csv(df_combined, 
           file = "logistic-forecast-ensemble-multi-variable-multi-depth.csv")
