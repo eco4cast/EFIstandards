@@ -261,33 +261,23 @@ write.csv(df_combined,
 Convert to a flat file format (CSV) with forecast distribution summaries saved
 
 ```{r}
-df_species_1 <- df_combined %>% 
-  select(-species_2) %>% 
-  group_by(time, depth, data_assimilation) %>% 
-  summarize(mean = mean(species_1),
-            Conf_interv_02.5 = quantile(species_1, 0.025),
-            Conf_interv_97.5 = quantile(species_1, 0.975)) %>% 
-  pivot_longer(cols = c("mean","Conf_interv_02.5","Conf_interv_97.5"),
-               names_to = "Statistic",
-               values_to = "species_1")
+## calculate summary statistics across ensemble members and output variables
+dfs <- df_combined %>% pivot_longer(cols=5:6,names_to="species") %>%  ## make species a column
+                   group_by(time, depth,obs_flag,species,forecast,data_assimilation) %>%
+                   summarize(mean = mean(value),
+                             sd   = sd(value),
+                             Conf_interv_02.5 = quantile(value, 0.025),
+                             Conf_interv_97.5 = quantile(value, 0.975)) %>%
+                   pivot_longer(7:10,names_to="statistic")  %>% ## make statistic column
+                   pivot_wider(names_from=species,values_from = value) ## go back to species wide
+## recode statistics
+dfs$statistic[dfs$obs_flag == 1 & dfs$statistic == "sd"] <- "se"
+dfs$statistic[dfs$obs_flag == 2 & dfs$statistic == "Conf_interv_02.5"] <- "Pred_interv_0.25"
+dfs$statistic[dfs$obs_flag == 2 & dfs$statistic == "Conf_interv_02.5"] <- "Pred_interv_0.25"
 
-df_species_2 <- df_combined %>% 
-  select(-species_1) %>% 
-  group_by(time, depth, data_assimilation) %>% 
-  summarize(mean = mean(species_2),
-            Conf_interv_02.5 = quantile(species_2, 0.025),
-            Conf_interv_97.5 = quantile(species_2, 0.975)) %>% 
-  pivot_longer(cols = c("mean","Conf_interv_02.5","Conf_interv_97.5"),
-               names_to = "Statistic",
-               values_to = "species_2")
+head(dfs)
 
- df_summary <- right_join(df_species_1, df_species_2)[,c(1,2,4,5,6,3)]
- 
- df_summary
- 
-write.csv(df_summary, 
-          file = "logistic-forecast-summary-multi-variable-multi-depth.csv")
-
+write.csv(dfs, file = "logistic-forecast-summary-multi-variable-multi-depth.csv")
 ```
 
 # Standardized Metadata
