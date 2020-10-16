@@ -7,7 +7,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
 ```{r setup, message=FALSE}
 library(EML)
 library(ncdf4)
@@ -24,29 +23,9 @@ A simple, example forecast of population growth of two interacting species
 
 ========================================================
 
-First, set the forecast identifiers
-
-`forecast_project_id` represents the launch of an automated, iterative forecast.  It is created
-each time a human modifies the forecast code (e.g. model structure, model calibration, forecast workflow).  It can be a DOI because this is the level that
-we envision citations occuring.
-
-`forecast_iteration_id` represents each forecast cycle within a `forecast_project_id`
-
-For example, if you have a forecast code base on GitHub and launch a forecast from that code that
-runs daily for 365 days, then there will be one forecast_project_id and 365 forecast_iteration_ids. A paper 
-analyzing the forecasts would cite the forecast_project_id.
-
-
-``` {r}
-forecast_issue_time <- as.Date("2001-03-04")
-#forecast_project_id <- uuid::UUIDgenerate() # generate a new ID
-forecast_project_id <- 30405043              # Reuse an ID that applies to a specific workflow and model version
-forecast_iteration_id <- "20010304T060000"   # ISO datetime should make a valid Forecast_id
-```
-
 # Generating the forecast
 
-To illustrate the application of the forecast standard, we'll consider the classic Lotka-Volterra population growth model. To keep this first example simple, we'll only consider two species and one uncertainty - an additive process error, which converts this to a stochastic Lotka-Volterra. We'll propagate this uncertainty by running multiple ensembles. To illustrate the ability of the output format to accomodate spatial dimensions, we'll run the model at multiple depths in a water column (e.g. lake or ocean) but those depths are not interacting -- we know this isn't realistic, but we want to keep things simple. Overall, this gives us the following *dimensions*
+To illustrate the application of the forecast standard, we'll consider the classic Lotka-Volterra population growth model. To keep this first example simple, we'll only consider two species and two uncertainties - an additive process error, which converts this to a stochastic Lotka-Volterra, and an observation error. We'll propagate uncertainty by running multiple ensembles. To illustrate the ability of the output format to accommodate spatial dimensions, we'll run the model at multiple depths in a water column (e.g. lake or ocean) but those depths are not interacting -- we know this isn't realistic, but we want to keep things simple. Overall, this gives us the following *dimensions*
 
 ```{r}
 n_time <- 30
@@ -60,9 +39,12 @@ ensembles <- seq_len(n_ensembles)
 
 species <- c("species_1","species_2")
 n_species <- length(species)
+
+obs_dim <- 2 ## 1 = latent state
+             ## 2 = latent state + observation error
 ```
 
-Next we're going to assume fixed parameters and initial conditions, set up storage for our forecast output (which we see has 4 dimensions), and then forward simulate the populations
+Next we're going to assume fixed parameters and initial conditions, set up storage for our forecast output (which we see has 5 dimensions), and then forward simulate the populations
 
 ```{r}
 ## parameters for species_1 and species_2
@@ -73,27 +55,36 @@ alpha <-  c(0.2, 0.3)
 ## process error
 process_sd <- 0.01
 
+## observation error
+obs_sd <- c(0.5,0.2)
+
 ## initial conditions
 n0 <-  0.5
 
 ## forecast output storage
-n <- array(NA,dim = c(2, n_time, n_depths, n_ensembles))
-n[,1,,] <- n0
+n <- array(NA,dim = c(n_time, n_depths, n_ensembles, obs_dim,2)) ## last dim is species
+n[1,,,,] <- n0
+
+## forecast flag
+forecast <- rep(0, n_time) ## this code indicated a hindcast
 
 ## data assimilation flag
-data_assimilation <- rep(1, n_time)  ## this code indicates a 'free-run hindcast'
+data_assimilation <- rep(0, n_time)  ## this code indicates a 'free-run' that didn't assimilate new data
 
-## foreward simulation
+## forward simulation
 for(t in 2:n_time){
-  data_assimilation[t] <- 0
   for(depth in 1:n_depths){
     for(ens in 1:n_ensembles){
-      n[1, t, depth, ens] <-  n[1, t-1, depth, ens] + 
-          r[1]*n[1, t-1,depth,ens]*(1-((n[1, t-1, depth, ens] + 
-          alpha[1]*n[2, t-1, depth, ens])/K[1])) + rnorm(1, 0, process_sd)
-      n[2, t, depth, ens] <-  n[2, t-1, depth, ens] + 
-          r[2]*n[2, t-1, depth, ens]*(1-((n[2, t-1, depth, ens] + 
-          alpha[2]*n[1, t-1, depth, ens])/K[2])) + rnorm(1, 0, process_sd)
+      ## predict latent state
+      n_curr <- n[t-1,depth,ens,1,] ## current state
+      n[t, depth, ens,1,1] <-  n_curr[1] + 
+          r[1]*n_curr[1]*(1-((n_curr[1] + 
+          alpha[1]*n_curr[2])/K[1])) + rnorm(1, 0, process_sd)
+      n[t, depth, ens,1,2] <-  n_curr[2] + 
+          r[2]*n_curr[2]*(1-((n_curr[2] + 
+          alpha[2]*n[1])/K[2])) + rnorm(1, 0, process_sd)
+      ## predict observed values
+      n[t,depth,ens,2,] = rnorm(2,n[t,depth,ens,1,],obs_sd)
     }
   }
 }
@@ -102,19 +93,47 @@ for(t in 2:n_time){
 Here's a simple visualization of our ensemble forecast at one depth
 
 ```{r}
-plot(time,n[1,,1,1],ylim=range(n),ylab="Population Density",type='l')
+plot(time,n[,1,1,1,1],ylim=range(n),ylab="Population Density",type='l')
 for(s in seq_along(species)){ ##species
   for(e in ensembles){
-    lines(time,n[s,,1,e],col=s)
+    lines(time,n[,1,e,1,s],col=s)                                  ## latent
+    points(time+runif(n_time,-0.12,0.12),n[,1,e,2,s],col=s,cex=0.35)  ## pseudo-obs w/ jitter
   }
 }
 legend("bottomright",legend=species,col = seq_along(species),lty = 1)
 ```
 
-
 # Saving to a standardized output format
 
 ## Standard Option 1: netCDF
+
+### Forecast identifiers
+
+Because netCDF is a self-documenting format we're going to start by defining some forecast 
+identifiers (which we'll also later use in the metadata)
+
+`forecast_project_id` identifies forecasts coming from a single project and is used to link 
+forecasts different model versions. Examples might include a project Github repository or a 
+team name.
+
+`forecast_model_id` is updated each time the forecast code is modified (e.g. model structure, 
+model calibration, forecast workflow).  Examples might be a DOI, version number, or Github 
+hash. Results from a single forecast_model_id are considered comparable.
+
+`forecast_iteration_id` represents a unique ID for each forecast run. Examples might be a
+start time or database ID.
+
+For example, if you have a forecast code base on GitHub and launch a forecast from that code 
+that runs daily for 365 days, then there will be one forecast_project_id and 365 
+forecast_iteration_ids. A paper analyzing the forecasts would cite the forecast_project_id.
+
+
+``` {r}
+forecast_project_id <- "LogisticDemo"
+forecast_model_id   <- 
+forecast_iteration_id <- "20010304T060000"   # ISO datetime should make a valid Forecast_id
+```
+
 
 Convert to a netcdf format 
 
@@ -178,8 +197,8 @@ ncatt_put(ncout,0,"forecast_project_id", as.character(forecast_project_id),
           prec =  "text")
 ncatt_put(ncout,0,"forecast_iteration_id",as.character(forecast_iteration_id), 
           prec =  "text")
-ncatt_put(ncout,0,"forecast_issue_time",as.character(forecast_issue_time), 
-          prec =  "text")
+#ncatt_put(ncout,0,"forecast_issue_time",as.character(forecast_issue_time), 
+#          prec =  "text")
 
 nc_close(ncout)
 ```
