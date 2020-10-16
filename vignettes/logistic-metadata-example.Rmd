@@ -28,6 +28,7 @@ A simple, example forecast of population growth of two interacting species
 To illustrate the application of the forecast standard, we'll consider the classic Lotka-Volterra population growth model. To keep this first example simple, we'll only consider two species and two uncertainties - an additive process error, which converts this to a stochastic Lotka-Volterra, and an observation error. We'll propagate uncertainty by running multiple ensembles. To illustrate the ability of the output format to accommodate spatial dimensions, we'll run the model at multiple depths in a water column (e.g. lake or ocean) but those depths are not interacting -- we know this isn't realistic, but we want to keep things simple. Overall, this gives us the following *dimensions*
 
 ```{r}
+forecast_issue_time = as.Date("2001-03-04")  ## start date of our forecast
 n_time <- 30
 time = seq(from=forecast_issue_time,by="1 day",length=n_time)
 
@@ -127,80 +128,112 @@ For example, if you have a forecast code base on GitHub and launch a forecast fr
 that runs daily for 365 days, then there will be one forecast_project_id and 365 
 forecast_iteration_ids. A paper analyzing the forecasts would cite the forecast_project_id.
 
-
 ``` {r}
 forecast_project_id <- "LogisticDemo"
-forecast_model_id   <- 
+forecast_model_id   <- "v0.3"
 forecast_iteration_id <- "20010304T060000"   # ISO datetime should make a valid Forecast_id
 ```
 
+### netcdf Dimensions
 
-Convert to a netcdf format 
+Once we have our ID's defined, we're going to use `ncdim_def` to define the dimensions that our output variables will have
 
 ```{r}
-library(ncdf4)
-
-## file name
-ncfname <- system.file("extdata", "logistic-forecast-ensemble-multi-variable-space-long.nc", package="EFIstandards")
-
 ## Set dimensions
-ensdim <- ncdim_def("ensemble", 
-                    units = "",
-                    vals = ensembles, 
-                    longname = 'ensemble member') 
+timedim <- ncdim_def("time",   ## dimension name
+                     units = paste('days since',forecast_issue_time),
+                               ## size of timestep, with units and start date
+                     vals = as.numeric(time - forecast_issue_time),
+                               ## sequence of values that defines the dimension.
+                               ## netCDF expresses time dimensions relative to a
+                               ## specified start date, in this case forecast_issue_time
+                     longname = 'time')
+                               ## descriptive name
+
 depthdim <- ncdim_def("depth", 
                       units = "meters",
                       vals = depths, 
                       longname = 'Depth from surface') 
-timedim <- ncdim_def("time", 
-                     units = '1 day',                               ## size of timestep, with units
-                     longname = 'time',
-                     vals = as.numeric(time - forecast_issue_time)) ## netCDF expresses time dimensions relative to a
-                                                                    ## specified start date, in this case forecast_issue_time
+
+ensdim <- ncdim_def("ensemble",             
+                    units = "",
+                    vals = ensembles,       
+                    longname = 'ensemble member') 
+
+obsdim <- ncdim_def("obs_flag",
+                    units = "",
+                    vals = 1:obs_dim,
+                    longname = "observation error flag. 1 = latent state, 2 = w/ obs error")
 
 ## quick check that units are valid
-udunits2::ud.is.parseable(ensdim$units)
-udunits2::ud.is.parseable(depthdim$units)
 udunits2::ud.is.parseable(timedim$units)
+udunits2::ud.is.parseable(depthdim$units)
+udunits2::ud.is.parseable(ensdim$units)
+udunits2::ud.is.parseable(obsdim$units)
+```
 
-fillvalue <- 1e32
+### Variable names
+
+Once we've defined our dimensions, we can then define the metadata about our variables using `ncvar_def`
+
+```{r}
+fillvalue <- 1e32  ## missing data value
 
 #Define variables
 def_list <- list()
 def_list[[1]] <- ncvar_def(name =  "species_1",
                            units = "number of individuals",
-                           dim = list(timedim, depthdim, ensdim),
+                           dim = list(timedim, depthdim, ensdim, obsdim),
                            missval = fillvalue,
                            longname = '<scientific name of species 1>',
                            prec="single")
 def_list[[2]] <- ncvar_def(name =  "species_2",
                            units = "number of individuals",
-                           dim = list(timedim, depthdim, ensdim),
+                           dim = list(timedim, depthdim, ensdim, obsdim),
                            missval = fillvalue,
                            longname = '<scientific name of species 2>',
                            prec="single")
-def_list[[3]] <- ncvar_def(name =  "data_assimilation",
+def_list[[3]] <- ncvar_def(name =  "forecast",
                            units = "integer",
                            dim = list(timedim),
                            missval = fillvalue,
-                           longname = 'EFI standard data assimilation code',
+                           longname = 'EFI standard forecast code. 0 = hindcast',
                            prec="single")
+def_list[[4]] <- ncvar_def(name =  "data_assimilation",
+                           units = "integer",
+                           dim = list(timedim),
+                           missval = fillvalue,
+                           longname = 'EFI standard data assimilation code. 0 = no data',
+                           prec="single")
+```
 
-## create netCDF file and add variables
+### Creating the file
+
+Finally, we'll now create our netCDF file and add our outputs and global metadata to the file
+
+```{r}
+
+## file name
+ncfname <- system.file("extdata", "logistic-forecast-ensemble-multi-variable-space-long.nc", package="EFIstandards")
+
+## open your netCDF file
 ncout <- nc_create(ncfname,def_list,force_v4=T)
-ncvar_put(ncout,def_list[[1]] , n[1, , , ])        ## species 1
-ncvar_put(ncout,def_list[[2]] , n[2, , , ])        ## species 2
-ncvar_put(ncout,def_list[[3]] , data_assimilation) ## data_assimilation flag
+
+## fill in our output data
+ncvar_put(ncout,def_list[[1]] , n[, , , ,1 ])        ## species 1
+ncvar_put(ncout,def_list[[2]] , n[, , , ,2 ])        ## species 2
+ncvar_put(ncout,def_list[[3]] , forecast) ## forecast flag
+ncvar_put(ncout,def_list[[4]] , data_assimilation) ## data_assimilation flag
 
 ## Global attributes (metadata)
 ncatt_put(ncout,0,"forecast_project_id", as.character(forecast_project_id), 
           prec =  "text")
+ncatt_put(ncout,0,"forecast_model_id",as.character(forecast_model_id), 
+          prec =  "text")
 ncatt_put(ncout,0,"forecast_iteration_id",as.character(forecast_iteration_id), 
           prec =  "text")
-#ncatt_put(ncout,0,"forecast_issue_time",as.character(forecast_issue_time), 
-#          prec =  "text")
 
-nc_close(ncout)
+nc_close(ncout)   ## make sure to close the file
 ```
 
 # Standard Option 2: ensemble CSV
