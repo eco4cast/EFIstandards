@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<eml:eml xmlns:eml="https://eml.ecoinformatics.org/eml-2.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stmml="http://www.xml-cml.org/schema/stmml-1.2" packageId="20010304T060000" system="uuid" xsi:schemaLocation="https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd">
+<eml:eml xmlns:eml="https://eml.ecoinformatics.org/eml-2.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stmml="http://www.xml-cml.org/schema/stmml-1.2" packageId="20010304T060000" system="datetime" xsi:schemaLocation="https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd">
   <dataset>
-    <title>A very silly logistic forecast</title>
+    <title>A very simple Lotka-Volterra forecast</title>
     <creator id="https://orcid.org/0000-0003-1282-7825">
       <individualName>
         <givenName>Quinn</givenName>
@@ -20,36 +20,31 @@
     <intellectualRights>http://www.lternet.edu/data/netpolicy.html.</intellectualRights>
     <coverage>
       <geographicCoverage>
-        <geographicDescription>Harvard Forest Greenhouse, Tom Swamp Tract (Harvard Forest)</geographicDescription>
+        <geographicDescription>Lake Sunapee, NH, USA </geographicDescription>
         <boundingCoordinates>
-          <westBoundingCoordinate>-122.44</westBoundingCoordinate>
-          <eastBoundingCoordinate>-117.15</eastBoundingCoordinate>
-          <northBoundingCoordinate>37.38</northBoundingCoordinate>
-          <southBoundingCoordinate>30</southBoundingCoordinate>
-          <boundingAltitudes>
-            <altitudeMinimum>160</altitudeMinimum>
-            <altitudeMaximum>330</altitudeMaximum>
-            <altitudeUnits>meter</altitudeUnits>
-          </boundingAltitudes>
+          <westBoundingCoordinate>-72.15</westBoundingCoordinate>
+          <eastBoundingCoordinate>-72.05</eastBoundingCoordinate>
+          <northBoundingCoordinate>43.48</northBoundingCoordinate>
+          <southBoundingCoordinate>43.36</southBoundingCoordinate>
         </boundingCoordinates>
       </geographicCoverage>
       <temporalCoverage>
         <rangeOfDates>
           <beginDate>
-            <calendarDate>2012-06-01</calendarDate>
+            <calendarDate>2001-03-04</calendarDate>
           </beginDate>
           <endDate>
-            <calendarDate>2013-12-31</calendarDate>
+            <calendarDate>2001-04-02</calendarDate>
           </endDate>
         </rangeOfDates>
       </temporalCoverage>
       <taxonomicCoverage>
         <taxonomicClassification>
           <taxonRankName>Genus</taxonRankName>
-          <taxonRankValue>Sarracenia</taxonRankValue>
+          <taxonRankValue>Gloeotrichia</taxonRankValue>
           <taxonomicClassification>
             <taxonRankName>Species</taxonRankName>
-            <taxonRankValue>purpurea</taxonRankValue>
+            <taxonRankValue>echinulata</taxonRankValue>
           </taxonomicClassification>
         </taxonomicClassification>
       </taxonomicCoverage>
@@ -57,64 +52,13 @@
     <contact>
       <references>https://orcid.org/0000-0003-1282-7825</references>
     </contact>
-    <methods>
-      <methodStep>
-        <description>
-          <markdown># Methods Description
-
-**Forecast timestep**
-1 day
-
-**Forecast time horizon**
-
-**Data assimilation**
-
-Data Assimilation used: No
-If, DA used - type of method: N/A
-If, DA used - Number of parameters calibrated: N/A
-If, DA used - Sources of training data (DOI, GitHub): N/A
-
-**Model Description**
-
-Type of model (Empirical, process-based, machine learning): Empirical
-Model name: discrete Lotka–Volterra model
-Location of repository with model code: https://github.com/somewhere or https://doi.org/10.xxx
-Model citation: N/A
-Total number of model process parameters: 3
-
-**Model Covariates**
-
-Type (i.e., meteorology): N/A
-Source (i.e., NOAA GEFS): N/A
-
-**Uncertainty**
-
-Answers: No, Derived from data, Propagates, Assimilates
-
-Initial conditions:
-Parameter:
-Parameter Random Effects:
-Process (within model):
-Multi-model:
-Driver:
-Scenario:
-
-Method for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric
-If Analytic, specific method
-If ensemble numeric, number of ensembles: 10
-
-
-</markdown>
-        </description>
-      </methodStep>
-    </methods>
     <dataTable>
-      <entityName>logistic-forecast-ensemble-multi-variable-multi-depth.csv</entityName>
+      <entityName>forecast</entityName>
       <entityDescription>Forecast of population size using a depth specific model</entityDescription>
       <physical>
         <objectName>logistic-forecast-ensemble-multi-variable-multi-depth.csv</objectName>
-        <size unit="bytes">25389</size>
-        <authentication method="MD5">3e3c8f87d864948381c607c7f17ed1e8</authentication>
+        <size unit="bytes">108979</size>
+        <authentication method="MD5">e950d787cc284f4befa3a64cb0f3ca31</authentication>
         <dataFormat>
           <textFormat>
             <recordDelimiter>
@@ -129,7 +73,7 @@ If ensemble numeric, number of ensembles: 10
       <attributeList>
         <attribute>
           <attributeName>time</attributeName>
-          <attributeDefinition>time</attributeDefinition>
+          <attributeDefinition>[dimension]{time}</attributeDefinition>
           <storageType>date</storageType>
           <measurementScale>
             <dateTime>
@@ -140,7 +84,7 @@ If ensemble numeric, number of ensembles: 10
         </attribute>
         <attribute>
           <attributeName>depth</attributeName>
-          <attributeDefinition>depth in reservior</attributeDefinition>
+          <attributeDefinition>[dimension]{depth in reservior}</attributeDefinition>
           <storageType>float</storageType>
           <measurementScale>
             <ratio>
@@ -155,7 +99,22 @@ If ensemble numeric, number of ensembles: 10
         </attribute>
         <attribute>
           <attributeName>ensemble</attributeName>
-          <attributeDefinition>index of ensemble member</attributeDefinition>
+          <attributeDefinition>[dimension]{index of ensemble member}</attributeDefinition>
+          <storageType>float</storageType>
+          <measurementScale>
+            <ratio>
+              <unit>
+                <standardUnit>dimensionless</standardUnit>
+              </unit>
+              <numericDomain>
+                <numberType>integer</numberType>
+              </numericDomain>
+            </ratio>
+          </measurementScale>
+        </attribute>
+        <attribute>
+          <attributeName>obs_flag</attributeName>
+          <attributeDefinition>[dimension]{observation error}</attributeDefinition>
           <storageType>float</storageType>
           <measurementScale>
             <ratio>
@@ -170,7 +129,7 @@ If ensemble numeric, number of ensembles: 10
         </attribute>
         <attribute>
           <attributeName>species_1</attributeName>
-          <attributeDefinition>Population size of species 1</attributeDefinition>
+          <attributeDefinition>[variable]{Pop. density of species 1}</attributeDefinition>
           <storageType>float</storageType>
           <measurementScale>
             <ratio>
@@ -185,7 +144,7 @@ If ensemble numeric, number of ensembles: 10
         </attribute>
         <attribute>
           <attributeName>species_2</attributeName>
-          <attributeDefinition>Population size of species 2</attributeDefinition>
+          <attributeDefinition>[variable]{Pop. density of species 2}</attributeDefinition>
           <storageType>float</storageType>
           <measurementScale>
             <ratio>
@@ -199,19 +158,8 @@ If ensemble numeric, number of ensembles: 10
           </measurementScale>
         </attribute>
         <attribute>
-          <attributeName>forecast_issue_time</attributeName>
-          <attributeDefinition>time that forecast was created</attributeDefinition>
-          <storageType>date</storageType>
-          <measurementScale>
-            <dateTime>
-              <formatString>YYYY-MM-DD</formatString>
-              <dateTimeDomain/>
-            </dateTime>
-          </measurementScale>
-        </attribute>
-        <attribute>
-          <attributeName>data_assimilation</attributeName>
-          <attributeDefinition>Flag whether time step included data assimilation</attributeDefinition>
+          <attributeName>forecast</attributeName>
+          <attributeDefinition>[flag]{whether time step assimilated data}</attributeDefinition>
           <storageType>float</storageType>
           <measurementScale>
             <ratio>
@@ -225,31 +173,18 @@ If ensemble numeric, number of ensembles: 10
           </measurementScale>
         </attribute>
         <attribute>
-          <attributeName>Forecast_id</attributeName>
-          <attributeDefinition>ID for specific forecast cycle</attributeDefinition>
-          <storageType>string</storageType>
+          <attributeName>data_assimilation</attributeName>
+          <attributeDefinition>[flag]{whether time step assimilated data}</attributeDefinition>
+          <storageType>float</storageType>
           <measurementScale>
-            <nominal>
-              <nonNumericDomain>
-                <textDomain>
-                  <definition>forecast id</definition>
-                </textDomain>
-              </nonNumericDomain>
-            </nominal>
-          </measurementScale>
-        </attribute>
-        <attribute>
-          <attributeName>ForecastProject_id</attributeName>
-          <attributeDefinition>ID for forecasting project</attributeDefinition>
-          <storageType>string</storageType>
-          <measurementScale>
-            <nominal>
-              <nonNumericDomain>
-                <textDomain>
-                  <definition>project id</definition>
-                </textDomain>
-              </nonNumericDomain>
-            </nominal>
+            <ratio>
+              <unit>
+                <standardUnit>dimensionless</standardUnit>
+              </unit>
+              <numericDomain>
+                <numberType>integer</numberType>
+              </numericDomain>
+            </ratio>
           </measurementScale>
         </attribute>
       </attributeList>
@@ -259,16 +194,26 @@ If ensemble numeric, number of ensembles: 10
     <metadata>
       <forecast>
         <drivers>
-          <uncertainty>no</uncertainty>
+          <status>absent</status>
         </drivers>
-        <forecast_horizon>30 years</forecast_horizon>
+        <forecast_horizon>30 days</forecast_horizon>
+        <forecast_issue_time>2001-03-04</forecast_issue_time>
+        <forecast_iteration_id>20010304T060000</forecast_iteration_id>
+        <forecast_project_id>LogisticDemo</forecast_project_id>
         <initial_conditions>
           <complexity>2</complexity>
-          <uncertainty>contains</uncertainty>
+          <status>present</status>
         </initial_conditions>
+        <metadata_standard_version>0.3</metadata_standard_version>
+        <model_description>
+          <forecast_model_id>v0.3</forecast_model_id>
+          <name>discrete Lotka–Volterra model</name>
+          <repository>https://github.com/eco4cast/EFIstandards/blob/master/vignettes/logistic-metadata-example.Rmd</repository>
+          <type>process-based</type>
+        </model_description>
         <parameters>
-          <complexity>3</complexity>
-          <uncertainty>contains</uncertainty>
+          <complexity>6</complexity>
+          <status>present</status>
         </parameters>
         <process_error>
           <complexity>2</complexity>
@@ -277,12 +222,17 @@ If ensemble numeric, number of ensembles: 10
             <size>10</size>
             <type>ensemble</type>
           </propagation>
-          <uncertainty>propagates</uncertainty>
+          <status>propagates</status>
         </process_error>
+        <process_error.1>
+          <complexity>2</complexity>
+          <covariance>FALSE</covariance>
+          <status>present</status>
+        </process_error.1>
         <random_effects>
-          <uncertainty>no</uncertainty>
+          <status>absent</status>
         </random_effects>
-        <timestep>1 year</timestep>
+        <timestep>1 day</timestep>
       </forecast>
     </metadata>
   </additionalMetadata>

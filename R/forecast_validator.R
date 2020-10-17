@@ -45,6 +45,7 @@ forecast_validator <- function(eml){
   check_exists(AM,"forecast_project_id")
   check_exists(AM,"metadata_standard_version")
   check_exists(AM,"model_description")
+  check_exists(AM$model_description,"forecast_model_id")
   check_exists(AM$model_description,"name")
   check_exists(AM$model_description,"type")
   check_exists(AM$model_description,"repository")
@@ -54,32 +55,33 @@ forecast_validator <- function(eml){
     "initial_conditions",
     "parameters",
     "drivers",
+    "random_effects",
     "process_error",
-    "random_effects"
+    "obs_error"
   )
 
-  ## Check UNCERTAINTY CLASS elements
+  ## Check STATUS & UNCERTAINTY CLASS elements
   validate_uqclass <- function(parent, element) {
     check_exists(parent, element)
     uqlist <- parent[[element]]
 
     ## Check UNCERTAINTY tag
-    check_exists(uqlist, "uncertainty")
-    uqunc <- uqlist[["uncertainty"]]
-    UQoptions <- c("no", "contains", "data_driven", "propagates", "assimilates")
+    check_exists(uqlist, "status")
+    uqunc <- uqlist[["status"]]
+    UQoptions <- c("absent", "present", "data_driven", "propagates", "assimilates")
     if (!uqunc %in% UQoptions) {
       usethis::ui_stop(sprintf(
-        "Invalid uncertainty class '%s'",
-        uqlist[["uncertainty"]]
+        "Invalid status/uncertainty class '%s'",
+        uqlist[["status"]]
       ))
     } else{
-      usethis::ui_done(paste0(element," uncertainty class valid: ",uqlist[["uncertainty"]]))
+      usethis::ui_done(paste0(element," status/uncertainty class valid: ",uqlist[["status"]]))
     }
 
     ## Check CONDITIONALLY DEPENDENT tags
     uqunc_f <- factor(uqunc, UQoptions, ordered = TRUE)
 
-    if (uqunc_f >= "contains") {
+    if (uqunc_f >= "present") {
       # Check complexity
       check_whole(uqlist,"complexity")
 

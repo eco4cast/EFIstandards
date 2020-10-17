@@ -14,6 +14,10 @@ check_exists <- function(list,name){
 }
 
 #' Check that an element exists and is UDUNITS2 parsable
+#'
+#' @param list list to check
+#' @param name element
+#' @param required whether the element is required or not
 check_parsable <- function(list,name,required=TRUE){
   if(lexists(list,name)){
     if(udunits2::ud.is.parseable(list[[name]])){
@@ -25,6 +29,10 @@ check_parsable <- function(list,name,required=TRUE){
 }
 
 #' Check that an element exists and is a whole number
+#'
+#' @param list list to check
+#' @param name element
+#' @param required whether the element is required or not
 check_whole <- function(list,name,required=TRUE){
   is.whole <- function(x){
     x = as.numeric(x)

@@ -285,23 +285,43 @@ write.csv(dfs, file = "logistic-forecast-summary-multi-variable-multi-depth.csv"
 ### Forecast output entity: dataTable
 Let's begin by documenting the metadata of the forecast output data table itself, which we'll do using EML's `dataTable` entity. In this example we'll assume we're working with format 2 (ensemble CSV), though most of the metadata would be identical for all three formats.
 
+To start, the `attributes` table stores the basic metadata about the variable names and units.
 ```{r}
 ## define variable names, units, etc
 ## in practice, this might be kept in a spreadsheet
 attributes <- tibble::tribble(
-  ~attributeName,     ~attributeDefinition,                      ~unit,                  ~formatString, ~numberType, ~definition,
-  "time",              "time",                                    "year",                "YYYY-MM-DD",  "numberType", NA,
-  "depth",             "depth in reservior",                      "meter",                NA,           "real",       NA,
-  "ensemble",          "index of ensemble member",                "dimensionless",        NA,           "integer",    NA,
-  "species_1",         "Population density of species 1",         "numberPerMeterSquared", NA,          "real",       NA,
-  "species_2",         "Population density of species 2",         "numberPerMeterSquared", NA,          "real",       NA,
-  "data_assimilation", "Flag whether time step assimilated data", "dimensionless",        NA,           "integer",    NA
-) ## note: EML uses a different unit standard than UDUNITS. For now use EML. EFI needs to provide a custom unitList.
+ ~attributeName,     ~attributeDefinition,                          ~unit,                  ~formatString, ~numberType, ~definition,
+ "time",              "[dimension]{time}",                          "year",                 "YYYY-MM-DD",  "numberType", NA,
+ "depth",             "[dimension]{depth in reservior}",            "meter",                 NA,           "real",       NA,
+ "ensemble",          "[dimension]{index of ensemble member}",      "dimensionless",         NA,           "integer",    NA,
+ "obs_flag",          "[dimension]{observation error}",             "dimensionless",         NA,           "integer",    NA,
+ "species_1",         "[variable]{Pop. density of species 1}",      "numberPerMeterSquared", NA,           "real",       NA,
+ "species_2",         "[variable]{Pop. density of species 2}",      "numberPerMeterSquared", NA,           "real",       NA,
+ "forecast",          "[flag]{whether time step assimilated data}", "dimensionless",         NA,           "integer",    NA,
+ "data_assimilation", "[flag]{whether time step assimilated data}", "dimensionless",         NA,           "integer",    NA
+) 
+## note: EML uses a different unit standard than UDUNITS. For now use EML. EFI needs to provide a custom unitList.
 attributes
 attrList <- set_attributes(attributes, 
-                           col_classes = c("Date", "numeric", "numeric", 
-                                           "numeric","numeric", "numeric"))
+                           col_classes = c("Date", "numeric", "numeric","numeric", 
+                                           "numeric","numeric", "numeric","numeric"))
+```
+Note that the EFI standard extends the EML `attibuteDefinition` to include a [variable_type] and {variable_definition}.
+The options for [variable_type] include:
+ * dimension
+ * variable = output variable
+ * diagnostic = variable output purely for diagnostic purposes
+ * observation = data that is or could be compared to an output_variable
+ * obs_error
+ * flag
+ * initial_condition
+ * driver
+ * parameter
+ * random_effect
+ * process_error
 
+We then link the attribute information with the info about a particular file
+```{r}
 ## sets metadata about the file itself (name, file type, size, MD5, etc)
 physical <- set_physical("logistic-forecast-ensemble-multi-variable-multi-depth.csv")
 
@@ -339,11 +359,10 @@ me <- list(individualName = list(givenName = "Quinn",
 ### Coverage
 Set Taxonomic, Temporal, and Geographic Coverage.  (Look, apparently we're 
 modeling population densities of *Gloeotrichia echinulata* cyanobacterium in Lake Sunapee, NH, USA)
-
 ```{r}
 coverage <- 
-  set_coverage(begin = first(time), 
-               end = last(time),
+  set_coverage(begin = first(times), 
+               end = last(times),
                sci_names = "Gloeotrichia echinulata",
                geographicDescription = "Lake Sunapee, NH, USA ",
                west = -72.15, east = -72.05, 
@@ -385,8 +404,7 @@ dataset = eml$dataset(
 ```
 
 ## Forecast-specific additionalMetadata
-The EFI standard is using EML's `additionalMetadata` capacity.
-
+The EFI standard is using EML's `additionalMetadata` capacity. Section 2.1 of the EFI standard describes both the basic elements (2.1.1) and the info about model structure and uncertainty (2.1.2).
 ```{r}
 additionalMetadata <- eml$additionalMetadata(
   metadata = list(
@@ -397,50 +415,86 @@ additionalMetadata <- eml$additionalMetadata(
       forecast_issue_time = forecast_issue_time,
       forecast_iteration_id = forecast_iteration_id,
       forecast_project_id = forecast_project_id,
-      metadata_standard_version = "0.2",
+      metadata_standard_version = "0.3",
       model_description = list(
+        forecast_model_id = forecast_model_id,
         name = "discrete Lotka–Volterra model",
         type = "process-based",
         repository = "https://github.com/eco4cast/EFIstandards/blob/master/vignettes/logistic-metadata-example.Rmd"
       ),
-## UNCERTAINTY CLASSES
+## MODEL STRUCTURE & UNCERTAINTY CLASSES
       initial_conditions = list(
-        # Possible values: no, contains, data_driven, propagates, assimilates
-        uncertainty = "contains",
+        # Possible values: absent, present, data_driven, propagates, assimilates
+        status = "present",
         # Number of parameters / dimensionality
-        complexity = 2
+        complexity = 2  ## [species 1, species 2] per depth
+      ),
+      drivers = list(
+        status = "absent"
       ),
       parameters = list(
-        uncertainty = "contains",
-        complexity = 3
+        status = "present",
+        complexity = 6  ## [r, K, alpha] x 2 spp
       ),
       random_effects = list(
-        uncertainty = "no"
+        status = "absent"
       ),
       process_error = list(
-        uncertainty = "propagates",
+        status = "propagates",
         propagation = list(
           type = "ensemble", # ensemble vs analytic
           size = 10          # required if ensemble
         ),
-        complexity = 2,
+        complexity = 2,   
         covariance = FALSE
       ),
-      drivers = list(
-        uncertainty = "no"
+      obs_error = list(
+        status = "present",
+        complexity = 2,   
+        covariance = FALSE
       )
     ) # forecast
   ) # metadata
 ) # eml$additionalMetadata
 ```
+Within the `additionalMetadata`, we anticipate the model structure info will be the most challenging to document.
+All six model structural elements / uncertainty classes need to be documented, even if just to record that a specific element is absent in the model. The six classes are:
 
+Class              | Description
+------------------ | -------------------------------------------------------
+initial_conditions | Uncertainty in the initialization of state variables (Y)
+drivers            | Uncertainty in model drivers, covariates, and exogenous scenarios (X)
+parameters         | Uncertainty in model parameters ($\theta$) 
+random_effects     | Unexplained variability and heterogeneity in model parameters ($\alpha$) 
+obs_error          | Uncertainty in the observations of the output variables (g)
+process_error      | Dynamic uncertainty in the process model ($\epsilon$)
+
+Each class has a very similar structure and the only required element in each is `status` which can take on the following valid values
+
+status      | Description
+----------- | --------------------------------------------------------------
+absent      | This model does not contain this concept (e.g. a linear regression model doesn't have initial conditions, random effects, or process_error). 
+present     | The model contains this concept (e.g. the model has parameters), but the values used are not derived from data and no uncertainty is represented
+data_driven | The model contains this concept and the inputs are data driven but uncertainty in this input is not explicitly propagated into predictions.
+propagates  | The model propagates uncertainty about this term into forecasts
+assimilates | The model iteratively updates this term through data assimilation.
+
+Except for 'absent' this list is ordinal (e.g. data_driven implies present)
+
+Next, the `<complexity>` tag is recommended, but not required, and should list the size/dimension of each status/uncertainty class at a single location (per dimensions defined above). For example, the logistic model has two initial conditions (n[1], n[2]), six parameters (r, K, and alpha for each species), and both process and observation error on the two state variables. `absent` statuses don't need to be documented as 0 as this is implied.
+
+The `<covariance>` tag states whether the errors/uncertainties within an uncertainty class are being treated as independent or not.
+
+Finally, the `<propagation>` and `<assimilation>` tags provide additional information about the methods used (see EFI standard doc). 
+
+## Assembling and validating the metadata
 
 All we need now is to combine the dataset metadata with the forecast additionalMetadata 
 ```{r}
 my_eml <- eml$eml(dataset = dataset,
            additionalMetadata = additionalMetadata,
-           packageId = forecast_project_id, 
-           system = "uuid"  ## system used to generate packageId
+           packageId = forecast_iteration_id , 
+           system = "datetime"  ## system used to generate packageId
            )
 ```
 
@@ -467,7 +521,7 @@ write_eml(my_eml, "forecast-eml.xml")
 ```
 
 At this point, we could easily upload this metadata along with the data itself 
-to DataONE via the API (or `dataone` R package.)
+to a repository (e.g. DataONE) manually or via an API.
 
 We can also generate a JSON-LD version of EML:
 

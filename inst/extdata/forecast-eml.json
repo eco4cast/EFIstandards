@@ -13,16 +13,26 @@
     "metadata": {
       "forecast": {
         "drivers": {
-          "uncertainty": "no"
+          "status": "absent"
         },
-        "forecast_horizon": "30 years",
+        "forecast_horizon": "30 days",
+        "forecast_issue_time": "2001-03-04",
+        "forecast_iteration_id": "20010304T060000",
+        "forecast_project_id": "LogisticDemo",
         "initial_conditions": {
           "complexity": "2",
-          "uncertainty": "contains"
+          "status": "present"
+        },
+        "metadata_standard_version": "0.3",
+        "model_description": {
+          "forecast_model_id": "v0.3",
+          "name": "discrete Lotka–Volterra model",
+          "repository": "https://github.com/eco4cast/EFIstandards/blob/master/vignettes/logistic-metadata-example.Rmd",
+          "type": "process-based"
         },
         "parameters": {
-          "complexity": "3",
-          "uncertainty": "contains"
+          "complexity": "6",
+          "status": "present"
         },
         "process_error": {
           "complexity": "2",
@@ -31,17 +41,22 @@
             "size": "10",
             "type": "ensemble"
           },
-          "uncertainty": "propagates"
+          "status": "propagates"
+        },
+        "process_error.1": {
+          "complexity": "2",
+          "covariance": "FALSE",
+          "status": "present"
         },
         "random_effects": {
-          "uncertainty": "no"
+          "status": "absent"
         },
-        "timestep": "1 year"
+        "timestep": "1 day"
       }
     }
   },
   "dataset": {
-    "title": "A very silly logistic forecast",
+    "title": "A very simple Lotka-Volterra forecast",
     "creator": {
       "id": "https://orcid.org/0000-0003-1282-7825",
       "individualName": {
@@ -63,36 +78,31 @@
     "intellectualRights": "http://www.lternet.edu/data/netpolicy.html.",
     "coverage": {
       "geographicCoverage": {
-        "geographicDescription": "Harvard Forest Greenhouse, Tom Swamp Tract (Harvard Forest)",
+        "geographicDescription": "Lake Sunapee, NH, USA ",
         "boundingCoordinates": {
-          "westBoundingCoordinate": "-122.44",
-          "eastBoundingCoordinate": "-117.15",
-          "northBoundingCoordinate": "37.38",
-          "southBoundingCoordinate": "30",
-          "boundingAltitudes": {
-            "altitudeMinimum": "160",
-            "altitudeMaximum": "330",
-            "altitudeUnits": "meter"
-          }
+          "westBoundingCoordinate": "-72.15",
+          "eastBoundingCoordinate": "-72.05",
+          "northBoundingCoordinate": "43.48",
+          "southBoundingCoordinate": "43.36"
         }
       },
       "temporalCoverage": {
         "rangeOfDates": {
           "beginDate": {
-            "calendarDate": "2012-06-01"
+            "calendarDate": "2001-03-04"
           },
           "endDate": {
-            "calendarDate": "2013-12-31"
+            "calendarDate": "2001-04-02"
           }
         }
       },
       "taxonomicCoverage": {
         "taxonomicClassification": {
           "taxonRankName": "Genus",
-          "taxonRankValue": "Sarracenia",
+          "taxonRankValue": "Gloeotrichia",
           "taxonomicClassification": {
             "taxonRankName": "Species",
-            "taxonRankValue": "purpurea"
+            "taxonRankValue": "echinulata"
           }
         }
       }
@@ -100,25 +110,18 @@
     "contact": {
       "references": "https://orcid.org/0000-0003-1282-7825"
     },
-    "methods": {
-      "methodStep": {
-        "description": {
-          "markdown": "# Methods Description\n\n**Forecast timestep**\n1 day\n\n**Forecast time horizon**\n\n**Data assimilation**\n\nData Assimilation used: No\nIf, DA used - type of method: N/A\nIf, DA used - Number of parameters calibrated: N/A\nIf, DA used - Sources of training data (DOI, GitHub): N/A\n\n**Model Description**\n\nType of model (Empirical, process-based, machine learning): Empirical\nModel name: discrete Lotka–Volterra model\nLocation of repository with model code: https://github.com/somewhere or https://doi.org/10.xxx\nModel citation: N/A\nTotal number of model process parameters: 3\n\n**Model Covariates**\n\nType (i.e., meteorology): N/A\nSource (i.e., NOAA GEFS): N/A\n\n**Uncertainty**\n\nAnswers: No, Derived from data, Propagates, Assimilates\n\nInitial conditions:\nParameter:\nParameter Random Effects:\nProcess (within model):\nMulti-model:\nDriver:\nScenario:\n\nMethod for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric\nIf Analytic, specific method\nIf ensemble numeric, number of ensembles: 10\n\n\n"
-        }
-      }
-    },
     "dataTable": {
-      "entityName": "logistic-forecast-ensemble-multi-variable-multi-depth.csv",
+      "entityName": "forecast",
       "entityDescription": "Forecast of population size using a depth specific model",
       "physical": {
         "objectName": "logistic-forecast-ensemble-multi-variable-multi-depth.csv",
         "size": {
           "unit": "bytes",
-          "size": "25389"
+          "size": "108979"
         },
         "authentication": {
           "method": "MD5",
-          "authentication": "3e3c8f87d864948381c607c7f17ed1e8"
+          "authentication": "e950d787cc284f4befa3a64cb0f3ca31"
         },
         "dataFormat": {
           "textFormat": {
@@ -134,7 +137,7 @@
         "attribute": [
           {
             "attributeName": "time",
-            "attributeDefinition": "time",
+            "attributeDefinition": "[dimension]{time}",
             "storageType": "date",
             "measurementScale": {
               "dateTime": {
@@ -145,7 +148,7 @@
           },
           {
             "attributeName": "depth",
-            "attributeDefinition": "depth in reservior",
+            "attributeDefinition": "[dimension]{depth in reservior}",
             "storageType": "float",
             "measurementScale": {
               "ratio": {
@@ -160,7 +163,22 @@
           },
           {
             "attributeName": "ensemble",
-            "attributeDefinition": "index of ensemble member",
+            "attributeDefinition": "[dimension]{index of ensemble member}",
+            "storageType": "float",
+            "measurementScale": {
+              "ratio": {
+                "unit": {
+                  "standardUnit": "dimensionless"
+                },
+                "numericDomain": {
+                  "numberType": "integer"
+                }
+              }
+            }
+          },
+          {
+            "attributeName": "obs_flag",
+            "attributeDefinition": "[dimension]{observation error}",
             "storageType": "float",
             "measurementScale": {
               "ratio": {
@@ -175,7 +193,7 @@
           },
           {
             "attributeName": "species_1",
-            "attributeDefinition": "Population size of species 1",
+            "attributeDefinition": "[variable]{Pop. density of species 1}",
             "storageType": "float",
             "measurementScale": {
               "ratio": {
@@ -190,7 +208,7 @@
           },
           {
             "attributeName": "species_2",
-            "attributeDefinition": "Population size of species 2",
+            "attributeDefinition": "[variable]{Pop. density of species 2}",
             "storageType": "float",
             "measurementScale": {
               "ratio": {
@@ -204,19 +222,8 @@
             }
           },
           {
-            "attributeName": "forecast_issue_time",
-            "attributeDefinition": "time that forecast was created",
-            "storageType": "date",
-            "measurementScale": {
-              "dateTime": {
-                "formatString": "YYYY-MM-DD",
-                "dateTimeDomain": []
-              }
-            }
-          },
-          {
-            "attributeName": "data_assimilation",
-            "attributeDefinition": "Flag whether time step included data assimilation",
+            "attributeName": "forecast",
+            "attributeDefinition": "[flag]{whether time step assimilated data}",
             "storageType": "float",
             "measurementScale": {
               "ratio": {
@@ -230,29 +237,16 @@
             }
           },
           {
-            "attributeName": "Forecast_id",
-            "attributeDefinition": "ID for specific forecast cycle",
-            "storageType": "string",
+            "attributeName": "data_assimilation",
+            "attributeDefinition": "[flag]{whether time step assimilated data}",
+            "storageType": "float",
             "measurementScale": {
-              "nominal": {
-                "nonNumericDomain": {
-                  "textDomain": {
-                    "definition": "forecast id"
-                  }
-                }
-              }
-            }
-          },
-          {
-            "attributeName": "ForecastProject_id",
-            "attributeDefinition": "ID for forecasting project",
-            "storageType": "string",
-            "measurementScale": {
-              "nominal": {
-                "nonNumericDomain": {
-                  "textDomain": {
-                    "definition": "project id"
-                  }
+              "ratio": {
+                "unit": {
+                  "standardUnit": "dimensionless"
+                },
+                "numericDomain": {
+                  "numberType": "integer"
                 }
               }
             }
@@ -263,5 +257,5 @@
   },
   "packageId": "20010304T060000",
   "schemaLocation": "https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd",
-  "system": "uuid"
+  "system": "datetime"
 }
