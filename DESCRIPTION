@@ -29,5 +29,6 @@ Suggests:
     lubridate,
     ncdf4,
     dplyr,
-    tidyr
+    tidyr,
+    reshape2
 VignetteBuilder: knitr
