@@ -358,12 +358,16 @@ me <- list(individualName = list(givenName = "Quinn",
 
 ### Coverage
 Set Taxonomic, Temporal, and Geographic Coverage.  (Look, apparently we're 
-modeling population densities of *Gloeotrichia echinulata* cyanobacterium in Lake Sunapee, NH, USA)
+modeling population densities of *Gloeotrichia echinulata* and *Anabaena circinalis* cyanobacterium in Lake Sunapee, NH, USA)
 ```{r}
+taxa <- tibble::tribble(
+  ~Genus,      ~Species,
+"Gloeotrichia", "echinulata",
+"Anabaena",     "circinalis")
 coverage <- 
   set_coverage(begin = first(times), 
                end = last(times),
-               sci_names = "Gloeotrichia echinulata",
+               sci_names = taxa,
                geographicDescription = "Lake Sunapee, NH, USA ",
                west = -72.15, east = -72.05, 
                north = 43.48, south = 43.36)
