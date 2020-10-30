@@ -83,59 +83,64 @@ forecast_validator <- function(eml){
 
     if (uqunc_f >= "present") {
       # Check complexity
-      check_whole(uqlist,"complexity")
+      check_whole(uqlist,"complexity",required = FALSE)
 
-      ## ADD special cases for process_error
-      if(element == "process_error"){
-        check_exists(uqlist,"covariance")
-        if(lexists(uqlist,"covariance")){
-          if(uqlist[["covariance"]]){     ## if TRUE (full cov matrix), check for localization
-            check_exists(uqlist,"localization")
-          }
-        }
-      }
+
+      ## ADD special cases for process_error  [[ CURRENTLY SET TO RECOMMENDED]]
+       if(element == "process_error"){
+      #   check_exists(uqlist,"covariance")
+         if(lexists(uqlist,"covariance")){
+           if(uqlist[["covariance"]]){     ## if TRUE (full cov matrix), check for localization
+      #       check_exists(uqlist,"localization")
+           }
+         }
+       }
     }
     if (uqunc_f >= "propagates") {
       # Check propagation method
-      check_exists(uqlist,"propagation")
-      plist <- uqlist[["propagation"]]
+      #check_exists(uqlist,"propagation")  ## RECOMMENDED
+      if(lexists(uqlist,"propagation")){
+        plist <- uqlist[["propagation"]]
 
-      ## type
-      check_exists(plist,"type")
-      if (!tolower(plist[["type"]]) %in% c("ensemble","analytic")) {
-        usethis::ui_stop(sprintf(
-          "'%s' Invalid uncertainty <propagation> <type> '%s'",
-          element,plist[["type"]]
-        ))
-      } else{
-        usethis::ui_done(paste0(element," propagation type valid: ",plist[["type"]]))
-      }
+        ## type
+        check_exists(plist,"type")
+        if (!tolower(plist[["type"]]) %in% c("ensemble","analytic")) {
+          usethis::ui_stop(sprintf(
+            "'%s' Invalid uncertainty <propagation> <type> '%s'",
+            element,plist[["type"]]
+          ))
+        } else{
+          usethis::ui_done(paste0(element," propagation type valid: ",plist[["type"]]))
+        }
 
-      ## ensemble size
-      if(tolower(plist[["type"]]) == "ensemble"){
-        check_whole(plist,"size")
-      } else {
+        ## ensemble size
+        if(tolower(plist[["type"]]) == "ensemble"){
+          check_whole(plist,"size")
+        } else {
 
-      ## ADD check on analytic <method>
-      }
-    }
+        ## ADD check on analytic <method>
+        }
+      } ## end propagation
+    } ## end propagates
 
     if (uqunc_f >= "assimilates") {
       # Check assimilation method
-      check_exists(uqlist,"assimilation")
-      alist <- uqlist[["assimilation"]]
+#      check_exists(uqlist,"assimilation")  ## RECOMMENDED
+      if(lexists(uqlist,"assimilation")){
+        alist <- uqlist[["assimilation"]]
 
-      ## type
-      check_exists(alist,"type")
+        ## type
+        check_exists(alist,"type")
 
-      ## reference
-      check_exists(alist,"reference")
+        ## reference
+        check_exists(alist,"reference")
 
-      ## complexity
-      check_whole(alist,"complexity")
+        ## complexity
+        check_whole(alist,"complexity")
 
-      ## attributeName (optional)
-      check_whole(alist,"attributeName",required = FALSE)
+        ## attributeName (optional)
+        check_whole(alist,"attributeName",required = FALSE)
+      }
     }
   }
 
