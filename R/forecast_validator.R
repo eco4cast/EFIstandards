@@ -40,7 +40,7 @@ forecast_validator <- function(eml){
 
   check_parsable(AM,"timestep")
   check_parsable(AM,"forecast_horizon")
-  check_parsable(AM,"forecast_issue_time")
+  check_exists(AM,"forecast_issue_time")  ## need add check that this is a valid ISO datatime
   check_exists(AM,"forecast_iteration_id")
   check_exists(AM,"forecast_project_id")
   check_exists(AM,"metadata_standard_version")
