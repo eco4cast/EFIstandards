@@ -524,7 +524,37 @@ write.csv(dfs, file = "logistic-forecast-summary-multi-variable-multi-depth.csv"
 
 ##### Python
 
-(Under construction)
+```{python}
+keep_cols = [col for col in df_combined.columns if not "Species" in col]
+df_long = df_combined.melt(id_vars=keep_cols, var_name="species")
+
+dfs_wide = df_long\
+    .groupby(["time", "depth", "obs_flag", "species", "forecast", "data_assimilation"])\
+    .agg(
+        mean = ("value", np.mean), sd = ("value", np.std),
+        Conf_interv_025 = ("value", lambda x: np.quantile(x, 0.025)),
+        Conf_interv_975 = ("value", lambda x: np.quantile(x, 0.975)),
+    )\
+    .reset_index()\
+    .melt(
+        id_vars = ["time", "depth", "obs_flag", "forecast",
+                   "data_assimilation", "species"],
+        value_vars = ["mean", "sd", "Conf_interv_025", "Conf_interv_975"],
+        var_name = "statistic"
+    )
+
+dfs = dfs_wide.pivot(
+    index = ["time", "depth", "obs_flag", "forecast",
+             "data_assimilation", "statistic"],
+    columns="species",
+    values = "value"
+).reset_index()
+
+dfs.head()
+
+out_summary = tempfile.NamedTemporaryFile(suffix=".csv")
+dfs.to_csv(out_summary.name)
+```
 
 #### {-}
 
