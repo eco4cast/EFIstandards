@@ -473,7 +473,24 @@ write.csv(df_combined,
 
 ##### Python
 
-(Under construction...)
+```{python}
+n_names = ["time", "depth", "ensemble", "obs_flag", "species"]
+n_index = pd.MultiIndex.from_product([range(s) for s in n.shape], names=n_names)
+df = pd.DataFrame({"pop": n.flatten()}, index = n_index)["pop"]
+
+df_wide = df.unstack("species").reset_index()
+df_wide["time"] = [times[x] for x in df_wide["time"]]
+df_wide["depth"] = [depths[x] for x in df_wide["depth"]]
+df_wide.rename(columns={0: "Species_1", 1: "Species_2"}, inplace=True)
+
+meta_df = pd.DataFrame({"time": times, "forecast": forecast, "data_assimilation": data_assimilation})
+
+df_combined = df_wide.merge(meta_df, on="time", how="right")
+df_combined.head()
+
+out_csv = tempfile.NamedTemporaryFile(suffix=".csv")
+df_combined.to_csv(out_csv.name)
+```
 
 #### {-}
 
