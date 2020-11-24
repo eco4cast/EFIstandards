@@ -27,6 +27,6 @@ This package includes a number of vignettes illustrating the application of the 
 
 ### Documentation:
 
-A more detailed description of the EFI standard can be found at [https://shorturl.at/irMQW](https://shorturl.at/irMQW). 
+A more detailed description of the EFI standard can be found at [https://shorturl.at/irMQW](https://shorturl.at/irMQW). Note that the Standard is a work in progress. If you find issues as you are applying them, let us know at eco4cast.initiative@gmail.com. 
 
 Pkgdown rendered documentation of functions and vignettes can be found at https://eco4cast.github.io/EFIstandards/
