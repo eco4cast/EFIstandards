@@ -1,11 +1,15 @@
 ---
 title: "Example metadata for a Lotka-Volterra population growth forecast"
-output: rmarkdown::html_vignette
+output: rmarkdown::html_document
 vignette: >
   %\VignetteIndexEntry{Logistic Growth Simulation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+#### Code {.tabset}
+
+##### R
 
 ```{r setup, message=FALSE}
 library(EML)
@@ -20,6 +24,21 @@ emld::eml_version("eml-2.2.0")
 set.seed(42)
 ```
 
+##### Python
+
+```{python setup-py}
+import datetime
+import tempfile
+
+import numpy as np
+import matplotlib.pyplot as plt
+import netCDF4
+
+import pandas as pd
+```
+
+#### {-}
+
 A simple, example forecast of population growth of two interacting species
 
 ========================================================
@@ -27,6 +46,10 @@ A simple, example forecast of population growth of two interacting species
 # Generating the forecast
 
 To illustrate the application of the forecast standard, we'll consider the classic Lotka-Volterra population growth model. To keep this first example simple, we'll only consider two species and two uncertainties - an additive process error, which converts this to a stochastic Lotka-Volterra, and an observation error. We'll propagate uncertainty by running multiple ensembles. To illustrate the ability of the output format to accommodate spatial dimensions, we'll run the model at multiple depths in a water column (e.g. lake or ocean) but those depths are not interacting -- we know this isn't realistic, but we want to keep things simple. Overall, this gives us the following *dimensions*
+
+#### Code {.tabset}
+
+##### R
 
 ```{r}
 forecast_issue_time = as.Date("2001-03-04")  ## start date of our forecast
@@ -46,7 +69,32 @@ obs_dim <- 2 ## 1 = latent state
              ## 2 = latent state + observation error
 ```
 
+##### Python
+
+```{python}
+forecast_issue_time = datetime.date(2001, 3, 4)
+n_time = 30
+times = [forecast_issue_time + datetime.timedelta(days = x) for x in range(n_time)]
+
+depths = [1, 3, 5]
+n_depths = len(depths)
+
+n_ensembles = 10
+ensembles = list(range(n_ensembles))
+
+species = ["species_1", "species_2"]
+n_species = len(species)
+
+obs_dim = 2 ## 1 = latent state, 2 = latent_state + observation error
+```
+
+## {-}
+
 Next we're going to assume fixed parameters and initial conditions, set up storage for our forecast output (which we see has 5 dimensions), and then forward simulate the populations
+
+#### Code {.tabset}
+
+##### R
 
 ```{r}
 ## parameters for species_1 and species_2
@@ -92,7 +140,49 @@ for(t in 2:n_time){
 }
 ```
 
+##### Python
+
+```{python}
+r = [1, 3]
+K = [10, 20]
+alpha = [0.2, 0.3]
+
+process_sd = 0.01
+obs_sd = [0.5, 0.2]
+
+n0 = 0.5
+
+n = np.zeros((n_time, n_depths, n_ensembles, obs_dim, n_species))
+n[0,:,:,:,:] = n0
+
+forecast = np.zeros((n_time), dtype=int)
+data_assimilation = np.zeros((n_time), dtype=int)
+
+for t in range(1, n_time):
+    for depth in range(n_depths):
+        for ens in range(n_ensembles):
+            # predict latent state
+            n_curr = n[t-1,depth,ens,0,:]
+            n[t, depth, ens, 0, 0] = n_curr[0] + \
+                r[0] * n_curr[0] * \
+                (1 - ((n_curr[0] + alpha[0]*n_curr[1]) / K[0])) + \
+                np.random.randn(1) * process_sd
+            n[t, depth, ens, 0, 1] = n_curr[1] + \
+                r[1] * n_curr[1] * \
+                (1 - ((n_curr[1] + alpha[1]*n_curr[0]) / K[1])) + \
+                np.random.randn(1) * process_sd
+            # predict observed values
+            n[t,depth,ens,1,:] = n[t,depth,ens,0,:] + np.random.randn(2) * obs_sd
+
+```
+
+#### {-}
+
 Here's a simple visualization of our ensemble forecast at one depth
+
+#### Code {.tabset}
+
+##### R
 
 ```{r}
 plot(times,n[,1,1,1,1],ylim=range(n),ylab="Population Density",type='l')
@@ -104,6 +194,25 @@ for(s in seq_along(species)){ ##species
 }
 legend("bottomright",legend=species,col = seq_along(species),lty = 1)
 ```
+
+##### Python
+
+```{python}
+plt.plot(times, n[:,0,0,0,0], "-")
+colors = ["r", "b"]
+for s in range(n_species):
+    for e in range(n_ensembles):
+        plt.plot(times, n[:,0,e,0,s], "-", color=colors[s])
+        plt.plot(times, n[:,0,e,1,s], "+", color=colors[s])
+leg_lines = [plt.Line2D([0], [0], color=colors[x]) for x in range(n_species)]
+leg_labs = [f"Species {x}" for x in range(n_species)]
+plt.legend(leg_lines, leg_labs)
+plt.xlabel("Time")
+plt.ylabel("Population Density")
+plt.show()
+```
+
+#### {-}
 
 # Saving to a standardized output format
 
@@ -129,15 +238,33 @@ For example, if you have a forecast code base on GitHub and launch a forecast fr
 that runs daily for 365 days, then there will be one forecast_project_id and 365 
 forecast_iteration_ids. A paper analyzing the forecasts would cite the forecast_project_id.
 
+#### Code {.tabset}
+
+##### R
+
 ``` {r}
 forecast_project_id <- "LogisticDemo"
 forecast_model_id   <- "v0.3"
 forecast_iteration_id <- "20010304T060000"   # ISO datetime should make a valid Forecast_id
 ```
 
+##### Python
+
+```{python}
+forecast_project_id = "LogisticDemo"
+forecast_model_id = "v0.3"
+forecast_iteration_id = "20010304T060000"
+```
+
+#### {-}
+
 ### netcdf Dimensions
 
 Once we have our ID's defined, we're going to use `ncdim_def` to define the dimensions that our output variables will have
+
+#### Code {.tabset}
+
+##### R
 
 ```{r}
 ## Set dimensions
@@ -173,9 +300,46 @@ udunits2::ud.is.parseable(ensdim$units)
 udunits2::ud.is.parseable(obsdim$units)
 ```
 
+##### Python
+
+Note that unlike R, the Python interface expects us to create the output NetCDF file first before populating it with output.
+
+```{python}
+
+ncfile = tempfile.NamedTemporaryFile(suffix=".nc")
+ncout = netCDF4.Dataset(ncfile.name, mode='w')
+
+timedim = ncout.createDimension("time", n_time)
+timevar = ncout.createVariable("time", "f4", "time")
+timevar.units = f"days since {forecast_issue_time}"
+timevar[:] = [(t - forecast_issue_time).days for t in times]
+
+depthdim = ncout.createDimension("depth", n_depths)
+depthvar = ncout.createVariable("depth", "f4", "depth")
+depthvar.units = "meters"
+depthvar[:] = depths
+
+ensdim = ncout.createDimension("ensemble", n_ensembles)
+ensvar = ncout.createVariable("ensemble", "i4", "ensemble")
+ensvar.units = ""
+ensvar[:] = ensembles
+
+obsdim = ncout.createDimension("obs_flag", obs_dim)
+obsvar = ncout.createVariable("obs_flag", "i4", "obs_flag")
+obsvar.units = ""
+obsvar[:] = list(range(obs_dim))
+
+```
+
+#### {-}
+
 ### Variable names
 
 Once we've defined our dimensions, we can then define the metadata about our variables using `ncvar_def`
+
+#### Code {.tabset}
+
+##### R
 
 ```{r}
 fillvalue <- 1e32  ## missing data value
@@ -208,9 +372,35 @@ def_list[[4]] <- ncvar_def(name =  "data_assimilation",
                            prec="single")
 ```
 
+##### Python
+
+```{python}
+spp1nc = ncout.createVariable("species_1", "f4", ("time", "depth", "ensemble", "obs_flag"))
+spp1nc.units = "number of individuals"
+spp1nc.longname = "<scientific name of species 1>"
+
+spp2nc = ncout.createVariable("species_2", "f4", ("time", "depth", "ensemble", "obs_flag"))
+spp2nc.units = "number of individuals"
+spp2nc.longname = "<scientific name of species 2>"
+
+forecastnc = ncout.createVariable("forecast", "i4", ("time"))
+forecastnc.units = "integer"
+forecastnc.longname = "EFI standard forecast code. 0 = hindcast"
+
+danc = ncout.createVariable("data_assimilation", "i4", ("time"))
+danc.units = "integer"
+danc.longname = "EFI standard data assimilation code. 0 = no data"
+```
+
+#### {-}
+
 ### Creating the file
 
 Finally, we'll now create our netCDF file and add our outputs and global metadata to the file
+
+#### Code {.tabset}
+
+##### R
 
 ```{r}
 
@@ -237,10 +427,35 @@ ncatt_put(ncout,0,"forecast_iteration_id",as.character(forecast_iteration_id),
 nc_close(ncout)   ## make sure to close the file
 ```
 
+##### Python
+
+Recall: We already created the file above.
+
+```{python}
+# Write data to file
+spp1nc[:,:,:,:] = n[:,:,:,:,0]
+spp2nc[:,:,:,:] = n[:,:,:,:,1]
+forecastnc[:] = forecast
+danc[:] = data_assimilation
+
+# Set global attributes (metadata)
+ncout.forecast_project_id = forecast_project_id
+ncout.forecast_model_id = forecast_model_id
+ncout.forecast_iteration_id = forecast_iteration_id
+
+ncout.close()
+```
+
+#### {-}
+
 # Standard Option 2: ensemble CSV
 
 Convert to a flat file format (CSV) with one column for each variable and all
 ensemble members saved
+
+#### Code {.tabset}
+
+##### R
 
 ```{r}
 ## wrangle data into a tidy format
@@ -256,9 +471,19 @@ write.csv(df_combined,
           file = "logistic-forecast-ensemble-multi-variable-multi-depth.csv")
 ```
 
+##### Python
+
+(Under construction...)
+
+#### {-}
+
 # Standard Option 3: summary CSV
 
 Convert to a flat file format (CSV) with forecast distribution summaries saved
+
+#### Code {.tabset}
+
+##### R
 
 ```{r}
 ## calculate summary statistics across ensemble members and output variables
@@ -280,12 +505,23 @@ head(dfs)
 write.csv(dfs, file = "logistic-forecast-summary-multi-variable-multi-depth.csv")
 ```
 
+##### Python
+
+(Under construction)
+
+#### {-}
+
 # Standardized Metadata
 
 ### Forecast output entity: dataTable
 Let's begin by documenting the metadata of the forecast output data table itself, which we'll do using EML's `dataTable` entity. In this example we'll assume we're working with format 2 (ensemble CSV), though most of the metadata would be identical for all three formats.
 
 To start, the `attributes` table stores the basic metadata about the variable names and units.
+
+#### Code {.tabset}
+
+##### R
+
 ```{r}
 ## define variable names, units, etc
 ## in practice, this might be kept in a spreadsheet
@@ -306,6 +542,14 @@ attrList <- set_attributes(attributes,
                            col_classes = c("Date", "numeric", "numeric","numeric", 
                                            "numeric","numeric", "numeric","numeric"))
 ```
+
+##### Python
+
+(Under construction)
+
+
+#### {-}
+
 Note that the EFI standard extends the EML `attibuteDefinition` to include a [variable_type] and {variable_definition}.
 The options for [variable_type] include:
  * dimension
@@ -321,6 +565,12 @@ The options for [variable_type] include:
  * process_error
 
 We then link the attribute information with the info about a particular file
+
+
+#### Code {.tabset}
+
+##### R
+
 ```{r}
 ## sets metadata about the file itself (name, file type, size, MD5, etc)
 physical <- set_physical("logistic-forecast-ensemble-multi-variable-multi-depth.csv")
@@ -332,6 +582,14 @@ dataTable <- eml$dataTable(
                  physical = physical,
                  attributeList = attrList)
 ```
+
+##### Python
+
+(Under construction)
+
+#### {-}
+
+
 Here `entityName = "forecast"` is a standard name within the EFI standard to allow us to distinguish this entity from metadata about parameters, drivers, etc.
 
 There's a lot more optional terminology that could be exploited here -- for 
@@ -349,6 +607,10 @@ metadata to the record describing our forecast, which is essential for citing,
 discovering, and interpreting the result.  We start with some authorship 
 information. 
 
+#### Code {.tabset}
+
+##### R
+
 ```{r}
 me <- list(individualName = list(givenName = "Quinn", 
                                  surName = "Thomas"),
@@ -356,9 +618,21 @@ me <- list(individualName = list(givenName = "Quinn",
            id = "https://orcid.org/0000-0003-1282-7825")
 ```
 
+##### Python
+
+(Under construction)
+
+#### {-}
+
 ### Coverage
+
 Set Taxonomic, Temporal, and Geographic Coverage.  (Look, apparently we're 
 modeling population densities of *Gloeotrichia echinulata* and *Anabaena circinalis* cyanobacterium in Lake Sunapee, NH, USA)
+
+#### Code {.tabset}
+
+##### R
+
 ```{r}
 taxa <- tibble::tribble(
   ~Genus,      ~Species,
@@ -373,8 +647,20 @@ coverage <-
                north = 43.48, south = 43.36)
 ```
 
+##### Python
+
+(Under construction)
+
+#### {-}
+
 ### Keywords
+
 Set key words.  We will need to develop a EFI controlled vocabulary
+
+#### Code {.tabset}
+
+##### R
+
 ```{r}
 keywordSet <- list(
     list(
@@ -385,14 +671,38 @@ keywordSet <- list(
     ))
 ```
 
+##### Python
+
+(Under construction)
+
+#### {-}
+
 ### Abstract
+
 Our dataset needs an abstract describing what this is all about.
+
+#### Code {.tabset}
+
+##### R
+
 ```{r}
 abstract_text <- system.file("extdata", "abstract.md", package="EFIstandards", mustWork = TRUE)
 ```
 
+##### Python
+
+(Under construction)
+
+#### {-}
+
 ### Dataset
+
 Next, we'll combine these various bits to document the output dataset as a whole
+
+#### Code {.tabset}
+
+##### R
+
 ```{r}
 dataset = eml$dataset(
                title = "A very simple Lotka-Volterra forecast",
@@ -407,8 +717,20 @@ dataset = eml$dataset(
                )
 ```
 
+##### Python
+
+(Under construction)
+
+#### {-}
+
 ## Forecast-specific additionalMetadata
+
 The EFI standard is using EML's `additionalMetadata` capacity. Section 2.1 of the EFI standard describes both the basic elements (2.1.1) and the info about model structure and uncertainty (2.1.2).
+
+#### Code {.tabset}
+
+##### R
+
 ```{r}
 additionalMetadata <- eml$additionalMetadata(
   metadata = list(
@@ -461,6 +783,13 @@ additionalMetadata <- eml$additionalMetadata(
   ) # metadata
 ) # eml$additionalMetadata
 ```
+
+##### Python
+
+(Under construction)
+
+#### {-}
+
 Within the `additionalMetadata`, we anticipate the model structure info will be the most challenging to document.
 All six model structural elements / uncertainty classes need to be documented, even if just to record that a specific element is absent in the model. The six classes are:
 
@@ -494,6 +823,11 @@ Finally, the `<propagation>` and `<assimilation>` tags provide additional inform
 ## Assembling and validating the metadata
 
 All we need now is to combine the dataset metadata with the forecast additionalMetadata 
+
+#### Code {.tabset}
+
+##### R
+
 ```{r}
 my_eml <- eml$eml(dataset = dataset,
            additionalMetadata = additionalMetadata,
@@ -502,11 +836,21 @@ my_eml <- eml$eml(dataset = dataset,
            )
 ```
 
+##### Python
+
+(Under construction)
+
+#### {-}
+
 Once we have finished building our EML metadata, we can confirm it is valid.  
 This will catch any missing elements.  (Recall that what is 'required' depends 
 on what you include -- for example, you don't have to document a `dataTable` at 
 all, but if you do, you have to document the "physical" file format it is in  
 (e.g. `csv`) and the attributes and units it uses!)
+
+#### Code {.tabset}
+
+##### R
 
 ```{r}
 ## check base EML
@@ -516,25 +860,41 @@ eml_validate(my_eml)
 EFIstandards::forecast_validator(my_eml)
 ```
 
+##### Python
+
+(Under construction)
+
+#### {-}
 
 
 We are now ready to write out a valid EML document: 
 
+#### Code {.tabset}
+
+##### R
+
 ```{r}
 write_eml(my_eml, "forecast-eml.xml")
 ```
+
+##### Python
+
+(Under construction)
+
+#### {-}
 
 At this point, we could easily upload this metadata along with the data itself 
 to a repository (e.g. DataONE) manually or via an API.
 
 We can also generate a JSON-LD version of EML:
 
+#### Code {.tabset}
+
+##### R
+
 ```{r}
 emld::as_json(as_emld("forecast-eml.xml"), file = "forecast-eml.json")
 ```
-
-
-
 
 ```{r include=FALSE}
 ## Cleanup
@@ -543,3 +903,9 @@ lapply(list.files(pattern = "[.]json"), unlink)
 lapply(list.files(pattern = "[.]xml"), unlink)
 
 ```
+
+##### Python
+
+(Under construction)
+
+#### {-}
