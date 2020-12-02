@@ -1,0 +1,155 @@
+---
+title: "Example of interacting with and visualizing EFI standard data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data Access and Visualization}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, message=FALSE}
+library(EML)
+library(emld)
+library(lubridate)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+
+Visualizing the simple, example forecast of population growth of two interacting species
+
+========================================================
+
+## Parsing metadata 
+
+
+First we load the data using `EML`.
+
+```{r}
+eml_filename <- system.file("extdata", "forecast-eml.xml", package="EFIstandards")
+md <- read_eml(eml_filename)  #you could replace the variable here with a filename form a downloaded data package from a repository
+```
+
+Then we can examine the details. First, the title and abstract and who made it.
+
+```{r basic}
+eml_get(md, "title")
+eml_get(md, "abstract")
+eml_get(md, "creator")
+```
+
+Then diving in, the coverage and keywords
+
+```{r details}
+eml_get(md, "coverage")
+eml_get(md, "keywordSet")
+```
+
+Looks like it's a population level timeseries forecast of `r eml_get(md, "geographicDescription")[[1]]` for two species:
+
+```{r species}
+# these seem a bit of a pain to pull out
+spps <- eml_get(md, "taxonRankValue")
+sp1 <- paste(spps[1:2], collapse=" ")
+sp2 <- paste(spps[3:4], collapse=" ")
+sp1
+sp2
+```
+
+## Reading structured methods
+
+Load the additional metadata (link to  defs of additional metadata or paste here?)
+
+
+```{r methods}
+methods_md <- eml_get(md, "additionalMetadata")
+methods_md
+```
+
+Details about the number of state variables and parameters, and the propagation of uncertainty. For example, details of the treatment of process error in this model are given by
+```{r process}
+methods_md %>% eml_get("process_error") # note we cold do this directly on \`md` object
+n_ensembles <- methods_md %>% eml_get("process_error") %>% eml_get("size")
+n_ensembles <- n_ensembles[[1]]
+```
+note we expect error propagation via an ensemble of size `r n_ensembles`, two dimensions of process error (one for each state variable? or two parameters govern it?) with no covariance between these.
+
+We can check if the forecast used data assimilation (no):
+
+```{r da}
+eml_get(md, "assimilation")
+```
+
+
+## Output metadata
+
+Finally we can dive into the metadata for the output data itself. Wait, which output data? All we've seen so far is metadata!
+
+First remember that EML specifies a tag "physical" for the location of an actual data file.
+There's plenty of metadata on the file itself including authethtication format, etc
+
+```{r datafile}
+dt_md <- eml_get(md, "dataTable")
+eml_get(dt_md, "physical")
+```
+
+To get the data we parse the filename and load it!
+```{r data}
+datafilename <- eml_get(dt_md, "objectName")[[1]]
+# this steps are necessary because this is in an R package if you have a downloaded data repository
+# you coudl just pass 'datafilename' into read.csv here
+datafile <- system.file("extdata", datafilename, package="EFIstandards") 
+dt <- as_tibble(read.csv(datafile, row.names=1))
+dt
+```
+
+OK! Now we see the column names and actual data. To undertstand these column names we turn back to the metadata on the output data, which we loaded earlier and in particular the `attributeList`
+
+```{r glance-at-metadata}
+dt_md_cols <- dt_md %>% eml_get("attributeList") %>% get_attributes()
+dt_md_cols$attributes
+```
+
+Cross-referencing this with [link to forecast standards] we see again `data_assimilation` and `forecast` columns are zeroed out so this was a hindcast (?) and performed no data assimilation. As expected, there are `r length(unique(dt$ensemble))` ensemble members in the forecast. As consumer of this this type of forecast this is the only way to understand the uncertainty in the forecast.
+
+# Visualizing the data
+
+The output includes densities (number per meter squared) for both species 1 and species 2. We assume these are in the same order as the entries in `taxononmicCoverage`: `r sp1` and `r sp2` at several depths measured in meters. Glancing at column `depth` we see only three depths are represented. While reshaping the data, * rename columns with useful information:
+
+```{r munge}
+dtl <- pivot_longer(dt, c("species_1", "species_2"), values_to="density (m^-2)") %>%
+  mutate(time = as.POSIXct(time),
+         name=recode(name, species_1=sp1, species_2=sp2),
+         `depth (m)` = depth)
+```
+
+Given the ensembles, order statitics or quantiles seem like a natural choice to summarize uncertainty, so compute the median and upper and lower quartiles:
+
+```{r summarize-uncertainty}
+dtl <- dtl %>%
+  group_by(name, depth, time) %>%
+  mutate(density_50 = median(`density (m^-2)`),
+         density_25 = quantile(`density (m^-2)`, .25),
+         density_75 = quantile(`density (m^-2)`, .75)
+         )
+```
+
+Putting these pieces together to visualize and describe the data.
+
+```{r fig.cap="Forecast density of two interacting species at several depths with uncertainty."}
+
+ggplot(dtl) +
+  geom_ribbon(aes(time, ymin=density_25, ymax=density_75, fill=name), alpha=0.3) +
+  geom_line(aes(time, `density (m^-2)`, color=name, group=interaction(name, ensemble)), alpha=0.5) + 
+  #geom_smooth(aes(group=name), method='gam', formula= y ~ s(x, bs = "cs", k=30)) + 
+  geom_line(aes(time, density_50, color=name), size=1.25) +
+  facet_grid(`depth (m)` ~ ., labeller=label_both) + 
+  guides(color=guide_legend(title='Median density'),
+         fill=guide_legend(title='25th-75th quantile density')) +
+  labs(title=eml_get(md, 'title')[[1]], 
+       subtitle=paste("Forecast from", n_ensembles, "ensembles (thin lines), with uncertainty from quantiles."),
+       caption=paste("Demo visualization from EFIstandards package for an \nimaginary forecast at", eml_get(md, "geographicDescription")[[1]]))
+
+```
