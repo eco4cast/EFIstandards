@@ -7,6 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<!-- NOTE: to update the output files in this vignette run:
+> devtools::load_all()
+> rmarkdown::render(<filename>) # replace with actual filename
+-->
+
 ```{r setup, message=FALSE}
 library(EML)
 library(ncdf4)
@@ -521,7 +526,11 @@ EFIstandards::forecast_validator(my_eml)
 We are now ready to write out a valid EML document: 
 
 ```{r}
-write_eml(my_eml, "forecast-eml.xml")
+## file name
+emlname <- system.file("extdata", "forecast-eml.xml", package="EFIstandards")
+
+## write eml file
+write_eml(my_eml, emlname)
 ```
 
 At this point, we could easily upload this metadata along with the data itself 
@@ -530,7 +539,10 @@ to a repository (e.g. DataONE) manually or via an API.
 We can also generate a JSON-LD version of EML:
 
 ```{r}
-emld::as_json(as_emld("forecast-eml.xml"), file = "forecast-eml.json")
+## file name
+emldname <- system.file("extdata", "forecast-eml.json", package="EFIstandards")
+
+emld::as_json(as_emld(emlname), file = emldname)
 ```
 
 

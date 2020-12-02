@@ -30,6 +30,11 @@
           "repository": "https://github.com/eco4cast/EFIstandards/blob/master/vignettes/logistic-metadata-example.Rmd",
           "type": "process-based"
         },
+        "obs_error": {
+          "complexity": "2",
+          "covariance": "FALSE",
+          "status": "present"
+        },
         "parameters": {
           "complexity": "6",
           "status": "present"
@@ -42,11 +47,6 @@
             "type": "ensemble"
           },
           "status": "propagates"
-        },
-        "process_error.1": {
-          "complexity": "2",
-          "covariance": "FALSE",
-          "status": "present"
         },
         "random_effects": {
           "status": "absent"
@@ -97,14 +97,24 @@
         }
       },
       "taxonomicCoverage": {
-        "taxonomicClassification": {
-          "taxonRankName": "Genus",
-          "taxonRankValue": "Gloeotrichia",
-          "taxonomicClassification": {
-            "taxonRankName": "Species",
-            "taxonRankValue": "echinulata"
+        "taxonomicClassification": [
+          {
+            "taxonRankName": "Genus",
+            "taxonRankValue": "Gloeotrichia",
+            "taxonomicClassification": {
+              "taxonRankName": "Species",
+              "taxonRankValue": "echinulata"
+            }
+          },
+          {
+            "taxonRankName": "Genus",
+            "taxonRankValue": "Anabaena",
+            "taxonomicClassification": {
+              "taxonRankName": "Species",
+              "taxonRankValue": "circinalis"
+            }
           }
-        }
+        ]
       }
     },
     "contact": {
@@ -117,15 +127,15 @@
         "objectName": "logistic-forecast-ensemble-multi-variable-multi-depth.csv",
         "size": {
           "unit": "bytes",
-          "size": "108979"
+          "size": "110780"
         },
         "authentication": {
           "method": "MD5",
-          "authentication": "e950d787cc284f4befa3a64cb0f3ca31"
+          "authentication": "4dbe687fa1f5fc0ff789096076eebd78"
         },
         "dataFormat": {
           "textFormat": {
-            "recordDelimiter": "\n",
+            "recordDelimiter": "\r\n",
             "attributeOrientation": "column",
             "simpleDelimited": {
               "fieldDelimiter": ","
