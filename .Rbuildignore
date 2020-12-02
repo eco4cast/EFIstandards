@@ -5,3 +5,5 @@
 ^.*\.Rproj$
 ^experimental$
 ^\.Rproj\.user$
+^doc$
+^Meta$
