@@ -25,14 +25,14 @@ Visualizing the simple, example forecast of population growth of two interacting
 ## Parsing metadata 
 
 
-First we load the data using `EML`.
+First load the data using `EML`.
 
 ```{r}
 eml_filename <- system.file("extdata", "forecast-eml.xml", package="EFIstandards")
 md <- read_eml(eml_filename)  #you could replace the variable here with a filename form a downloaded data package from a repository
 ```
 
-Then we can examine the details. First, the title and abstract and who made it.
+Then to examine the details, use `EML::eml_get`. First, the title and abstract and who made it.
 
 ```{r basic}
 eml_get(md, "title")
@@ -60,7 +60,7 @@ sp2
 
 ## Reading structured methods
 
-Load the additional metadata (link to  defs of additional metadata or paste here?)
+Load the additional metadata (see documentation of EFI forecasting standard):
 
 
 ```{r methods}
@@ -68,15 +68,14 @@ methods_md <- eml_get(md, "additionalMetadata")
 methods_md
 ```
 
-Details about the number of state variables and parameters, and the propagation of uncertainty. For example, details of the treatment of process error in this model are given by
+This metadata contains details about the system forecast including number of state variables and parameters, and the methods used, including propagation of uncertainty. For example, details of the treatment of process error in this model are given by
 ```{r process}
-methods_md %>% eml_get("process_error") # note we cold do this directly on \`md` object
+methods_md %>% eml_get("process_error") # note could do this directly on \`md` object
 n_ensembles <- methods_md %>% eml_get("process_error") %>% eml_get("size")
 n_ensembles <- n_ensembles[[1]]
 ```
-note we expect error propagation via an ensemble of size `r n_ensembles`, two dimensions of process error (one for each state variable? or two parameters govern it?) with no covariance between these.
 
-We can check if the forecast used data assimilation (no):
+From this metadata, the output of this forecast should have error propagation via an ensemble of size `r n_ensembles`, two dimensions of process error (one for each state variable? or two parameters govern it?) with no covariance between these. Further, one can check if the forecast used data assimilation (no):
 
 ```{r da}
 eml_get(md, "assimilation")
@@ -85,17 +84,17 @@ eml_get(md, "assimilation")
 
 ## Output metadata
 
-Finally we can dive into the metadata for the output data itself. Wait, which output data? All we've seen so far is metadata!
+Finally, I'll dive into the metadata for the output data itself. Wait, which output data? All we've seen so far is metadata!
 
 First remember that EML specifies a tag "physical" for the location of an actual data file.
-There's plenty of metadata on the file itself including authethtication format, etc
+There's plenty of metadata on the file itself including authentication format, etc
 
 ```{r datafile}
-dt_md <- eml_get(md, "dataTable")
+dt_md <- eml_get(md, "dataset")
 eml_get(dt_md, "physical")
 ```
 
-To get the data we parse the filename and load it!
+To get the data parse the filename and load it!
 ```{r data}
 datafilename <- eml_get(dt_md, "objectName")[[1]]
 # this steps are necessary because this is in an R package if you have a downloaded data repository
@@ -105,18 +104,30 @@ dt <- as_tibble(read.csv(datafile, row.names=1))
 dt
 ```
 
-OK! Now we see the column names and actual data. To undertstand these column names we turn back to the metadata on the output data, which we loaded earlier and in particular the `attributeList`
+OK! This has the column names and actual data. To understand these column names,
+recall the output dataset metadata, which was loaded earlier. In particular the
+`attributeList` contains fine details like units and definitions for each column:
 
 ```{r glance-at-metadata}
 dt_md_cols <- dt_md %>% eml_get("attributeList") %>% get_attributes()
 dt_md_cols$attributes
 ```
 
-Cross-referencing this with [link to forecast standards] we see again `data_assimilation` and `forecast` columns are zeroed out so this was a hindcast (?) and performed no data assimilation. As expected, there are `r length(unique(dt$ensemble))` ensemble members in the forecast. As consumer of this this type of forecast this is the only way to understand the uncertainty in the forecast.
+Cross-referencing this documentation of EFI forecasting standards, note that
+`data_assimilation` and `forecast` columns are zeroed out so this was a
+hindcast (?) and performed no data assimilation. As expected, there are `r
+length(unique(dt$ensemble))` ensemble members in the forecast. As consumer of
+this this type of forecast this is the only way to understand the uncertainty
+in the forecast.
 
 # Visualizing the data
 
-The output includes densities (number per meter squared) for both species 1 and species 2. We assume these are in the same order as the entries in `taxononmicCoverage`: `r sp1` and `r sp2` at several depths measured in meters. Glancing at column `depth` we see only three depths are represented. While reshaping the data, * rename columns with useful information:
+The output includes densities (number per meter squared) for both species 1 and
+species 2. I assume these are in the same order as the entries in
+`taxononmicCoverage`: `r sp1` and `r sp2` at several depths measured in meters.
+Glancing at column `depth` there are only three depths represented. While
+reshaping the data, I will rename columns with useful information about their units
+and construct a categorical variable with the actual species names:
 
 ```{r munge}
 dtl <- pivot_longer(dt, c("species_1", "species_2"), values_to="density (m^-2)") %>%
@@ -125,7 +136,8 @@ dtl <- pivot_longer(dt, c("species_1", "species_2"), values_to="density (m^-2)")
          `depth (m)` = depth)
 ```
 
-Given the ensembles, order statitics or quantiles seem like a natural choice to summarize uncertainty, so compute the median and upper and lower quartiles:
+Given the ensembles, order statitics or quantiles seem like a natural choice to
+summarize uncertainty, so compute the median and upper and lower quartiles:
 
 ```{r summarize-uncertainty}
 dtl <- dtl %>%
@@ -136,7 +148,8 @@ dtl <- dtl %>%
          )
 ```
 
-Putting these pieces together to visualize and describe the data.
+Putting these pieces together to visualize and describe the forecast and its
+uncertainty:
 
 ```{r fig.cap="Forecast density of two interacting species at several depths with uncertainty."}
 
