@@ -323,7 +323,8 @@ The options for [variable_type] include:
 We then link the attribute information with the info about a particular file
 ```{r}
 ## sets metadata about the file itself (name, file type, size, MD5, etc)
-physical <- set_physical("logistic-forecast-ensemble-multi-variable-multi-depth.csv")
+physical <- set_physical("logistic-forecast-ensemble-multi-variable-multi-depth.csv",
+                         recordDelimiter='\n')
 
 ## set metadata for the file as a whole
 dataTable <- eml$dataTable(

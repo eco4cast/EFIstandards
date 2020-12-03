@@ -69,7 +69,7 @@
         <authentication method="MD5">4dbe687fa1f5fc0ff789096076eebd78</authentication>
         <dataFormat>
           <textFormat>
-            <recordDelimiter>&#13;
+            <recordDelimiter>
 </recordDelimiter>
             <attributeOrientation>column</attributeOrientation>
             <simpleDelimited>

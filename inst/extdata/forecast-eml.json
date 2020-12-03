@@ -135,7 +135,7 @@
         },
         "dataFormat": {
           "textFormat": {
-            "recordDelimiter": "\r\n",
+            "recordDelimiter": "\n",
             "attributeOrientation": "column",
             "simpleDelimited": {
               "fieldDelimiter": ","
