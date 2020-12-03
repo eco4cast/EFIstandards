@@ -7,6 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<!-- NOTE: to update the output files in this vignette run:
+> devtools::load_all()
+> rmarkdown::render(<filename>) # replace with actual filename
+-->
+
 ```{r setup, message=FALSE}
 library(EML)
 library(ncdf4)
@@ -15,7 +20,6 @@ library(lubridate)
 library(tibble)
 library(dplyr)
 library(tidyr)
-library(EFIstandards)
 emld::eml_version("eml-2.2.0")
 ```
 
@@ -29,7 +33,7 @@ We recommend reading the `logistic-metadata-example` for guidence on generating
 output that meets the EFI Standard.
 
 ```{r}
-file_name <- "example_output/FLARE1_FOR_H_2018_07_18_2018_07_25_F_16_20200817T112017.nc"
+file_name <- system.file("extdata", "FLARE1_FOR_H_2018_07_18_2018_07_25_F_16_20200817T112017.nc", package="EFIstandards")
 ```
 
 First, there is set of information that FLARE has in memory that is used to generate
@@ -50,7 +54,7 @@ is FLARE already has in memory when creating the metadata.  It needs to be
 loaded here.
 
 ```{r}
-abstract_text <- "This is where a longer description of the forest can be added"
+abstract_text <- "This is where a longer description of the forecast can be added"
 forecast_title <- "FLARE"
 intellectualRights <- "insert license"
 model_description <- list(
@@ -82,6 +86,9 @@ data_assimilation <- ncvar_get(nc, "data_assimilation")
 forecast_issue_time <-ncatt_get(nc, varid = 0)$forecast_issue_time
 forecast_iteration_id <- ncatt_get(nc, varid = 0)$forecast_iteration_id
 forecast_project_id <- ncatt_get(nc, varid = 0)$forecast_project_id
+forecast_model_id <- ncatt_get(nc, varid = 0)$forecast_model_id
+if (is.null(forecast_model_id))
+  forecast_model_id <- "3663f9580cc7003542d538a2c96fdb4550a32bef" # github hash from https://github.com/CareyLabVT/FLARE
 
 #Number of ensemble members
 nmembers <- length(ncvar_get(nc, "ensemble"))
@@ -201,8 +208,8 @@ dataset <- eml$dataset(
 
 ```{r}
 initial_conditions <- list(
-  # Possible values: no, contains, data_driven, propagates, assimilates
-  uncertainty = "assimilates",
+  # Possible values: absent, present, data_driven, propagates, assimilates
+  status = "assimilates",
   # Number of parameters / dimensionality
   complexity = nstates,
   propagation = list(
@@ -217,7 +224,7 @@ initial_conditions <- list(
 )
 
 parameters <- list(
-  uncertainty = "assimilates",
+  status = "assimilates",
   complexity = npars,
   propagation = list(
     type = "ensemble", # ensemble vs analytic
@@ -231,7 +238,7 @@ parameters <- list(
 )
 
 process_error <- list(
-  uncertainty = "propagates",
+  status = "propagates",
   propagation = list(
     type = "ensemble", # ensemble vs analytic
     size = nmembers          # required if ensemble
@@ -242,16 +249,24 @@ process_error <- list(
 )
 
 random_effects <- list(
-  uncertainty = "no"
+  status = "absent"
 )
 
 drivers <- list(
-  uncertainty = "propagates",
+  status = "propagates",
   complexity = n_met_members * n_ds_members,
   propagation = list(
     type = "ensemble", # ensemble vs analytic
     size = n_met_members * n_ds_members)
 )
+
+obs_error = list(
+  status = "present",
+  complexity = 500,   # guesses 
+  covariance = TRUE,
+  localization = "Distance extinction of covariance"
+)
+
 ```
 Get the forecast horizon using the data assimilation flag
 ```{r}
@@ -259,6 +274,10 @@ forecast_horizon <- length(which(data_assimilation == 0))
 ```
 
 Build the EFI additional metadata
+```{r patch-metadata}
+model_description["forecast_model_id"] <- forecast_model_id
+```
+
 
 ```{r}
 additionalMetadata <- eml$additionalMetadata(
@@ -270,13 +289,15 @@ additionalMetadata <- eml$additionalMetadata(
       forecast_issue_time = forecast_issue_time,
       forecast_iteration_id = forecast_iteration_id,
       forecast_project_id = forecast_project_id,
+      metadata_standard_version = "0.3",
       model_description = model_description,
       ## UNCERTAINTY CLASSES
       initial_conditions = initial_conditions,
       parameters = parameters,
       random_effects = random_effects,
       process_error = process_error,
-      drivers = drivers
+      drivers = drivers,
+      obs_error = obs_error 
     ) # forecast
   ) # metadata
 ) # eml$additionalMetadata
