@@ -75,7 +75,7 @@ n_ensembles <- methods_md %>% eml_get("process_error") %>% eml_get("size")
 n_ensembles <- n_ensembles[[1]]
 ```
 
-From this metadata, the output of this forecast should have error propagation via an ensemble of size `r n_ensembles`, two dimensions of process error (one for each state variable? or two parameters govern it?) with no covariance between these. Further, one can check if the forecast used data assimilation (no):
+From this metadata, the output of this forecast should have error propagation via an ensemble of size `r n_ensembles`, two dimensions of process error (TODO one for each state variable? or two parameters govern it?) with no covariance between these. Further, one can check if the forecast used data assimilation (no):
 
 ```{r da}
 eml_get(md, "assimilation")
@@ -115,7 +115,7 @@ dt_md_cols$attributes
 
 Cross-referencing this documentation of EFI forecasting standards, note that
 `data_assimilation` and `forecast` columns are zeroed out so this was a
-hindcast (?) and performed no data assimilation. As expected, there are `r
+hindcast (TODO?) and performed no data assimilation. As expected, there are `r
 length(unique(dt$ensemble))` ensemble members in the forecast. As consumer of
 this this type of forecast this is the only way to understand the uncertainty
 in the forecast.
