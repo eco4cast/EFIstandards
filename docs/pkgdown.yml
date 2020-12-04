@@ -4,5 +4,6 @@ pkgdown_sha: ~
 articles:
   flare-metadata-example: flare-metadata-example.html
   logistic-metadata-example: logistic-metadata-example.html
-last_built: 2020-12-02T19:30Z
+  visualization-example: visualization-example.html
+last_built: 2020-12-04T03:50Z
 
