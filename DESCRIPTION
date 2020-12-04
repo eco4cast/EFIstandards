@@ -27,6 +27,7 @@ Suggests:
     tibble,
     uuid,
     lubridate,
+    ggplot2,
     ncdf4,
     dplyr,
     tidyr,
