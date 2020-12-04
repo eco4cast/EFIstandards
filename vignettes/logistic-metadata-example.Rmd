@@ -543,14 +543,16 @@ emlname <- system.file("extdata", "forecast-eml.xml", package="EFIstandards")
 write_eml(my_eml, emlname)
 emldname <- system.file("extdata", "forecast-eml.json", package="EFIstandards")
 emld::as_json(as_emld(emlname), file = emldname)
-ncname <- system.file("extdata", ncfname, package="EFIstandards")
+ncpkgfile <- system.file("extdata", ncfname, package="EFIstandards")
 # TODO  -- add writing the nc file here too
+file.copy(ncfname,  ncpkgfile, overwrite=TRUE)
 ```
 
 
 
 ```{r include=FALSE}
 ## Cleanup
+lapply(list.files(pattern = "[.]nc"), unlink)
 lapply(list.files(pattern = "[.]csv"), unlink)
 lapply(list.files(pattern = "[.]json"), unlink)
 lapply(list.files(pattern = "[.]xml"), unlink)
