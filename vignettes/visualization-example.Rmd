@@ -15,6 +15,7 @@ library(tibble)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(EFIstandards)
 ```
 
 
@@ -50,7 +51,7 @@ eml_get(md, "keywordSet")
 Looks like it's a population level timeseries forecast of `r eml_get(md, "geographicDescription")[[1]]` for two species:
 
 ```{r species}
-# these seem a bit of a pain to pull out
+# these seem a bit of a pain to pull out maybe there's an easier way
 spps <- eml_get(md, "taxonRankValue")
 sp1 <- paste(spps[1:2], collapse=" ")
 sp2 <- paste(spps[3:4], collapse=" ")
@@ -75,7 +76,7 @@ n_ensembles <- methods_md %>% eml_get("process_error") %>% eml_get("size")
 n_ensembles <- n_ensembles[[1]]
 ```
 
-From this metadata, the output of this forecast should have error propagation via an ensemble of size `r n_ensembles`, two dimensions of process error (TODO one for each state variable? or two parameters govern it?) with no covariance between these. Further, one can check if the forecast used data assimilation (no):
+From this metadata, the output of this forecast should have error propagation via an ensemble of size `r n_ensembles`, process error for two state varible dimensions with no covariance between these. Further, one can check if the forecast used data assimilation (no):
 
 ```{r da}
 eml_get(md, "assimilation")
@@ -114,13 +115,13 @@ dt_md_cols$attributes
 ```
 
 Cross-referencing this documentation of EFI forecasting standards, note that
-`data_assimilation` and `forecast` columns are zeroed out so this was a
-hindcast (TODO?) and performed no data assimilation. As expected, there are `r
-length(unique(dt$ensemble))` ensemble members in the forecast. As consumer of
-this this type of forecast this is the only way to understand the uncertainty
+`data_assimilation` column is zeroed out so this performed no data assimilation
+and `forecast` column is zeroed out so this was a hindcast. As expected, there are 
+`r length(unique(dt$ensemble))` ensemble members in the forecast. As consumer of
+this type of forecast this is the only way to understand the uncertainty
 in the forecast.
 
-# Visualizing the data
+## Visualizing the data
 
 The output includes densities (number per meter squared) for both species 1 and
 species 2. I assume these are in the same order as the entries in
