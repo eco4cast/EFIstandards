@@ -405,7 +405,7 @@ Finally, we'll now create our netCDF file and add our outputs and global metadat
 ```{r}
 
 ## file name
-ncfname <- system.file("extdata", "logistic-forecast-ensemble-multi-variable-space-long.nc", package="EFIstandards")
+ncfname <- "logistic-forecast-ensemble-multi-variable-space-long.nc"
 
 ## open your netCDF file
 ncout <- nc_create(ncfname,def_list,force_v4=T)
@@ -620,7 +620,8 @@ We then link the attribute information with the info about a particular file
 
 ```{r}
 ## sets metadata about the file itself (name, file type, size, MD5, etc)
-physical <- set_physical("logistic-forecast-ensemble-multi-variable-multi-depth.csv")
+physical <- set_physical("logistic-forecast-ensemble-multi-variable-multi-depth.csv",
+                         recordDelimiter='\n')
 
 ## set metadata for the file as a whole
 dataTable <- eml$dataTable(
@@ -943,8 +944,25 @@ We can also generate a JSON-LD version of EML:
 emld::as_json(as_emld("forecast-eml.xml"), file = "forecast-eml.json")
 ```
 
+
+```{r eval=FALSE, echo=FALSE}
+# NOTE: the output files in this vignette 
+# should be stored in the package. to updat them change this chunk to eval=TRUE
+devtools::load_all()
+emlname <- system.file("extdata", "forecast-eml.xml", package="EFIstandards")
+write_eml(my_eml, emlname)
+emldname <- system.file("extdata", "forecast-eml.json", package="EFIstandards")
+emld::as_json(as_emld(emlname), file = emldname)
+ncpkgfile <- system.file("extdata", ncfname, package="EFIstandards")
+# TODO  -- add writing the nc file here too
+file.copy(ncfname,  ncpkgfile, overwrite=TRUE)
+```
+
+
+
 ```{r include=FALSE}
 ## Cleanup
+lapply(list.files(pattern = "[.]nc"), unlink)
 lapply(list.files(pattern = "[.]csv"), unlink)
 lapply(list.files(pattern = "[.]json"), unlink)
 lapply(list.files(pattern = "[.]xml"), unlink)

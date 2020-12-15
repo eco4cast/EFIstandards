@@ -47,6 +47,14 @@
             <taxonRankValue>echinulata</taxonRankValue>
           </taxonomicClassification>
         </taxonomicClassification>
+        <taxonomicClassification>
+          <taxonRankName>Genus</taxonRankName>
+          <taxonRankValue>Anabaena</taxonRankValue>
+          <taxonomicClassification>
+            <taxonRankName>Species</taxonRankName>
+            <taxonRankValue>circinalis</taxonRankValue>
+          </taxonomicClassification>
+        </taxonomicClassification>
       </taxonomicCoverage>
     </coverage>
     <contact>
@@ -57,8 +65,8 @@
       <entityDescription>Forecast of population size using a depth specific model</entityDescription>
       <physical>
         <objectName>logistic-forecast-ensemble-multi-variable-multi-depth.csv</objectName>
-        <size unit="bytes">108979</size>
-        <authentication method="MD5">e950d787cc284f4befa3a64cb0f3ca31</authentication>
+        <size unit="bytes">110780</size>
+        <authentication method="MD5">4dbe687fa1f5fc0ff789096076eebd78</authentication>
         <dataFormat>
           <textFormat>
             <recordDelimiter>
@@ -211,6 +219,11 @@
           <repository>https://github.com/eco4cast/EFIstandards/blob/master/vignettes/logistic-metadata-example.Rmd</repository>
           <type>process-based</type>
         </model_description>
+        <obs_error>
+          <complexity>2</complexity>
+          <covariance>FALSE</covariance>
+          <status>present</status>
+        </obs_error>
         <parameters>
           <complexity>6</complexity>
           <status>present</status>
@@ -224,11 +237,6 @@
           </propagation>
           <status>propagates</status>
         </process_error>
-        <process_error.1>
-          <complexity>2</complexity>
-          <covariance>FALSE</covariance>
-          <status>present</status>
-        </process_error.1>
         <random_effects>
           <status>absent</status>
         </random_effects>
