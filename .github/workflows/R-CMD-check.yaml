@@ -13,6 +13,17 @@ jobs:
           install.packages(c("remotes", "rcmdcheck"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
+
+      # Extra steps for Python support, based on:
+      # https://github.com/rstudio/reticulate/issues/793#issuecomment-653690366
+      - name: Install Miniconda (for Python support)
+        run: |
+          remotes::install_github("rstudio/reticulate")
+          reticulate::install_miniconda()
+        shell: Rscript {0}
+      - if: runner.os == "macOS"
+        run: echo "options(reticulate.conda_binary = reticulate::miniconda_conda())"
+
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
         shell: Rscript {0}

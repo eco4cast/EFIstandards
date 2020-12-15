@@ -31,5 +31,15 @@ Suggests:
     ncdf4,
     dplyr,
     tidyr,
-    reshape2
+    reshape2,
+    reticulate
 VignetteBuilder: knitr
+Config/reticulate:
+ list(
+   packages = list(
+     list(package = "numpy"),
+     list(package = "matplotlib"),
+     list(package = "NetCDF4"),
+     list(package = "pandas")
+   )
+ )
