@@ -200,7 +200,7 @@ legend("bottomright",legend=species,col = seq_along(species),lty = 1)
 
 ##### Python
 
-```{python}
+```{python, dev="png"}
 plt.plot(times, n[:,0,0,0,0], "-")
 colors = ["r", "b"]
 for s in range(n_species):
