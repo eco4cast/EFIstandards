@@ -21,8 +21,12 @@ jobs:
           remotes::install_github("rstudio/reticulate")
           reticulate::install_miniconda()
         shell: Rscript {0}
-      - if: runner.os == "macOS"
+      - if: runner.os == 'macOS'
         run: echo "options(reticulate.conda_binary = reticulate::miniconda_conda())"
+
+      - name: Install Python dependencies
+        run: reticulate::py_install(c("numpy", "matplotlib", "NetCDF4", "pandas"))
+        shell: Rscript {0}
 
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
