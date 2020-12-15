@@ -1157,7 +1157,7 @@ all, but if you do, you have to document the "physical" file format it is in
 
 ##### R
 
-```{r, eval=FALSE}
+```{r}
 ## check base EML
 emld::eml_validate(my_eml)
 
@@ -1207,7 +1207,7 @@ We are now ready to write out a valid EML document:
 
 ##### R
 
-```{r, eval=FALSE}
+```{r}
 write_eml(my_eml, "forecast-eml.xml")
 ```
 
@@ -1232,12 +1232,12 @@ We can also generate a JSON-LD version of EML:
 
 ##### R
 
-```{r, eval=FALSE}
+```{r}
 emld::as_json(as_emld("forecast-eml.xml"), file = "forecast-eml.json")
 ```
 
 
-```{r eval=FALSE, echo=FALSE}
+```{r, eval=FALSE, echo=FALSE}
 # NOTE: the output files in this vignette 
 # should be stored in the package. to updat them change this chunk to eval=TRUE
 devtools::load_all()
@@ -1262,5 +1262,4 @@ lapply(list.files(pattern = "[.]nc"), unlink)
 lapply(list.files(pattern = "[.]csv"), unlink)
 lapply(list.files(pattern = "[.]json"), unlink)
 lapply(list.files(pattern = "[.]xml"), unlink)
-
 ```
