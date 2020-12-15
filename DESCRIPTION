@@ -31,5 +31,6 @@ Suggests:
     ncdf4,
     dplyr,
     tidyr,
-    reshape2
+    reshape2,
+    reticulate
 VignetteBuilder: knitr
