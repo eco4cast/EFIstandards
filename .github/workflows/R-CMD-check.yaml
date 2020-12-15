@@ -24,6 +24,10 @@ jobs:
       - if: runner.os == 'macOS'
         run: echo "options(reticulate.conda_binary = reticulate::miniconda_conda())"
 
+      - name: Install Python dependencies
+        run: reticulate::py_install(c("numpy", "matplotlib", "NetCDF4", "pandas"))
+        shell: Rscript {0}
+
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
         shell: Rscript {0}
