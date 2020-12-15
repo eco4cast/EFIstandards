@@ -1,0 +1,46 @@
+on:
+  push:
+    branches:
+      - main
+      - master
+
+name: pkgdown
+
+jobs:
+  pkgdown:
+    runs-on: macOS-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-r@v1
+      - uses: r-lib/actions/setup-pandoc@v1
+      - name: Install dependencies
+        run: |
+          install.packages('remotes')
+          remotes::install_deps(dependencies = TRUE)
+          install.packages("pkgdown", type = "binary")
+        shell: Rscript {0}
+
+      # Extra steps for Python support, based on:
+      # https://github.com/rstudio/reticulate/issues/793#issuecomment-653690366
+      - name: Install Miniconda (for Python support)
+        run: |
+          remotes::install_github("rstudio/reticulate")
+          reticulate::install_miniconda()
+        shell: Rscript {0}
+      - if: runner.os == 'macOS'
+        run: echo "options(reticulate.conda_binary = reticulate::miniconda_conda())"
+
+      - name: Install Python dependencies
+        run: reticulate::py_install(c("numpy", "matplotlib", "NetCDF4", "pandas"))
+        shell: Rscript {0}
+
+      - name: Install package
+        run: R CMD INSTALL .
+
+      - name: Deploy package
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          Rscript -e 'pkgdown::build_site(new_process = FALSE)'
