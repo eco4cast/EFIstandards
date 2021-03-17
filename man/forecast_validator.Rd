@@ -16,7 +16,8 @@ boolean
 EFI forecast standard EML metadata validator
 }
 \examples{
-\dontrun{
+\donttest{
 forecast_validator(system.file("extdata", "forecast-eml.xml", package="EFIstandards"))
+forecast_validator(system.file("extdata", "beetles-eml.xml", package="EFIstandards"))
 }
 }
