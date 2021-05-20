@@ -7,7 +7,8 @@ Authors@R: c(
                    comment = c(ORCID = "0000-0002-1642-628X")),
             person("Quinn", "Thomas", role ="aut"),
             person("Michael", "Dietze", role ="aut"),
-            person("Alexey", "Shiklomanov", role ="aut")
+            person("Alexey", "Shiklomanov", role ="aut"),
+            person("Jaime", "Ashander", role ="aut")
             )
 Description: Community standard for the common formatting and archiving of ecological forecasts
     developed by the Ecological Forecasting Initiative (EFI). This package contains a description
@@ -23,6 +24,7 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown, 
+    markdown,
     emld,
     tibble,
     uuid,
