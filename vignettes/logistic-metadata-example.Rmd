@@ -1,6 +1,8 @@
 ---
 title: "Example metadata for a Lotka-Volterra population growth forecast"
-output: rmarkdown::html_document
+output: 
+  rmarkdown::html_document:
+    dev: png
 vignette: >
   %\VignetteIndexEntry{Logistic Growth Simulation}
   %\VignetteEngine{knitr::rmarkdown}
