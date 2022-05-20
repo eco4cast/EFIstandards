@@ -786,6 +786,7 @@ additionalMetadata <- eml$additionalMetadata(
       timestep = "1 day", ## should be udunits parsable; already in coverage -> temporalCoverage?
       forecast_horizon = "30 days",
       forecast_start_time = forecast_start_time,
+      forecast_issue_time = Sys.time(),
       forecast_iteration_id = forecast_iteration_id,
       forecast_project_id = forecast_project_id,
       metadata_standard_version = "0.3",
