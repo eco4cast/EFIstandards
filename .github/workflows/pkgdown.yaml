@@ -23,14 +23,14 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Install Miniconda
-        shell: Rscript {0}
-        run: reticulate::install_miniconda()
-
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: pkgdown
           needs: website
+
+      - name: Install Miniconda
+        shell: Rscript {0}
+        run: reticulate::install_miniconda()
 
       - name: Deploy package
         run: |

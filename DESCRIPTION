@@ -35,7 +35,8 @@ Suggests:
     tidyr,
     reshape2,
     reticulate,
-    units
+    units,
+    remotes
 VignetteBuilder: knitr
 Config/reticulate:
  list(
