@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EFIstandards</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -64,6 +60,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
 </div>
@@ -75,11 +74,11 @@
 
       
 
-      </header><script src="logistic-metadata-example_files/header-attrs-2.5/header-attrs.js"></script><link href="logistic-metadata-example_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="logistic-metadata-example_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Example metadata for a Lotka-Volterra population growth forecast</h1>
+      <h1 data-toc-skip>Example metadata for a Lotka-Volterra population
+growth forecast</h1>
             
       
       
@@ -89,66 +88,136 @@
 
     
     
+<div class="section level5">
+<h5 class="tabset" id="code">Code<a class="anchor" aria-label="anchor" href="#code"></a>
+</h5>
+<div class="section level6">
+<h6 id="r">R<a class="anchor" aria-label="anchor" href="#r"></a>
+</h6>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/EML/">EML</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://cirrus.ucsd.edu/~pierce/ncdf">ncdf4</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/emld/">emld</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/">tibble</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/reshape">reshape2</a></span><span class="op">)</span>
-<span class="fu">emld</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/eml_version.html">eml_version</a></span><span class="op">(</span><span class="st">"eml-2.2.0"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "eml-2.2.0"</code></pre>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/EML/" class="external-link">EML</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://cirrus.ucsd.edu/~pierce/ncdf/" class="external-link">ncdf4</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/emld/" class="external-link">emld</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/reshape" class="external-link">reshape2</a></span><span class="op">)</span>
+<span class="fu">emld</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/eml_version.html" class="external-link">eml_version</a></span><span class="op">(</span><span class="st">"eml-2.2.0"</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "eml-2.2.0"</span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></code></pre></div>
-<p>A simple, example forecast of population growth of two interacting species</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level6">
+<h6 id="python">Python<a class="anchor" aria-label="anchor" href="#python"></a>
+</h6>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> netCDF4</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code></pre></div>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section"></h5>
+<p>A simple, example forecast of population growth of two interacting
+species</p>
 <p>========================================================</p>
-<div id="generating-the-forecast" class="section level1">
-<h1 class="hasAnchor">
-<a href="#generating-the-forecast" class="anchor"></a>Generating the forecast</h1>
-<p>To illustrate the application of the forecast standard, we’ll consider the classic Lotka-Volterra population growth model. To keep this first example simple, we’ll only consider two species and two uncertainties - an additive process error, which converts this to a stochastic Lotka-Volterra, and an observation error. We’ll propagate uncertainty by running multiple ensembles. To illustrate the ability of the output format to accommodate spatial dimensions, we’ll run the model at multiple depths in a water column (e.g. lake or ocean) but those depths are not interacting – we know this isn’t realistic, but we want to keep things simple. Overall, this gives us the following <em>dimensions</em></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">forecast_issue_time</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-04"</span><span class="op">)</span>  <span class="co">## start date of our forecast</span>
+</div>
+<div class="section level2">
+<h2 id="generating-the-forecast">Generating the forecast<a class="anchor" aria-label="anchor" href="#generating-the-forecast"></a>
+</h2>
+<p>To illustrate the application of the forecast standard, we’ll
+consider the classic Lotka-Volterra population growth model. To keep
+this first example simple, we’ll only consider two species and two
+uncertainties - an additive process error, which converts this to a
+stochastic Lotka-Volterra, and an observation error. We’ll propagate
+uncertainty by running multiple ensembles. To illustrate the ability of
+the output format to accommodate spatial dimensions, we’ll run the model
+at multiple depths in a water column (e.g. lake or ocean) but those
+depths are not interacting – we know this isn’t realistic, but we want
+to keep things simple. Overall, this gives us the following
+<em>dimensions</em></p>
+<div class="section level5">
+<h5 class="tabset" id="code-1">Code<a class="anchor" aria-label="anchor" href="#code-1"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-1">R<a class="anchor" aria-label="anchor" href="#r-1"></a>
+</h6>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">forecast_start_time</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-03-04"</span><span class="op">)</span>  <span class="co">## start date of our forecast</span>
 <span class="va">n_time</span> <span class="op">&lt;-</span> <span class="fl">30</span>
-<span class="va">times</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from<span class="op">=</span><span class="va">forecast_issue_time</span>,by<span class="op">=</span><span class="st">"1 day"</span>,length<span class="op">=</span><span class="va">n_time</span><span class="op">)</span>
+<span class="va">times</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from<span class="op">=</span><span class="va">forecast_start_time</span>,by<span class="op">=</span><span class="st">"1 day"</span>,length<span class="op">=</span><span class="va">n_time</span><span class="op">)</span>
 
-<span class="va">depths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span>
-<span class="va">n_depths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">depths</span><span class="op">)</span>
+<span class="va">depths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span>
+<span class="va">n_depths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">depths</span><span class="op">)</span>
 
 <span class="va">n_ensembles</span> <span class="op">&lt;-</span> <span class="fl">10</span>
-<span class="va">ensembles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="va">n_ensembles</span><span class="op">)</span>
+<span class="va">ensembles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_ensembles</span><span class="op">)</span>
 
-<span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"species_1"</span>,<span class="st">"species_2"</span><span class="op">)</span>
-<span class="va">n_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span>
+<span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"species_1"</span>,<span class="st">"species_2"</span><span class="op">)</span>
+<span class="va">n_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span>
 
 <span class="va">obs_dim</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="co">## 1 = latent state</span>
              <span class="co">## 2 = latent state + observation error</span></code></pre></div>
-<p>Next we’re going to assume fixed parameters and initial conditions, set up storage for our forecast output (which we see has 5 dimensions), and then forward simulate the populations</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+</div>
+<div class="section level6">
+<h6 id="python-1">Python<a class="anchor" aria-label="anchor" href="#python-1"></a>
+</h6>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>forecast_start_time <span class="op">=</span> datetime.date(<span class="dv">2001</span>, <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>n_time <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>times <span class="op">=</span> [forecast_start_time <span class="op">+</span> datetime.timedelta(days <span class="op">=</span> x) <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(n_time)]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>depths <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>]</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>n_depths <span class="op">=</span> <span class="bu">len</span>(depths)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>n_ensembles <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>ensembles <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(n_ensembles))</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>species <span class="op">=</span> [<span class="st">"species_1"</span>, <span class="st">"species_2"</span>]</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>n_species <span class="op">=</span> <span class="bu">len</span>(species)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>obs_dim <span class="op">=</span> <span class="dv">2</span> <span class="co">## 1 = latent state, 2 = latent_state + observation error</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 class="unnumbered" id="section-1"></h3>
+<p>Next we’re going to assume fixed parameters and initial conditions,
+set up storage for our forecast output (which we see has 5 dimensions),
+and then forward simulate the populations</p>
+<div class="section level5">
+<h5 class="tabset" id="code-2">Code<a class="anchor" aria-label="anchor" href="#code-2"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-2">R<a class="anchor" aria-label="anchor" href="#r-2"></a>
+</h6>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## parameters for species_1 and species_2</span>
-<span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>
-<span class="va">K</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>
-<span class="va">alpha</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.3</span><span class="op">)</span>
+<span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>
+<span class="va">K</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>
+<span class="va">alpha</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.3</span><span class="op">)</span>
 
 <span class="co">## process error</span>
 <span class="va">process_sd</span> <span class="op">&lt;-</span> <span class="fl">0.01</span>
 
 <span class="co">## observation error</span>
-<span class="va">obs_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.2</span><span class="op">)</span>
+<span class="va">obs_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.2</span><span class="op">)</span>
 
 <span class="co">## initial conditions</span>
 <span class="va">n0</span> <span class="op">&lt;-</span>  <span class="fl">0.5</span>
 
 <span class="co">## forecast output storage</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="cn">NA</span>,dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">n_time</span>, <span class="va">n_depths</span>, <span class="va">n_ensembles</span>, <span class="va">obs_dim</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="co">## last dim is species</span>
+<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="cn">NA</span>,dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">n_time</span>, <span class="va">n_depths</span>, <span class="va">n_ensembles</span>, <span class="va">obs_dim</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="co">## last dim is species</span>
 <span class="va">n</span><span class="op">[</span><span class="fl">1</span>,,,,<span class="op">]</span> <span class="op">&lt;-</span> <span class="va">n0</span>
 
 <span class="co">## forecast flag</span>
-<span class="va">forecast</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n_time</span><span class="op">)</span> <span class="co">## this code indicated a hindcast</span>
+<span class="va">forecast</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>, <span class="va">n_time</span><span class="op">)</span> <span class="co">## this code indicated a hindcast</span>
 
 <span class="co">## data assimilation flag</span>
-<span class="va">data_assimilation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n_time</span><span class="op">)</span>  <span class="co">## this code indicates a 'free-run' that didn't assimilate new data</span>
+<span class="va">data_assimilation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>, <span class="va">n_time</span><span class="op">)</span>  <span class="co">## this code indicates a 'free-run' that didn't assimilate new data</span>
 
 <span class="co">## forward simulation</span>
 <span class="kw">for</span><span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fl">2</span><span class="op">:</span><span class="va">n_time</span><span class="op">)</span><span class="op">{</span>
@@ -158,233 +227,536 @@
       <span class="va">n_curr</span> <span class="op">&lt;-</span> <span class="va">n</span><span class="op">[</span><span class="va">t</span><span class="op">-</span><span class="fl">1</span>,<span class="va">depth</span>,<span class="va">ens</span>,<span class="fl">1</span>,<span class="op">]</span> <span class="co">## current state</span>
       <span class="va">n</span><span class="op">[</span><span class="va">t</span>, <span class="va">depth</span>, <span class="va">ens</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span>  <span class="va">n_curr</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> 
           <span class="va">r</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">*</span><span class="va">n_curr</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="op">(</span><span class="op">(</span><span class="va">n_curr</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> 
-          <span class="va">alpha</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">*</span><span class="va">n_curr</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">/</span><span class="va">K</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="va">process_sd</span><span class="op">)</span>
+          <span class="va">alpha</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">*</span><span class="va">n_curr</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">/</span><span class="va">K</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="va">process_sd</span><span class="op">)</span>
       <span class="va">n</span><span class="op">[</span><span class="va">t</span>, <span class="va">depth</span>, <span class="va">ens</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span>  <span class="va">n_curr</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">+</span> 
           <span class="va">r</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="va">n_curr</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="op">(</span><span class="op">(</span><span class="va">n_curr</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">+</span> 
-          <span class="va">alpha</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="va">n</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">/</span><span class="va">K</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="va">process_sd</span><span class="op">)</span>
+          <span class="va">alpha</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="va">n</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">/</span><span class="va">K</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="va">process_sd</span><span class="op">)</span>
       <span class="co">## predict observed values</span>
-      <span class="va">n</span><span class="op">[</span><span class="va">t</span>,<span class="va">depth</span>,<span class="va">ens</span>,<span class="fl">2</span>,<span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">2</span>,<span class="va">n</span><span class="op">[</span><span class="va">t</span>,<span class="va">depth</span>,<span class="va">ens</span>,<span class="fl">1</span>,<span class="op">]</span>,<span class="va">obs_sd</span><span class="op">)</span>
+      <span class="va">n</span><span class="op">[</span><span class="va">t</span>,<span class="va">depth</span>,<span class="va">ens</span>,<span class="fl">2</span>,<span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">2</span>,<span class="va">n</span><span class="op">[</span><span class="va">t</span>,<span class="va">depth</span>,<span class="va">ens</span>,<span class="fl">1</span>,<span class="op">]</span>,<span class="va">obs_sd</span><span class="op">)</span>
     <span class="op">}</span>
   <span class="op">}</span>
 <span class="op">}</span></code></pre></div>
-<p>Here’s a simple visualization of our ensemble forecast at one depth</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">times</span>,<span class="va">n</span><span class="op">[</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">]</span>,ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,ylab<span class="op">=</span><span class="st">"Population Density"</span>,type<span class="op">=</span><span class="st">'l'</span><span class="op">)</span>
-<span class="kw">for</span><span class="op">(</span><span class="va">s</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span><span class="op">)</span><span class="op">{</span> <span class="co">##species</span>
+</div>
+<div class="section level6">
+<h6 id="python-2">Python<a class="anchor" aria-label="anchor" href="#python-2"></a>
+</h6>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">3</span>]</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>K <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">20</span>]</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> [<span class="fl">0.2</span>, <span class="fl">0.3</span>]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>process_sd <span class="op">=</span> <span class="fl">0.01</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>obs_sd <span class="op">=</span> [<span class="fl">0.5</span>, <span class="fl">0.2</span>]</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>n0 <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> np.zeros((n_time, n_depths, n_ensembles, obs_dim, n_species))</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>n[<span class="dv">0</span>,:,:,:,:] <span class="op">=</span> n0</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>forecast <span class="op">=</span> np.zeros((n_time), dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>data_assimilation <span class="op">=</span> np.zeros((n_time), dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n_time):</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> depth <span class="kw">in</span> <span class="bu">range</span>(n_depths):</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> ens <span class="kw">in</span> <span class="bu">range</span>(n_ensembles):</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>            <span class="co"># predict latent state</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>            n_curr <span class="op">=</span> n[t<span class="op">-</span><span class="dv">1</span>,depth,ens,<span class="dv">0</span>,:]</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>            n[t, depth, ens, <span class="dv">0</span>, <span class="dv">0</span>] <span class="op">=</span> n_curr[<span class="dv">0</span>] <span class="op">+</span> <span class="op">\</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>                r[<span class="dv">0</span>] <span class="op">*</span> n_curr[<span class="dv">0</span>] <span class="op">*</span> <span class="op">\</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>                (<span class="dv">1</span> <span class="op">-</span> ((n_curr[<span class="dv">0</span>] <span class="op">+</span> alpha[<span class="dv">0</span>]<span class="op">*</span>n_curr[<span class="dv">1</span>]) <span class="op">/</span> K[<span class="dv">0</span>])) <span class="op">+</span> <span class="op">\</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>                np.random.randn(<span class="dv">1</span>) <span class="op">*</span> process_sd</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>            n[t, depth, ens, <span class="dv">0</span>, <span class="dv">1</span>] <span class="op">=</span> n_curr[<span class="dv">1</span>] <span class="op">+</span> <span class="op">\</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>                r[<span class="dv">1</span>] <span class="op">*</span> n_curr[<span class="dv">1</span>] <span class="op">*</span> <span class="op">\</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>                (<span class="dv">1</span> <span class="op">-</span> ((n_curr[<span class="dv">1</span>] <span class="op">+</span> alpha[<span class="dv">1</span>]<span class="op">*</span>n_curr[<span class="dv">0</span>]) <span class="op">/</span> K[<span class="dv">1</span>])) <span class="op">+</span> <span class="op">\</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>                np.random.randn(<span class="dv">1</span>) <span class="op">*</span> process_sd</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>            <span class="co"># predict observed values</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>            n[t,depth,ens,<span class="dv">1</span>,:] <span class="op">=</span> n[t,depth,ens,<span class="dv">0</span>,:] <span class="op">+</span> np.random.randn(<span class="dv">2</span>) <span class="op">*</span> obs_sd</span></code></pre></div>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-2"></h5>
+<p>Here’s a simple visualization of our ensemble forecast at one
+depth</p>
+</div>
+<div class="section level5">
+<h5 class="tabset" id="code-3">Code<a class="anchor" aria-label="anchor" href="#code-3"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-3">R<a class="anchor" aria-label="anchor" href="#r-3"></a>
+</h6>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">times</span>,<span class="va">n</span><span class="op">[</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">]</span>,ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,ylab<span class="op">=</span><span class="st">"Population Density"</span>,type<span class="op">=</span><span class="st">'l'</span><span class="op">)</span>
+<span class="kw">for</span><span class="op">(</span><span class="va">s</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span><span class="op">)</span><span class="op">{</span> <span class="co">##species</span>
   <span class="kw">for</span><span class="op">(</span><span class="va">e</span> <span class="kw">in</span> <span class="va">ensembles</span><span class="op">)</span><span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">times</span>,<span class="va">n</span><span class="op">[</span>,<span class="fl">1</span>,<span class="va">e</span>,<span class="fl">1</span>,<span class="va">s</span><span class="op">]</span>,col<span class="op">=</span><span class="va">s</span><span class="op">)</span>                                  <span class="co">## latent</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">times</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n_time</span>,<span class="op">-</span><span class="fl">0.12</span>,<span class="fl">0.12</span><span class="op">)</span>,<span class="va">n</span><span class="op">[</span>,<span class="fl">1</span>,<span class="va">e</span>,<span class="fl">2</span>,<span class="va">s</span><span class="op">]</span>,col<span class="op">=</span><span class="va">s</span>,cex<span class="op">=</span><span class="fl">0.35</span><span class="op">)</span>  <span class="co">## pseudo-obs w/ jitter</span>
+    <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">times</span>,<span class="va">n</span><span class="op">[</span>,<span class="fl">1</span>,<span class="va">e</span>,<span class="fl">1</span>,<span class="va">s</span><span class="op">]</span>,col<span class="op">=</span><span class="va">s</span><span class="op">)</span>                                  <span class="co">## latent</span>
+    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">times</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n_time</span>,<span class="op">-</span><span class="fl">0.12</span>,<span class="fl">0.12</span><span class="op">)</span>,<span class="va">n</span><span class="op">[</span>,<span class="fl">1</span>,<span class="va">e</span>,<span class="fl">2</span>,<span class="va">s</span><span class="op">]</span>,col<span class="op">=</span><span class="va">s</span>,cex<span class="op">=</span><span class="fl">0.35</span><span class="op">)</span>  <span class="co">## pseudo-obs w/ jitter</span>
   <span class="op">}</span>
 <span class="op">}</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"bottomright"</span>,legend<span class="op">=</span><span class="va">species</span>,col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span>,lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
-<p><img src="logistic-metadata-example_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"bottomright"</span>,legend<span class="op">=</span><span class="va">species</span>,col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span>,lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<p><img src="logistic-metadata-example_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
-<div id="saving-to-a-standardized-output-format" class="section level1">
-<h1 class="hasAnchor">
-<a href="#saving-to-a-standardized-output-format" class="anchor"></a>Saving to a standardized output format</h1>
-<div id="standard-option-1-netcdf" class="section level2">
-<h2 class="hasAnchor">
-<a href="#standard-option-1-netcdf" class="anchor"></a>Standard Option 1: netCDF</h2>
-<div id="forecast-identifiers" class="section level3">
-<h3 class="hasAnchor">
-<a href="#forecast-identifiers" class="anchor"></a>Forecast identifiers</h3>
-<p>Because netCDF is a self-documenting format we’re going to start by defining some forecast identifiers (which we’ll also later use in the metadata)</p>
-<p><code>forecast_project_id</code> identifies forecasts coming from a single project and is used to link forecasts different model versions. Examples might include a project Github repository or a team name.</p>
-<p><code>forecast_model_id</code> is updated each time the forecast code is modified (e.g. model structure, model calibration, forecast workflow). Examples might be a DOI, version number, or Github hash. Results from a single forecast_model_id are considered comparable.</p>
-<p><code>forecast_iteration_id</code> represents a unique ID for each forecast run. Examples might be a start time or database ID.</p>
-<p>For example, if you have a forecast code base on GitHub and launch a forecast from that code that runs daily for 365 days, then there will be one forecast_project_id and 365 forecast_iteration_ids. A paper analyzing the forecasts would cite the forecast_project_id.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="section level6">
+<h6 id="python-3">Python<a class="anchor" aria-label="anchor" href="#python-3"></a>
+</h6>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plt.plot(times, n[:,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>], <span class="st">"-"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">"r"</span>, <span class="st">"b"</span>]</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> s <span class="kw">in</span> <span class="bu">range</span>(n_species):</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> e <span class="kw">in</span> <span class="bu">range</span>(n_ensembles):</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        plt.plot(times, n[:,<span class="dv">0</span>,e,<span class="dv">0</span>,s], <span class="st">"-"</span>, color<span class="op">=</span>colors[s])</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        plt.plot(times, n[:,<span class="dv">0</span>,e,<span class="dv">1</span>,s], <span class="st">"+"</span>, color<span class="op">=</span>colors[s])</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>leg_lines <span class="op">=</span> [plt.Line2D([<span class="dv">0</span>], [<span class="dv">0</span>], color<span class="op">=</span>colors[x]) <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(n_species)]</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>leg_labs <span class="op">=</span> [<span class="ss">f"Species </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(n_species)]</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>plt.legend(leg_lines, leg_labs)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Time"</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Population Density"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<p><img src="../docs/articles/logistic-metadata-example_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-3"></h5>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="saving-to-a-standardized-output-format">Saving to a standardized output format<a class="anchor" aria-label="anchor" href="#saving-to-a-standardized-output-format"></a>
+</h2>
+<div class="section level3">
+<h3 id="standard-option-1-netcdf">Standard Option 1: netCDF<a class="anchor" aria-label="anchor" href="#standard-option-1-netcdf"></a>
+</h3>
+<div class="section level4">
+<h4 id="forecast-identifiers">Forecast identifiers<a class="anchor" aria-label="anchor" href="#forecast-identifiers"></a>
+</h4>
+<p>Because netCDF is a self-documenting format we’re going to start by
+defining some forecast identifiers (which we’ll also later use in the
+metadata)</p>
+<p><code>forecast_project_id</code> identifies forecasts coming from a
+single project and is used to link forecasts different model versions.
+Examples might include a project Github repository or a team name.</p>
+<p><code>forecast_model_id</code> is updated each time the forecast code
+is modified (e.g. model structure, model calibration, forecast
+workflow). Examples might be a DOI, version number, or Github hash.
+Results from a single forecast_model_id are considered comparable.</p>
+<p><code>forecast_iteration_id</code> represents a unique ID for each
+forecast run. Examples might be a start time or database ID.</p>
+<p>For example, if you have a forecast code base on GitHub and launch a
+forecast from that code that runs daily for 365 days, then there will be
+one forecast_project_id and 365 forecast_iteration_ids. A paper
+analyzing the forecasts would cite the forecast_project_id.</p>
+<div class="section level5">
+<h5 class="tabset" id="code-4">Code<a class="anchor" aria-label="anchor" href="#code-4"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-4">R<a class="anchor" aria-label="anchor" href="#r-4"></a>
+</h6>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">forecast_project_id</span> <span class="op">&lt;-</span> <span class="st">"LogisticDemo"</span>
 <span class="va">forecast_model_id</span>   <span class="op">&lt;-</span> <span class="st">"v0.3"</span>
 <span class="va">forecast_iteration_id</span> <span class="op">&lt;-</span> <span class="st">"20010304T060000"</span>   <span class="co"># ISO datetime should make a valid Forecast_id</span></code></pre></div>
 </div>
-<div id="netcdf-dimensions" class="section level3">
-<h3 class="hasAnchor">
-<a href="#netcdf-dimensions" class="anchor"></a>netcdf Dimensions</h3>
-<p>Once we have our ID’s defined, we’re going to use <code>ncdim_def</code> to define the dimensions that our output variables will have</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="section level6">
+<h6 id="python-4">Python<a class="anchor" aria-label="anchor" href="#python-4"></a>
+</h6>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>forecast_project_id <span class="op">=</span> <span class="st">"LogisticDemo"</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>forecast_model_id <span class="op">=</span> <span class="st">"v0.3"</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>forecast_iteration_id <span class="op">=</span> <span class="st">"20010304T060000"</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-4"></h5>
+</div>
+</div>
+<div class="section level4">
+<h4 id="netcdf-dimensions">netcdf Dimensions<a class="anchor" aria-label="anchor" href="#netcdf-dimensions"></a>
+</h4>
+<p>Once we have our ID’s defined, we’re going to use
+<code>ncdim_def</code> to define the dimensions that our output
+variables will have</p>
+<div class="section level5">
+<h5 class="tabset" id="code-5">Code<a class="anchor" aria-label="anchor" href="#code-5"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-5">R<a class="anchor" aria-label="anchor" href="#r-5"></a>
+</h6>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## Set dimensions</span>
-<span class="va">timedim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncdim_def.html">ncdim_def</a></span><span class="op">(</span><span class="st">"time"</span>,   <span class="co">## dimension name</span>
-                     units <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'days since'</span>,<span class="va">forecast_issue_time</span><span class="op">)</span>,
+<span class="va">timedim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncdim_def.html" class="external-link">ncdim_def</a></span><span class="op">(</span><span class="st">"time"</span>,   <span class="co">## dimension name</span>
+                     units <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">'days since'</span>,<span class="va">forecast_start_time</span><span class="op">)</span>,
                                <span class="co">## size of timestep, with units and start date</span>
-                     vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">times</span> <span class="op">-</span> <span class="va">forecast_issue_time</span><span class="op">)</span>,
+                     vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">times</span> <span class="op">-</span> <span class="va">forecast_start_time</span><span class="op">)</span>,
                                <span class="co">## sequence of values that defines the dimension.</span>
                                <span class="co">## netCDF expresses time dimensions relative to a</span>
-                               <span class="co">## specified start date, in this case forecast_issue_time</span>
+                               <span class="co">## specified start date, in this case forecast_start_time</span>
                      longname <span class="op">=</span> <span class="st">'time'</span><span class="op">)</span>
                                <span class="co">## descriptive name</span>
 
-<span class="va">depthdim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncdim_def.html">ncdim_def</a></span><span class="op">(</span><span class="st">"depth"</span>, 
+<span class="va">depthdim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncdim_def.html" class="external-link">ncdim_def</a></span><span class="op">(</span><span class="st">"depth"</span>, 
                       units <span class="op">=</span> <span class="st">"meters"</span>,
                       vals <span class="op">=</span> <span class="va">depths</span>, 
                       longname <span class="op">=</span> <span class="st">'Depth from surface'</span><span class="op">)</span> 
 
-<span class="va">ensdim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncdim_def.html">ncdim_def</a></span><span class="op">(</span><span class="st">"ensemble"</span>,             
+<span class="va">parmdim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncdim_def.html" class="external-link">ncdim_def</a></span><span class="op">(</span><span class="st">"parameter"</span>,             
                     units <span class="op">=</span> <span class="st">""</span>,
                     vals <span class="op">=</span> <span class="va">ensembles</span>,       
                     longname <span class="op">=</span> <span class="st">'ensemble member'</span><span class="op">)</span> 
 
-<span class="va">obsdim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncdim_def.html">ncdim_def</a></span><span class="op">(</span><span class="st">"obs_flag"</span>,
+<span class="va">obsdim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncdim_def.html" class="external-link">ncdim_def</a></span><span class="op">(</span><span class="st">"obs_flag"</span>,
                     units <span class="op">=</span> <span class="st">""</span>,
                     vals <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">obs_dim</span>,
                     longname <span class="op">=</span> <span class="st">"observation error flag. 1 = latent state, 2 = w/ obs error"</span><span class="op">)</span>
 
 <span class="co">## quick check that units are valid</span>
-<span class="fu">udunits2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/udunits2/man/ud.is.parseable.html">ud.is.parseable</a></span><span class="op">(</span><span class="va">timedim</span><span class="op">$</span><span class="va">units</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">udunits2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/udunits2/man/ud.is.parseable.html">ud.is.parseable</a></span><span class="op">(</span><span class="va">depthdim</span><span class="op">$</span><span class="va">units</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">udunits2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/udunits2/man/ud.is.parseable.html">ud.is.parseable</a></span><span class="op">(</span><span class="va">ensdim</span><span class="op">$</span><span class="va">units</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">udunits2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/udunits2/man/ud.is.parseable.html">ud.is.parseable</a></span><span class="op">(</span><span class="va">obsdim</span><span class="op">$</span><span class="va">units</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
+<span class="fu">udunits2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/udunits2/man/ud.is.parseable.html" class="external-link">ud.is.parseable</a></span><span class="op">(</span><span class="va">timedim</span><span class="op">$</span><span class="va">units</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] TRUE</span></code></pre>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">udunits2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/udunits2/man/ud.is.parseable.html" class="external-link">ud.is.parseable</a></span><span class="op">(</span><span class="va">depthdim</span><span class="op">$</span><span class="va">units</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] TRUE</span></code></pre>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">udunits2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/udunits2/man/ud.is.parseable.html" class="external-link">ud.is.parseable</a></span><span class="op">(</span><span class="va">parmdim</span><span class="op">$</span><span class="va">units</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] TRUE</span></code></pre>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">udunits2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/udunits2/man/ud.is.parseable.html" class="external-link">ud.is.parseable</a></span><span class="op">(</span><span class="va">obsdim</span><span class="op">$</span><span class="va">units</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] TRUE</span></code></pre>
 </div>
-<div id="variable-names" class="section level3">
-<h3 class="hasAnchor">
-<a href="#variable-names" class="anchor"></a>Variable names</h3>
-<p>Once we’ve defined our dimensions, we can then define the metadata about our variables using <code>ncvar_def</code></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="section level6">
+<h6 id="python-5">Python<a class="anchor" aria-label="anchor" href="#python-5"></a>
+</h6>
+<p>Note that unlike R, the Python interface expects us to create the
+output NetCDF file first before populating it with output.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>ncfile <span class="op">=</span> tempfile.NamedTemporaryFile(suffix<span class="op">=</span><span class="st">".nc"</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>ncout <span class="op">=</span> netCDF4.Dataset(ncfile.name, mode<span class="op">=</span><span class="st">'w'</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>timedim <span class="op">=</span> ncout.createDimension(<span class="st">"time"</span>, n_time)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>timevar <span class="op">=</span> ncout.createVariable(<span class="st">"time"</span>, <span class="st">"f4"</span>, <span class="st">"time"</span>)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>timevar.units <span class="op">=</span> <span class="ss">f"days since </span><span class="sc">{</span>forecast_start_time<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>timevar[:] <span class="op">=</span> [(t <span class="op">-</span> forecast_start_time).days <span class="cf">for</span> t <span class="kw">in</span> times]</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>depthdim <span class="op">=</span> ncout.createDimension(<span class="st">"depth"</span>, n_depths)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>depthvar <span class="op">=</span> ncout.createVariable(<span class="st">"depth"</span>, <span class="st">"f4"</span>, <span class="st">"depth"</span>)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>depthvar.units <span class="op">=</span> <span class="st">"meters"</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>depthvar[:] <span class="op">=</span> depths</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>parmdim <span class="op">=</span> ncout.createDimension(<span class="st">"parameter"</span>, n_ensembles)</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>parmvar <span class="op">=</span> ncout.createVariable(<span class="st">"parameter"</span>, <span class="st">"i4"</span>, <span class="st">"parameter"</span>)</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>parmvar.units <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>parmvar[:] <span class="op">=</span> ensembles</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>obsdim <span class="op">=</span> ncout.createDimension(<span class="st">"obs_flag"</span>, obs_dim)</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>obsvar <span class="op">=</span> ncout.createVariable(<span class="st">"obs_flag"</span>, <span class="st">"i4"</span>, <span class="st">"obs_flag"</span>)</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>obsvar.units <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>obsvar[:] <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(obs_dim))</span></code></pre></div>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-5"></h5>
+</div>
+</div>
+<div class="section level4">
+<h4 id="variable-names">Variable names<a class="anchor" aria-label="anchor" href="#variable-names"></a>
+</h4>
+<p>Once we’ve defined our dimensions, we can then define the metadata
+about our variables using <code>ncvar_def</code></p>
+<div class="section level5">
+<h5 class="tabset" id="code-6">Code<a class="anchor" aria-label="anchor" href="#code-6"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-6">R<a class="anchor" aria-label="anchor" href="#r-6"></a>
+</h6>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fillvalue</span> <span class="op">&lt;-</span> <span class="fl">1e32</span>  <span class="co">## missing data value</span>
 
 <span class="co">#Define variables</span>
-<span class="va">def_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">def_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_def.html">ncvar_def</a></span><span class="op">(</span>name <span class="op">=</span>  <span class="st">"species_1"</span>,
+<span class="va">def_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">def_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_def.html" class="external-link">ncvar_def</a></span><span class="op">(</span>name <span class="op">=</span>  <span class="st">"species_1"</span>,
                            units <span class="op">=</span> <span class="st">"number of individuals"</span>,
-                           dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">timedim</span>, <span class="va">depthdim</span>, <span class="va">ensdim</span>, <span class="va">obsdim</span><span class="op">)</span>,
+                           dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">timedim</span>, <span class="va">depthdim</span>, <span class="va">parmdim</span>, <span class="va">obsdim</span><span class="op">)</span>,
                            missval <span class="op">=</span> <span class="va">fillvalue</span>,
                            longname <span class="op">=</span> <span class="st">'&lt;scientific name of species 1&gt;'</span>,
                            prec<span class="op">=</span><span class="st">"single"</span><span class="op">)</span>
-<span class="va">def_list</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_def.html">ncvar_def</a></span><span class="op">(</span>name <span class="op">=</span>  <span class="st">"species_2"</span>,
+<span class="va">def_list</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_def.html" class="external-link">ncvar_def</a></span><span class="op">(</span>name <span class="op">=</span>  <span class="st">"species_2"</span>,
                            units <span class="op">=</span> <span class="st">"number of individuals"</span>,
-                           dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">timedim</span>, <span class="va">depthdim</span>, <span class="va">ensdim</span>, <span class="va">obsdim</span><span class="op">)</span>,
+                           dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">timedim</span>, <span class="va">depthdim</span>, <span class="va">parmdim</span>, <span class="va">obsdim</span><span class="op">)</span>,
                            missval <span class="op">=</span> <span class="va">fillvalue</span>,
                            longname <span class="op">=</span> <span class="st">'&lt;scientific name of species 2&gt;'</span>,
                            prec<span class="op">=</span><span class="st">"single"</span><span class="op">)</span>
-<span class="va">def_list</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_def.html">ncvar_def</a></span><span class="op">(</span>name <span class="op">=</span>  <span class="st">"forecast"</span>,
+<span class="va">def_list</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_def.html" class="external-link">ncvar_def</a></span><span class="op">(</span>name <span class="op">=</span>  <span class="st">"forecast"</span>,
                            units <span class="op">=</span> <span class="st">"integer"</span>,
-                           dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">timedim</span><span class="op">)</span>,
+                           dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">timedim</span><span class="op">)</span>,
                            missval <span class="op">=</span> <span class="va">fillvalue</span>,
                            longname <span class="op">=</span> <span class="st">'EFI standard forecast code. 0 = hindcast'</span>,
                            prec<span class="op">=</span><span class="st">"single"</span><span class="op">)</span>
-<span class="va">def_list</span><span class="op">[[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_def.html">ncvar_def</a></span><span class="op">(</span>name <span class="op">=</span>  <span class="st">"data_assimilation"</span>,
+<span class="va">def_list</span><span class="op">[[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_def.html" class="external-link">ncvar_def</a></span><span class="op">(</span>name <span class="op">=</span>  <span class="st">"data_assimilation"</span>,
                            units <span class="op">=</span> <span class="st">"integer"</span>,
-                           dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">timedim</span><span class="op">)</span>,
+                           dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">timedim</span><span class="op">)</span>,
                            missval <span class="op">=</span> <span class="va">fillvalue</span>,
                            longname <span class="op">=</span> <span class="st">'EFI standard data assimilation code. 0 = no data'</span>,
                            prec<span class="op">=</span><span class="st">"single"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="creating-the-file" class="section level3">
-<h3 class="hasAnchor">
-<a href="#creating-the-file" class="anchor"></a>Creating the file</h3>
-<p>Finally, we’ll now create our netCDF file and add our outputs and global metadata to the file</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="section level6">
+<h6 id="python-6">Python<a class="anchor" aria-label="anchor" href="#python-6"></a>
+</h6>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>spp1nc <span class="op">=</span> ncout.createVariable(<span class="st">"species_1"</span>, <span class="st">"f4"</span>, (<span class="st">"time"</span>, <span class="st">"depth"</span>, <span class="st">"parameter"</span>, <span class="st">"obs_flag"</span>))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>spp1nc.units <span class="op">=</span> <span class="st">"number of individuals"</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>spp1nc.longname <span class="op">=</span> <span class="st">"&lt;scientific name of species 1&gt;"</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>spp2nc <span class="op">=</span> ncout.createVariable(<span class="st">"species_2"</span>, <span class="st">"f4"</span>, (<span class="st">"time"</span>, <span class="st">"depth"</span>, <span class="st">"parameter"</span>, <span class="st">"obs_flag"</span>))</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>spp2nc.units <span class="op">=</span> <span class="st">"number of individuals"</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>spp2nc.longname <span class="op">=</span> <span class="st">"&lt;scientific name of species 2&gt;"</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>forecastnc <span class="op">=</span> ncout.createVariable(<span class="st">"forecast"</span>, <span class="st">"i4"</span>, (<span class="st">"time"</span>))</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>forecastnc.units <span class="op">=</span> <span class="st">"integer"</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>forecastnc.longname <span class="op">=</span> <span class="st">"EFI standard forecast code. 0 = hindcast"</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>danc <span class="op">=</span> ncout.createVariable(<span class="st">"data_assimilation"</span>, <span class="st">"i4"</span>, (<span class="st">"time"</span>))</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>danc.units <span class="op">=</span> <span class="st">"integer"</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>danc.longname <span class="op">=</span> <span class="st">"EFI standard data assimilation code. 0 = no data"</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-6"></h5>
+</div>
+</div>
+<div class="section level4">
+<h4 id="creating-the-file">Creating the file<a class="anchor" aria-label="anchor" href="#creating-the-file"></a>
+</h4>
+<p>Finally, we’ll now create our netCDF file and add our outputs and
+global metadata to the file</p>
+<div class="section level5">
+<h5 class="tabset" id="code-7">Code<a class="anchor" aria-label="anchor" href="#code-7"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-7">R<a class="anchor" aria-label="anchor" href="#r-7"></a>
+</h6>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## file name</span>
 <span class="va">ncfname</span> <span class="op">&lt;-</span> <span class="st">"logistic-forecast-ensemble-multi-variable-space-long.nc"</span>
 
 <span class="co">## open your netCDF file</span>
-<span class="va">ncout</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/nc_create.html">nc_create</a></span><span class="op">(</span><span class="va">ncfname</span>,<span class="va">def_list</span>,force_v4<span class="op">=</span><span class="cn">T</span><span class="op">)</span>
+<span class="va">ncout</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/nc_create.html" class="external-link">nc_create</a></span><span class="op">(</span><span class="va">ncfname</span>,<span class="va">def_list</span>,force_v4<span class="op">=</span><span class="cn">T</span><span class="op">)</span>
 
 <span class="co">## fill in our output data</span>
-<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ancvar_put.html">ncvar_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="va">def_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> , <span class="va">n</span><span class="op">[</span>, , , ,<span class="fl">1</span> <span class="op">]</span><span class="op">)</span>        <span class="co">## species 1</span>
-<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ancvar_put.html">ncvar_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="va">def_list</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span> , <span class="va">n</span><span class="op">[</span>, , , ,<span class="fl">2</span> <span class="op">]</span><span class="op">)</span>        <span class="co">## species 2</span>
-<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ancvar_put.html">ncvar_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="va">def_list</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span> , <span class="va">forecast</span><span class="op">)</span> <span class="co">## forecast flag</span>
-<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ancvar_put.html">ncvar_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="va">def_list</span><span class="op">[[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span> , <span class="va">data_assimilation</span><span class="op">)</span> <span class="co">## data_assimilation flag</span>
+<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ancvar_put.html" class="external-link">ncvar_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="va">def_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> , <span class="va">n</span><span class="op">[</span>, , , ,<span class="fl">1</span> <span class="op">]</span><span class="op">)</span>        <span class="co">## species 1</span>
+<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ancvar_put.html" class="external-link">ncvar_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="va">def_list</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span> , <span class="va">n</span><span class="op">[</span>, , , ,<span class="fl">2</span> <span class="op">]</span><span class="op">)</span>        <span class="co">## species 2</span>
+<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ancvar_put.html" class="external-link">ncvar_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="va">def_list</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span> , <span class="va">forecast</span><span class="op">)</span> <span class="co">## forecast flag</span>
+<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ancvar_put.html" class="external-link">ncvar_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="va">def_list</span><span class="op">[[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span> , <span class="va">data_assimilation</span><span class="op">)</span> <span class="co">## data_assimilation flag</span>
 
 <span class="co">## Global attributes (metadata)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_put.html">ncatt_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="fl">0</span>,<span class="st">"forecast_project_id"</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">forecast_project_id</span><span class="op">)</span>, 
+<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_put.html" class="external-link">ncatt_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="fl">0</span>,<span class="st">"forecast_project_id"</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">forecast_project_id</span><span class="op">)</span>, 
           prec <span class="op">=</span>  <span class="st">"text"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_put.html">ncatt_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="fl">0</span>,<span class="st">"forecast_model_id"</span>,<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">forecast_model_id</span><span class="op">)</span>, 
+<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_put.html" class="external-link">ncatt_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="fl">0</span>,<span class="st">"forecast_model_id"</span>,<span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">forecast_model_id</span><span class="op">)</span>, 
           prec <span class="op">=</span>  <span class="st">"text"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_put.html">ncatt_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="fl">0</span>,<span class="st">"forecast_iteration_id"</span>,<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">forecast_iteration_id</span><span class="op">)</span>, 
+<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_put.html" class="external-link">ncatt_put</a></span><span class="op">(</span><span class="va">ncout</span>,<span class="fl">0</span>,<span class="st">"forecast_iteration_id"</span>,<span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">forecast_iteration_id</span><span class="op">)</span>, 
           prec <span class="op">=</span>  <span class="st">"text"</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/nc_close.html">nc_close</a></span><span class="op">(</span><span class="va">ncout</span><span class="op">)</span>   <span class="co">## make sure to close the file</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/nc_close.html" class="external-link">nc_close</a></span><span class="op">(</span><span class="va">ncout</span><span class="op">)</span>   <span class="co">## make sure to close the file</span></code></pre></div>
+</div>
+<div class="section level6">
+<h6 id="python-7">Python<a class="anchor" aria-label="anchor" href="#python-7"></a>
+</h6>
+<p>Recall: We already created the file above.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write data to file</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>spp1nc[:,:,:,:] <span class="op">=</span> n[:,:,:,:,<span class="dv">0</span>]</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>spp2nc[:,:,:,:] <span class="op">=</span> n[:,:,:,:,<span class="dv">1</span>]</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>forecastnc[:] <span class="op">=</span> forecast</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>danc[:] <span class="op">=</span> data_assimilation</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Set global attributes (metadata)</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>ncout.forecast_project_id <span class="op">=</span> forecast_project_id</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>ncout.forecast_model_id <span class="op">=</span> forecast_model_id</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>ncout.forecast_iteration_id <span class="op">=</span> forecast_iteration_id</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>ncout.close()</span></code></pre></div>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-7"></h5>
 </div>
 </div>
 </div>
-<div id="standard-option-2-ensemble-csv" class="section level1">
-<h1 class="hasAnchor">
-<a href="#standard-option-2-ensemble-csv" class="anchor"></a>Standard Option 2: ensemble CSV</h1>
-<p>Convert to a flat file format (CSV) with one column for each variable and all ensemble members saved</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## wrangle data into a tidy format</span>
-<span class="va">df_combined</span> <span class="op">&lt;-</span> <span class="fu">reshape2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/reshape2/man/melt.html">melt</a></span><span class="op">(</span><span class="va">n</span>,varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>,<span class="st">"depth"</span>,<span class="st">"ensemble"</span>,<span class="st">"obs_flag"</span>,<span class="st">"species"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,names_from <span class="op">=</span> <span class="st">"species"</span>,names_prefix <span class="op">=</span> <span class="st">"species_"</span>,values_from <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">times</span><span class="op">[</span><span class="va">time</span><span class="op">]</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>depth <span class="op">=</span> <span class="va">depths</span><span class="op">[</span><span class="va">depth</span><span class="op">]</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join</a></span><span class="op">(</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/deprecated.html">data_frame</a></span><span class="op">(</span>time<span class="op">=</span><span class="va">times</span>,forecast<span class="op">=</span><span class="va">forecast</span>,data_assimilation <span class="op">=</span> <span class="va">data_assimilation</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Warning: `data_frame()` is deprecated as of tibble 1.1.0.
-## Please use `tibble()` instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
-<pre><code>## Joining, by = "time"</code></pre>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">df_combined</span><span class="op">)</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 8
-##   time       depth ensemble obs_flag species_1 species_2 forecast
-##   &lt;date&gt;     &lt;dbl&gt;    &lt;int&gt;    &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-## 1 2001-03-04     1        1        1     0.5        0.5         0
-## 2 2001-03-05     1        1        1     0.984      1.95        0
-## 3 2001-03-06     1        1        1     1.82       7.16        0
-## 4 2001-03-07     1        1        1     3.04      20.8         0
-## 5 2001-03-08     1        1        1     3.88      17.8         0
-## 6 2001-03-09     1        1        1     4.87      23.2         0
-## # ... with 1 more variable: data_assimilation &lt;dbl&gt;</code></pre>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">df_combined</span>, 
+</div>
+<div class="section level2">
+<h2 id="standard-option-2-ensemble-csv">Standard Option 2: ensemble CSV<a class="anchor" aria-label="anchor" href="#standard-option-2-ensemble-csv"></a>
+</h2>
+<p>Convert to a flat file format (CSV) with one column for each variable
+and all ensemble members saved</p>
+<div class="section level5">
+<h5 class="tabset" id="code-8">Code<a class="anchor" aria-label="anchor" href="#code-8"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-8">R<a class="anchor" aria-label="anchor" href="#r-8"></a>
+</h6>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">## wrangle data from an array into a long format</span>
+<span class="va">df_combined</span> <span class="op">&lt;-</span> <span class="fu">reshape2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/reshape2/man/melt.html" class="external-link">melt</a></span><span class="op">(</span><span class="va">n</span>,varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>,<span class="st">"depth"</span>,<span class="st">"parameter"</span>,<span class="st">"obs_flag"</span>,<span class="st">"species"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,names_from <span class="op">=</span> <span class="st">"species"</span>,names_prefix <span class="op">=</span> <span class="st">"species_"</span>,values_from <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"species"</span><span class="op">)</span>,names_to <span class="op">=</span> <span class="st">"variable"</span>,values_to <span class="op">=</span> <span class="st">"prediction"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">times</span><span class="op">[</span><span class="va">time</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>depth <span class="op">=</span> <span class="va">depths</span><span class="op">[</span><span class="va">depth</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time<span class="op">=</span><span class="va">times</span>,forecast<span class="op">=</span><span class="va">forecast</span>,data_assimilation <span class="op">=</span> <span class="va">data_assimilation</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Joining, by = "time"</span></code></pre>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_combined</span>,n<span class="op">=</span><span class="fl">10</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 10 × 8</span></span>
+<span class="co">##    time       depth parameter obs_flag variable  prediction forecast</span>
+<span class="co">##    <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="co">## <span style="color: #BCBCBC;"> 1</span> 2001-03-04     1         1        1 species_1      0.5          0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 2</span> 2001-03-04     1         1        1 species_2      0.5          0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 3</span> 2001-03-05     1         1        1 species_1      0.984        0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 4</span> 2001-03-05     1         1        1 species_2      1.95         0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 5</span> 2001-03-06     1         1        1 species_1      1.82         0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 6</span> 2001-03-06     1         1        1 species_2      7.16         0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 7</span> 2001-03-07     1         1        1 species_1      3.04         0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 8</span> 2001-03-07     1         1        1 species_2     20.8          0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 9</span> 2001-03-08     1         1        1 species_1      3.88         0</span>
+<span class="co">## <span style="color: #BCBCBC;">10</span> 2001-03-08     1         1        1 species_2     17.8          0</span>
+<span class="co">## <span style="color: #949494;"># … with 1 more variable: data_assimilation &lt;int&gt;</span></span></code></pre>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">df_combined</span>, 
           file <span class="op">=</span> <span class="st">"logistic-forecast-ensemble-multi-variable-multi-depth.csv"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="standard-option-3-summary-csv" class="section level1">
-<h1 class="hasAnchor">
-<a href="#standard-option-3-summary-csv" class="anchor"></a>Standard Option 3: summary CSV</h1>
-<p>Convert to a flat file format (CSV) with forecast distribution summaries saved</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## calculate summary statistics across ensemble members and output variables</span>
-<span class="va">dfs</span> <span class="op">&lt;-</span> <span class="va">df_combined</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols<span class="op">=</span><span class="fl">5</span><span class="op">:</span><span class="fl">6</span>,names_to<span class="op">=</span><span class="st">"species"</span><span class="op">)</span> <span class="op">%&gt;%</span>  <span class="co">## make species a column</span>
-                   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">depth</span>,<span class="va">obs_flag</span>,<span class="va">species</span>,<span class="va">forecast</span>,<span class="va">data_assimilation</span><span class="op">)</span> <span class="op">%&gt;%</span>
-                   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span>,
-                             sd   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span>,
-                             Conf_interv_02.5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">value</span>, <span class="fl">0.025</span><span class="op">)</span>,
-                             Conf_interv_97.5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">value</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-                   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="fl">7</span><span class="op">:</span><span class="fl">10</span>,names_to<span class="op">=</span><span class="st">"statistic"</span><span class="op">)</span>  <span class="op">%&gt;%</span> <span class="co">## make statistic column</span>
-                   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from<span class="op">=</span><span class="va">species</span>,values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="co">## go back to species wide</span></code></pre></div>
-<pre><code>## `summarise()` regrouping output by 'time', 'depth', 'obs_flag', 'species', 'forecast' (override with `.groups` argument)</code></pre>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## recode statistics</span>
-<span class="va">dfs</span><span class="op">$</span><span class="va">statistic</span><span class="op">[</span><span class="va">dfs</span><span class="op">$</span><span class="va">obs_flag</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">dfs</span><span class="op">$</span><span class="va">statistic</span> <span class="op">==</span> <span class="st">"sd"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"se"</span>
-<span class="va">dfs</span><span class="op">$</span><span class="va">statistic</span><span class="op">[</span><span class="va">dfs</span><span class="op">$</span><span class="va">obs_flag</span> <span class="op">==</span> <span class="fl">2</span> <span class="op">&amp;</span> <span class="va">dfs</span><span class="op">$</span><span class="va">statistic</span> <span class="op">==</span> <span class="st">"Conf_interv_02.5"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Pred_interv_0.25"</span>
-<span class="va">dfs</span><span class="op">$</span><span class="va">statistic</span><span class="op">[</span><span class="va">dfs</span><span class="op">$</span><span class="va">obs_flag</span> <span class="op">==</span> <span class="fl">2</span> <span class="op">&amp;</span> <span class="va">dfs</span><span class="op">$</span><span class="va">statistic</span> <span class="op">==</span> <span class="st">"Conf_interv_02.5"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Pred_interv_0.25"</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dfs</span><span class="op">)</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 8
-## # Groups:   time, depth, obs_flag, forecast [2]
-##   time       depth obs_flag forecast data_assimilati~ statistic species_1
-##   &lt;date&gt;     &lt;dbl&gt;    &lt;int&gt;    &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt;
-## 1 2001-03-04     1        1        0                0 mean            0.5
-## 2 2001-03-04     1        1        0                0 se              0  
-## 3 2001-03-04     1        1        0                0 Conf_int~       0.5
-## 4 2001-03-04     1        1        0                0 Conf_int~       0.5
-## 5 2001-03-04     1        2        0                0 mean            0.5
-## 6 2001-03-04     1        2        0                0 sd              0  
-## # ... with 1 more variable: species_2 &lt;dbl&gt;</code></pre>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">dfs</span>, file <span class="op">=</span> <span class="st">"logistic-forecast-summary-multi-variable-multi-depth.csv"</span><span class="op">)</span></code></pre></div>
+<div class="section level6">
+<h6 id="python-8">Python<a class="anchor" aria-label="anchor" href="#python-8"></a>
+</h6>
+<p>** this code needs updating for the new format**</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>n_names <span class="op">=</span> [<span class="st">"time"</span>, <span class="st">"depth"</span>, <span class="st">"ensemble"</span>, <span class="st">"obs_flag"</span>, <span class="st">"species"</span>]</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>n_index <span class="op">=</span> pd.MultiIndex.from_product([<span class="bu">range</span>(s) <span class="cf">for</span> s <span class="kw">in</span> n.shape], names<span class="op">=</span>n_names)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">"pop"</span>: n.flatten()}, index <span class="op">=</span> n_index)[<span class="st">"pop"</span>]</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>df_wide <span class="op">=</span> df.unstack(<span class="st">"species"</span>).reset_index()</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>df_wide[<span class="st">"time"</span>] <span class="op">=</span> [times[x] <span class="cf">for</span> x <span class="kw">in</span> df_wide[<span class="st">"time"</span>]]</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>df_wide[<span class="st">"depth"</span>] <span class="op">=</span> [depths[x] <span class="cf">for</span> x <span class="kw">in</span> df_wide[<span class="st">"depth"</span>]]</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>df_wide.rename(columns<span class="op">=</span>{<span class="dv">0</span>: <span class="st">"Species_1"</span>, <span class="dv">1</span>: <span class="st">"Species_2"</span>}, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>meta_df <span class="op">=</span> pd.DataFrame({<span class="st">"time"</span>: times, <span class="st">"forecast"</span>: forecast, <span class="st">"data_assimilation"</span>: data_assimilation})</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>df_combined <span class="op">=</span> df_wide.merge(meta_df, on<span class="op">=</span><span class="st">"time"</span>, how<span class="op">=</span><span class="st">"right"</span>)</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>df_combined.head()</span></code></pre></div>
+<pre><code><span class="co">##          time  depth  ensemble  ...  Species_2  forecast  data_assimilation</span>
+<span class="co">## 0  2001-03-04      1         0  ...        0.5         0                  0</span>
+<span class="co">## 1  2001-03-04      1         0  ...        0.5         0                  0</span>
+<span class="co">## 2  2001-03-04      1         1  ...        0.5         0                  0</span>
+<span class="co">## 3  2001-03-04      1         1  ...        0.5         0                  0</span>
+<span class="co">## 4  2001-03-04      1         2  ...        0.5         0                  0</span>
+<span class="co">## </span>
+<span class="co">## [5 rows x 8 columns]</span></code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>out_csv <span class="op">=</span> tempfile.NamedTemporaryFile(suffix<span class="op">=</span><span class="st">".csv"</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>df_combined.to_csv(out_csv.name)</span></code></pre></div>
 </div>
-<div id="standardized-metadata" class="section level1">
-<h1 class="hasAnchor">
-<a href="#standardized-metadata" class="anchor"></a>Standardized Metadata</h1>
-<div id="forecast-output-entity-datatable" class="section level3">
-<h3 class="hasAnchor">
-<a href="#forecast-output-entity-datatable" class="anchor"></a>Forecast output entity: dataTable</h3>
-<p>Let’s begin by documenting the metadata of the forecast output data table itself, which we’ll do using EML’s <code>dataTable</code> entity. In this example we’ll assume we’re working with format 2 (ensemble CSV), though most of the metadata would be identical for all three formats.</p>
-<p>To start, the <code>attributes</code> table stores the basic metadata about the variable names and units.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-8"></h5>
+</div>
+</div>
+<div class="section level2">
+<h2 id="standard-option-3-distributional-csv">Standard Option 3: distributional CSV<a class="anchor" aria-label="anchor" href="#standard-option-3-distributional-csv"></a>
+</h2>
+<p>Convert to a flat file format (CSV) with forecast distributions
+saved</p>
+<div class="section level5">
+<h5 class="tabset" id="code-9">Code<a class="anchor" aria-label="anchor" href="#code-9"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-9">R<a class="anchor" aria-label="anchor" href="#r-9"></a>
+</h6>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">## calculate summary statistics across ensemble members and output variables</span>
+<span class="va">dfs</span> <span class="op">&lt;-</span> <span class="va">df_combined</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/add_column.html" class="external-link">add_column</a></span><span class="op">(</span>family<span class="op">=</span><span class="st">"normal"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+                   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">depth</span>,<span class="va">family</span>,<span class="va">obs_flag</span>,<span class="va">variable</span>,<span class="va">forecast</span>,<span class="va">data_assimilation</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+                   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">prediction</span><span class="op">)</span>,
+                             sigma   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">prediction</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+                   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fl">8</span><span class="op">:</span><span class="fl">9</span>,names_to<span class="op">=</span><span class="st">"parameter"</span>,values_to <span class="op">=</span> <span class="st">"predictions"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+                   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate</a></span><span class="op">(</span><span class="va">parameter</span>,.after <span class="op">=</span> <span class="va">family</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+                   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate</a></span><span class="op">(</span><span class="va">predictions</span>,.after<span class="op">=</span><span class="va">variable</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## `summarise()` has grouped output by 'time', 'depth', 'family', 'obs_flag',</span>
+<span class="co">## 'variable', 'forecast'. You can override using the `.groups` argument.</span></code></pre>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dfs</span>,n<span class="op">=</span><span class="fl">10</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 10 × 9</span></span>
+<span class="co">## <span style="color: #949494;"># Groups:   time, depth, family, obs_flag, variable, forecast [5]</span></span>
+<span class="co">##    time       depth family parameter obs_flag variable  predictions forecast</span>
+<span class="co">##    <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="co">## <span style="color: #BCBCBC;"> 1</span> 2001-03-04     1 normal mu               1 species_1         0.5        0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 2</span> 2001-03-04     1 normal sigma            1 species_1         0          0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 3</span> 2001-03-04     1 normal mu               1 species_2         0.5        0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 4</span> 2001-03-04     1 normal sigma            1 species_2         0          0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 5</span> 2001-03-04     1 normal mu               2 species_1         0.5        0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 6</span> 2001-03-04     1 normal sigma            2 species_1         0          0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 7</span> 2001-03-04     1 normal mu               2 species_2         0.5        0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 8</span> 2001-03-04     1 normal sigma            2 species_2         0          0</span>
+<span class="co">## <span style="color: #BCBCBC;"> 9</span> 2001-03-04     3 normal mu               1 species_1         0.5        0</span>
+<span class="co">## <span style="color: #BCBCBC;">10</span> 2001-03-04     3 normal sigma            1 species_1         0          0</span>
+<span class="co">## <span style="color: #949494;"># … with 1 more variable: data_assimilation &lt;int&gt;</span></span></code></pre>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">dfs</span>, file <span class="op">=</span> <span class="st">"logistic-forecast-summary-multi-variable-multi-depth.csv"</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level6">
+<h6 id="python-9">Python<a class="anchor" aria-label="anchor" href="#python-9"></a>
+</h6>
+<div class="sourceCode" id="cb39"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>keep_cols <span class="op">=</span> [col <span class="cf">for</span> col <span class="kw">in</span> df_combined.columns <span class="cf">if</span> <span class="kw">not</span> <span class="st">"Species"</span> <span class="kw">in</span> col]</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>df_long <span class="op">=</span> df_combined.melt(id_vars<span class="op">=</span>keep_cols, var_name<span class="op">=</span><span class="st">"species"</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>dfs_wide <span class="op">=</span> df_long<span class="op">\</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    .groupby([<span class="st">"time"</span>, <span class="st">"depth"</span>, <span class="st">"obs_flag"</span>, <span class="st">"species"</span>, <span class="st">"forecast"</span>, <span class="st">"data_assimilation"</span>])<span class="op">\</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>        mean <span class="op">=</span> (<span class="st">"value"</span>, np.mean), sd <span class="op">=</span> (<span class="st">"value"</span>, np.std),</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>        Conf_interv_025 <span class="op">=</span> (<span class="st">"value"</span>, <span class="kw">lambda</span> x: np.quantile(x, <span class="fl">0.025</span>)),</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>        Conf_interv_975 <span class="op">=</span> (<span class="st">"value"</span>, <span class="kw">lambda</span> x: np.quantile(x, <span class="fl">0.975</span>)),</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    )<span class="op">\</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>    .reset_index()<span class="op">\</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>    .melt(</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>        id_vars <span class="op">=</span> [<span class="st">"time"</span>, <span class="st">"depth"</span>, <span class="st">"obs_flag"</span>, <span class="st">"forecast"</span>,</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"data_assimilation"</span>, <span class="st">"species"</span>],</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>        value_vars <span class="op">=</span> [<span class="st">"mean"</span>, <span class="st">"sd"</span>, <span class="st">"Conf_interv_025"</span>, <span class="st">"Conf_interv_975"</span>],</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>        var_name <span class="op">=</span> <span class="st">"statistic"</span></span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>dfs <span class="op">=</span> dfs_wide.pivot(</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>    index <span class="op">=</span> [<span class="st">"time"</span>, <span class="st">"depth"</span>, <span class="st">"obs_flag"</span>, <span class="st">"forecast"</span>,</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>             <span class="st">"data_assimilation"</span>, <span class="st">"statistic"</span>],</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span><span class="st">"species"</span>,</span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>    values <span class="op">=</span> <span class="st">"value"</span></span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>).reset_index()</span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>dfs.head()</span></code></pre></div>
+<pre><code><span class="co">## species        time  depth  obs_flag  ...        statistic  Species_1 Species_2</span>
+<span class="co">## 0        2001-03-04      1         0  ...  Conf_interv_025        0.5       0.5</span>
+<span class="co">## 1        2001-03-04      1         0  ...  Conf_interv_975        0.5       0.5</span>
+<span class="co">## 2        2001-03-04      1         0  ...             mean        0.5       0.5</span>
+<span class="co">## 3        2001-03-04      1         0  ...               sd        0.0       0.0</span>
+<span class="co">## 4        2001-03-04      1         1  ...  Conf_interv_025        0.5       0.5</span>
+<span class="co">## </span>
+<span class="co">## [5 rows x 8 columns]</span></code></pre>
+<div class="sourceCode" id="cb41"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>out_summary <span class="op">=</span> tempfile.NamedTemporaryFile(suffix<span class="op">=</span><span class="st">".csv"</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>dfs.to_csv(out_summary.name)</span></code></pre></div>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-9"></h5>
+</div>
+</div>
+<div class="section level2">
+<h2 id="standardized-metadata">Standardized Metadata<a class="anchor" aria-label="anchor" href="#standardized-metadata"></a>
+</h2>
+<div class="section level4">
+<h4 id="forecast-output-entity-datatable">Forecast output entity: dataTable<a class="anchor" aria-label="anchor" href="#forecast-output-entity-datatable"></a>
+</h4>
+<p>Let’s begin by documenting the metadata of the forecast output data
+table itself, which we’ll do using EML’s <code>dataTable</code> entity.
+In this example we’ll assume we’re working with format 2 (ensemble CSV),
+though most of the metadata would be identical for all three
+formats.</p>
+<p>To start, the <code>attributes</code> table stores the basic metadata
+about the variable names and units.</p>
+<div class="section level5">
+<h5 class="tabset" id="code-10">Code<a class="anchor" aria-label="anchor" href="#code-10"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-10">R<a class="anchor" aria-label="anchor" href="#r-10"></a>
+</h6>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## define variable names, units, etc</span>
 <span class="co">## in practice, this might be kept in a spreadsheet</span>
-<span class="va">attributes</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span>
+<span class="va">attributes</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
  <span class="op">~</span><span class="va">attributeName</span>,     <span class="op">~</span><span class="va">attributeDefinition</span>,                          <span class="op">~</span><span class="va">unit</span>,                  <span class="op">~</span><span class="va">formatString</span>, <span class="op">~</span><span class="va">numberType</span>, <span class="op">~</span><span class="va">definition</span>,
  <span class="st">"time"</span>,              <span class="st">"[dimension]{time}"</span>,                          <span class="st">"year"</span>,                 <span class="st">"YYYY-MM-DD"</span>,  <span class="st">"numberType"</span>, <span class="cn">NA</span>,
  <span class="st">"depth"</span>,             <span class="st">"[dimension]{depth in reservior}"</span>,            <span class="st">"meter"</span>,                 <span class="cn">NA</span>,           <span class="st">"real"</span>,       <span class="cn">NA</span>,
@@ -397,97 +769,217 @@
 <span class="op">)</span> 
 <span class="co">## note: EML uses a different unit standard than UDUNITS. For now use EML. EFI needs to provide a custom unitList.</span>
 <span class="va">attributes</span></code></pre></div>
-<pre><code>## # A tibble: 8 x 6
-##   attributeName  attributeDefinition  unit    formatString numberType definition
-##   &lt;chr&gt;          &lt;chr&gt;                &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;      &lt;lgl&gt;     
-## 1 time           [dimension]{time}    year    YYYY-MM-DD   numberType NA        
-## 2 depth          [dimension]{depth i~ meter   &lt;NA&gt;         real       NA        
-## 3 ensemble       [dimension]{index o~ dimens~ &lt;NA&gt;         integer    NA        
-## 4 obs_flag       [dimension]{observa~ dimens~ &lt;NA&gt;         integer    NA        
-## 5 species_1      [variable]{Pop. den~ number~ &lt;NA&gt;         real       NA        
-## 6 species_2      [variable]{Pop. den~ number~ &lt;NA&gt;         real       NA        
-## 7 forecast       [flag]{whether time~ dimens~ &lt;NA&gt;         integer    NA        
-## 8 data_assimila~ [flag]{whether time~ dimens~ &lt;NA&gt;         integer    NA</code></pre>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">attrList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://docs.ropensci.org/EML/reference/set_attributes.html">set_attributes</a></span><span class="op">(</span><span class="va">attributes</span>, 
-                           col_classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Date"</span>, <span class="st">"numeric"</span>, <span class="st">"numeric"</span>,<span class="st">"numeric"</span>, 
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 8 × 6</span></span>
+<span class="co">##   attributeName     attributeDefinition unit  formatString numberType definition</span>
+<span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span>
+<span class="co">## <span style="color: #BCBCBC;">1</span> time              [dimension]{time}   year  YYYY-MM-DD   numberType <span style="color: #BB0000;">NA</span>        </span>
+<span class="co">## <span style="color: #BCBCBC;">2</span> depth             [dimension]{depth … meter <span style="color: #BB0000;">NA</span>           real       <span style="color: #BB0000;">NA</span>        </span>
+<span class="co">## <span style="color: #BCBCBC;">3</span> ensemble          [dimension]{index … dime… <span style="color: #BB0000;">NA</span>           integer    <span style="color: #BB0000;">NA</span>        </span>
+<span class="co">## <span style="color: #BCBCBC;">4</span> obs_flag          [dimension]{observ… dime… <span style="color: #BB0000;">NA</span>           integer    <span style="color: #BB0000;">NA</span>        </span>
+<span class="co">## <span style="color: #BCBCBC;">5</span> species_1         [variable]{Pop. de… numb… <span style="color: #BB0000;">NA</span>           real       <span style="color: #BB0000;">NA</span>        </span>
+<span class="co">## <span style="color: #BCBCBC;">6</span> species_2         [variable]{Pop. de… numb… <span style="color: #BB0000;">NA</span>           real       <span style="color: #BB0000;">NA</span>        </span>
+<span class="co">## <span style="color: #BCBCBC;">7</span> forecast          [flag]{whether tim… dime… <span style="color: #BB0000;">NA</span>           integer    <span style="color: #BB0000;">NA</span>        </span>
+<span class="co">## <span style="color: #BCBCBC;">8</span> data_assimilation [flag]{whether tim… dime… <span style="color: #BB0000;">NA</span>           integer    <span style="color: #BB0000;">NA</span></span></code></pre>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">attrList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://docs.ropensci.org/EML/reference/set_attributes.html" class="external-link">set_attributes</a></span><span class="op">(</span><span class="va">attributes</span>, 
+                           col_classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Date"</span>, <span class="st">"numeric"</span>, <span class="st">"numeric"</span>,<span class="st">"numeric"</span>, 
                                            <span class="st">"numeric"</span>,<span class="st">"numeric"</span>, <span class="st">"numeric"</span>,<span class="st">"numeric"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Note that the EFI standard extends the EML <code>attibuteDefinition</code> to include a [variable_type] and {variable_definition}. The options for [variable_type] include: * dimension * variable = output variable * diagnostic = variable output purely for diagnostic purposes * observation = data that is or could be compared to an output_variable * obs_error * flag * initial_condition * driver * parameter * random_effect * process_error</p>
-<p>We then link the attribute information with the info about a particular file</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+</div>
+<div class="section level6">
+<h6 id="python-10">Python<a class="anchor" aria-label="anchor" href="#python-10"></a>
+</h6>
+<p>(Under construction)</p>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-10"></h5>
+<p>Note that the EFI standard extends the EML
+<code>attibuteDefinition</code> to include a [variable_type] and
+{variable_definition}. The options for [variable_type] include: *
+dimension * variable = output variable * diagnostic = variable output
+purely for diagnostic purposes * observation = data that is or could be
+compared to an output_variable * obs_error * flag * initial_condition *
+driver * parameter * random_effect * process_error</p>
+<p>We then link the attribute information with the info about a
+particular file</p>
+</div>
+<div class="section level5">
+<h5 class="tabset" id="code-11">Code<a class="anchor" aria-label="anchor" href="#code-11"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-11">R<a class="anchor" aria-label="anchor" href="#r-11"></a>
+</h6>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## sets metadata about the file itself (name, file type, size, MD5, etc)</span>
-<span class="va">physical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://docs.ropensci.org/EML/reference/set_physical.html">set_physical</a></span><span class="op">(</span><span class="st">"logistic-forecast-ensemble-multi-variable-multi-depth.csv"</span>,
+<span class="va">physical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://docs.ropensci.org/EML/reference/set_physical.html" class="external-link">set_physical</a></span><span class="op">(</span><span class="st">"logistic-forecast-ensemble-multi-variable-multi-depth.csv"</span>,
                          recordDelimiter<span class="op">=</span><span class="st">'\n'</span><span class="op">)</span></code></pre></div>
-<pre><code>## Automatically calculated file size using file.size("logistic-forecast-ensemble-multi-variable-multi-depth.csv")</code></pre>
-<pre><code>## Automatically calculated authentication size using digest::digest("logistic-forecast-ensemble-multi-variable-multi-depth.csv", algo = "md5", file = TRUE)</code></pre>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<pre><code><span class="co">## Automatically calculated file size using file.size("logistic-forecast-ensemble-multi-variable-multi-depth.csv")</span></code></pre>
+<pre><code><span class="co">## Automatically calculated authentication size using digest::digest("logistic-forecast-ensemble-multi-variable-multi-depth.csv", algo = "md5", file = TRUE)</span></code></pre>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## set metadata for the file as a whole</span>
 <span class="va">dataTable</span> <span class="op">&lt;-</span> <span class="va">eml</span><span class="op">$</span><span class="fu">dataTable</span><span class="op">(</span>
                  entityName <span class="op">=</span> <span class="st">"forecast"</span>,  <span class="co">## this is a standard name to allow us to distinguish this entity from </span>
                  entityDescription <span class="op">=</span> <span class="st">"Forecast of population size using a depth specific model"</span>,
                  physical <span class="op">=</span> <span class="va">physical</span>,
                  attributeList <span class="op">=</span> <span class="va">attrList</span><span class="op">)</span></code></pre></div>
-<p>Here <code>entityName = "forecast"</code> is a standard name within the EFI standard to allow us to distinguish this entity from metadata about parameters, drivers, etc.</p>
-<p>There’s a lot more optional terminology that could be exploited here – for instance, the specification lets us define different missing value codes (and explanations) for each column, and allows us to indicate <code>precision</code>, <code>minimum</code> and <code>maximum</code>.</p>
-<p>Note that <code>physical</code> type can document almost any formats as well, including NetCDF etc. A NetCDF file would still document the variables measured in much the same way regardless of the underlying representation.</p>
 </div>
-<div id="provenance" class="section level3">
-<h3 class="hasAnchor">
-<a href="#provenance" class="anchor"></a>Provenance</h3>
-<p>Now that we’ve documented the actual data.frame itself, we can add additional metadata to the record describing our forecast, which is essential for citing, discovering, and interpreting the result. We start with some authorship information.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">me</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>individualName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>givenName <span class="op">=</span> <span class="st">"Quinn"</span>, 
+<div class="section level6">
+<h6 id="python-11">Python<a class="anchor" aria-label="anchor" href="#python-11"></a>
+</h6>
+<p>(Under construction)</p>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-11"></h5>
+<p>Here <code>entityName = "forecast"</code> is a standard name within
+the EFI standard to allow us to distinguish this entity from metadata
+about parameters, drivers, etc.</p>
+<p>There’s a lot more optional terminology that could be exploited here
+– for instance, the specification lets us define different missing value
+codes (and explanations) for each column, and allows us to indicate
+<code>precision</code>, <code>minimum</code> and
+<code>maximum</code>.</p>
+<p>Note that <code>physical</code> type can document almost any formats
+as well, including NetCDF etc. A NetCDF file would still document the
+variables measured in much the same way regardless of the underlying
+representation.</p>
+</div>
+</div>
+<div class="section level4">
+<h4 id="provenance">Provenance<a class="anchor" aria-label="anchor" href="#provenance"></a>
+</h4>
+<p>Now that we’ve documented the actual data.frame itself, we can add
+additional metadata to the record describing our forecast, which is
+essential for citing, discovering, and interpreting the result. We start
+with some authorship information.</p>
+<div class="section level5">
+<h5 class="tabset" id="code-12">Code<a class="anchor" aria-label="anchor" href="#code-12"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-12">R<a class="anchor" aria-label="anchor" href="#r-12"></a>
+</h6>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">me</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>individualName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>givenName <span class="op">=</span> <span class="st">"Quinn"</span>, 
                                  surName <span class="op">=</span> <span class="st">"Thomas"</span><span class="op">)</span>,
            electronicMailAddress <span class="op">=</span> <span class="st">"rqthomas@vt.edu"</span>,
            id <span class="op">=</span> <span class="st">"https://orcid.org/0000-0003-1282-7825"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="coverage" class="section level3">
-<h3 class="hasAnchor">
-<a href="#coverage" class="anchor"></a>Coverage</h3>
-<p>Set Taxonomic, Temporal, and Geographic Coverage. (Look, apparently we’re modeling population densities of <em>Gloeotrichia echinulata</em> and <em>Anabaena circinalis</em> cyanobacterium in Lake Sunapee, NH, USA)</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">taxa</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span>
+<div class="section level6">
+<h6 id="python-12">Python<a class="anchor" aria-label="anchor" href="#python-12"></a>
+</h6>
+<p>(Under construction)</p>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-12"></h5>
+</div>
+</div>
+<div class="section level4">
+<h4 id="coverage">Coverage<a class="anchor" aria-label="anchor" href="#coverage"></a>
+</h4>
+<p>Set Taxonomic, Temporal, and Geographic Coverage. (Look, apparently
+we’re modeling population densities of <em>Gloeotrichia echinulata</em>
+and <em>Anabaena circinalis</em> cyanobacterium in Lake Sunapee, NH,
+USA)</p>
+<div class="section level5">
+<h5 class="tabset" id="code-13">Code<a class="anchor" aria-label="anchor" href="#code-13"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-13">R<a class="anchor" aria-label="anchor" href="#r-13"></a>
+</h6>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">taxa</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
   <span class="op">~</span><span class="va">Genus</span>,      <span class="op">~</span><span class="va">Species</span>,
 <span class="st">"Gloeotrichia"</span>, <span class="st">"echinulata"</span>,
 <span class="st">"Anabaena"</span>,     <span class="st">"circinalis"</span><span class="op">)</span>
 <span class="va">coverage</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://docs.ropensci.org/EML/reference/set_coverage.html">set_coverage</a></span><span class="op">(</span>begin <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html">first</a></span><span class="op">(</span><span class="va">times</span><span class="op">)</span>, 
-               end <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html">last</a></span><span class="op">(</span><span class="va">times</span><span class="op">)</span>,
+  <span class="fu"><a href="https://docs.ropensci.org/EML/reference/set_coverage.html" class="external-link">set_coverage</a></span><span class="op">(</span>begin <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">times</span><span class="op">)</span>, 
+               end <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">last</a></span><span class="op">(</span><span class="va">times</span><span class="op">)</span>,
                sci_names <span class="op">=</span> <span class="va">taxa</span>,
                geographicDescription <span class="op">=</span> <span class="st">"Lake Sunapee, NH, USA "</span>,
                west <span class="op">=</span> <span class="op">-</span><span class="fl">72.15</span>, east <span class="op">=</span> <span class="op">-</span><span class="fl">72.05</span>, 
                north <span class="op">=</span> <span class="fl">43.48</span>, south <span class="op">=</span> <span class="fl">43.36</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="keywords" class="section level3">
-<h3 class="hasAnchor">
-<a href="#keywords" class="anchor"></a>Keywords</h3>
-<p>Set key words. We will need to develop a EFI controlled vocabulary</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">keywordSet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+<div class="section level6">
+<h6 id="python-13">Python<a class="anchor" aria-label="anchor" href="#python-13"></a>
+</h6>
+<p>(Under construction)</p>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-13"></h5>
+</div>
+</div>
+<div class="section level4">
+<h4 id="keywords">Keywords<a class="anchor" aria-label="anchor" href="#keywords"></a>
+</h4>
+<p>Set key words. We will need to develop a EFI controlled
+vocabulary</p>
+<div class="section level5">
+<h5 class="tabset" id="code-14">Code<a class="anchor" aria-label="anchor" href="#code-14"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-14">R<a class="anchor" aria-label="anchor" href="#r-14"></a>
+</h6>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">keywordSet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
         keywordThesaurus <span class="op">=</span> <span class="st">"EFI controlled vocabulary"</span>,
-        keyword <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"forecast"</span>,
+        keyword <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"forecast"</span>,
                     <span class="st">"population"</span>,
                     <span class="st">"timeseries"</span><span class="op">)</span>
     <span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="abstract" class="section level3">
-<h3 class="hasAnchor">
-<a href="#abstract" class="anchor"></a>Abstract</h3>
-<p>Our dataset needs an abstract describing what this is all about.</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">abstract_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"abstract.md"</span>, package<span class="op">=</span><span class="st">"EFIstandards"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<div class="section level6">
+<h6 id="python-14">Python<a class="anchor" aria-label="anchor" href="#python-14"></a>
+</h6>
+<p>(Under construction)</p>
 </div>
-<div id="dataset" class="section level3">
-<h3 class="hasAnchor">
-<a href="#dataset" class="anchor"></a>Dataset</h3>
-<p>Next, we’ll combine these various bits to document the output dataset as a whole</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-14"></h5>
+</div>
+</div>
+<div class="section level4">
+<h4 id="abstract">Abstract<a class="anchor" aria-label="anchor" href="#abstract"></a>
+</h4>
+<p>Our dataset needs an abstract describing what this is all about.</p>
+<div class="section level5">
+<h5 class="tabset" id="code-15">Code<a class="anchor" aria-label="anchor" href="#code-15"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-15">R<a class="anchor" aria-label="anchor" href="#r-15"></a>
+</h6>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">abstract_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"abstract.md"</span>, package<span class="op">=</span><span class="st">"EFIstandards"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level6">
+<h6 id="python-15">Python<a class="anchor" aria-label="anchor" href="#python-15"></a>
+</h6>
+<p>(Under construction)</p>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-15"></h5>
+</div>
+</div>
+<div class="section level4">
+<h4 id="dataset">Dataset<a class="anchor" aria-label="anchor" href="#dataset"></a>
+</h4>
+<p>Next, we’ll combine these various bits to document the output dataset
+as a whole</p>
+<div class="section level5">
+<h5 class="tabset" id="code-16">Code<a class="anchor" aria-label="anchor" href="#code-16"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-16">R<a class="anchor" aria-label="anchor" href="#r-16"></a>
+</h6>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dataset</span> <span class="op">=</span> <span class="va">eml</span><span class="op">$</span><span class="fu">dataset</span><span class="op">(</span>
                title <span class="op">=</span> <span class="st">"A very simple Lotka-Volterra forecast"</span>,
                creator <span class="op">=</span> <span class="va">me</span>,
-               contact <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>references<span class="op">=</span><span class="st">"https://orcid.org/0000-0003-1282-7825"</span><span class="op">)</span>,
-               pubDate <span class="op">=</span> <span class="va">forecast_issue_time</span>,
+               contact <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>references<span class="op">=</span><span class="st">"https://orcid.org/0000-0003-1282-7825"</span><span class="op">)</span>,
+               pubDate <span class="op">=</span> <span class="va">forecast_start_time</span>,
                intellectualRights <span class="op">=</span> <span class="st">"http://www.lternet.edu/data/netpolicy.html."</span>,
                abstract <span class="op">=</span>  <span class="st">"An illustration of how we might use EML metadata to describe an ecological forecast"</span>,
                dataTable <span class="op">=</span> <span class="va">dataTable</span>,
@@ -495,54 +987,74 @@
                coverage <span class="op">=</span> <span class="va">coverage</span>
                <span class="op">)</span></code></pre></div>
 </div>
-<div id="forecast-specific-additionalmetadata" class="section level2">
-<h2 class="hasAnchor">
-<a href="#forecast-specific-additionalmetadata" class="anchor"></a>Forecast-specific additionalMetadata</h2>
-<p>The EFI standard is using EML’s <code>additionalMetadata</code> capacity. Section 2.1 of the EFI standard describes both the basic elements (2.1.1) and the info about model structure and uncertainty (2.1.2).</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="section level6">
+<h6 id="python-16">Python<a class="anchor" aria-label="anchor" href="#python-16"></a>
+</h6>
+<p>(Under construction)</p>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-16"></h5>
+</div>
+</div>
+<div class="section level3">
+<h3 id="forecast-specific-additionalmetadata">Forecast-specific additionalMetadata<a class="anchor" aria-label="anchor" href="#forecast-specific-additionalmetadata"></a>
+</h3>
+<p>The EFI standard is using EML’s <code>additionalMetadata</code>
+capacity. Section 2.1 of the EFI standard describes both the basic
+elements (2.1.1) and the info about model structure and uncertainty
+(2.1.2).</p>
+<div class="section level5">
+<h5 class="tabset" id="code-17">Code<a class="anchor" aria-label="anchor" href="#code-17"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-17">R<a class="anchor" aria-label="anchor" href="#r-17"></a>
+</h6>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">additionalMetadata</span> <span class="op">&lt;-</span> <span class="va">eml</span><span class="op">$</span><span class="fu">additionalMetadata</span><span class="op">(</span>
-  metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-    forecast <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+  metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
+    forecast <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
 <span class="co">## Basic elements</span>
       timestep <span class="op">=</span> <span class="st">"1 day"</span>, <span class="co">## should be udunits parsable; already in coverage -&gt; temporalCoverage?</span>
       forecast_horizon <span class="op">=</span> <span class="st">"30 days"</span>,
-      forecast_issue_time <span class="op">=</span> <span class="va">forecast_issue_time</span>,
+      forecast_start_time <span class="op">=</span> <span class="va">forecast_start_time</span>,
+      forecast_issue_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>,
       forecast_iteration_id <span class="op">=</span> <span class="va">forecast_iteration_id</span>,
       forecast_project_id <span class="op">=</span> <span class="va">forecast_project_id</span>,
       metadata_standard_version <span class="op">=</span> <span class="st">"0.3"</span>,
-      model_description <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+      model_description <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
         forecast_model_id <span class="op">=</span> <span class="va">forecast_model_id</span>,
         name <span class="op">=</span> <span class="st">"discrete Lotka–Volterra model"</span>,
         type <span class="op">=</span> <span class="st">"process-based"</span>,
         repository <span class="op">=</span> <span class="st">"https://github.com/eco4cast/EFIstandards/blob/master/vignettes/logistic-metadata-example.Rmd"</span>
       <span class="op">)</span>,
 <span class="co">## MODEL STRUCTURE &amp; UNCERTAINTY CLASSES</span>
-      initial_conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+      initial_conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
         <span class="co"># Possible values: absent, present, data_driven, propagates, assimilates</span>
         status <span class="op">=</span> <span class="st">"present"</span>,
         <span class="co"># Number of parameters / dimensionality</span>
         complexity <span class="op">=</span> <span class="fl">2</span>  <span class="co">## [species 1, species 2] per depth</span>
       <span class="op">)</span>,
-      drivers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+      drivers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
         status <span class="op">=</span> <span class="st">"absent"</span>
       <span class="op">)</span>,
-      parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+      parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
         status <span class="op">=</span> <span class="st">"present"</span>,
         complexity <span class="op">=</span> <span class="fl">6</span>  <span class="co">## [r, K, alpha] x 2 spp</span>
       <span class="op">)</span>,
-      random_effects <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+      random_effects <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
         status <span class="op">=</span> <span class="st">"absent"</span>
       <span class="op">)</span>,
-      process_error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+      process_error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
         status <span class="op">=</span> <span class="st">"propagates"</span>,
-        propagation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+        propagation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
           type <span class="op">=</span> <span class="st">"ensemble"</span>, <span class="co"># ensemble vs analytic</span>
           size <span class="op">=</span> <span class="fl">10</span>          <span class="co"># required if ensemble</span>
         <span class="op">)</span>,
         complexity <span class="op">=</span> <span class="fl">2</span>,   
         covariance <span class="op">=</span> <span class="cn">FALSE</span>
       <span class="op">)</span>,
-      obs_error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+      obs_error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
         status <span class="op">=</span> <span class="st">"present"</span>,
         complexity <span class="op">=</span> <span class="fl">2</span>,   
         covariance <span class="op">=</span> <span class="cn">FALSE</span>
@@ -550,7 +1062,20 @@
     <span class="op">)</span> <span class="co"># forecast</span>
   <span class="op">)</span> <span class="co"># metadata</span>
 <span class="op">)</span> <span class="co"># eml$additionalMetadata</span></code></pre></div>
-<p>Within the <code>additionalMetadata</code>, we anticipate the model structure info will be the most challenging to document. All six model structural elements / uncertainty classes need to be documented, even if just to record that a specific element is absent in the model. The six classes are:</p>
+</div>
+<div class="section level6">
+<h6 id="python-17">Python<a class="anchor" aria-label="anchor" href="#python-17"></a>
+</h6>
+<p>(Under construction)</p>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-17"></h5>
+<p>Within the <code>additionalMetadata</code>, we anticipate the model
+structure info will be the most challenging to document. All six model
+structural elements / uncertainty classes need to be documented, even if
+just to record that a specific element is absent in the model. The six
+classes are:</p>
 <table class="table">
 <colgroup>
 <col width="24%">
@@ -567,7 +1092,8 @@
 </tr>
 <tr class="even">
 <td>drivers</td>
-<td>Uncertainty in model drivers, covariates, and exogenous scenarios (X)</td>
+<td>Uncertainty in model drivers, covariates, and exogenous scenarios
+(X)</td>
 </tr>
 <tr class="odd">
 <td>parameters</td>
@@ -587,7 +1113,9 @@
 </tr>
 </tbody>
 </table>
-<p>Each class has a very similar structure and the only required element in each is <code>status</code> which can take on the following valid values</p>
+<p>Each class has a very similar structure and the only required element
+in each is <code>status</code> which can take on the following valid
+values</p>
 <table class="table">
 <colgroup>
 <col width="15%">
@@ -600,15 +1128,21 @@
 <tbody>
 <tr class="odd">
 <td>absent</td>
-<td>This model does not contain this concept (e.g. a linear regression model doesn’t have initial conditions, random effects, or process_error).</td>
+<td>This model does not contain this concept (e.g. a linear regression
+model doesn’t have initial conditions, random effects, or
+process_error).</td>
 </tr>
 <tr class="even">
 <td>present</td>
-<td>The model contains this concept (e.g. the model has parameters), but the values used are not derived from data and no uncertainty is represented</td>
+<td>The model contains this concept (e.g. the model has parameters), but
+the values used are not derived from data and no uncertainty is
+represented</td>
 </tr>
 <tr class="odd">
 <td>data_driven</td>
-<td>The model contains this concept and the inputs are data driven but uncertainty in this input is not explicitly propagated into predictions.</td>
+<td>The model contains this concept and the inputs are data driven but
+uncertainty in this input is not explicitly propagated into
+predictions.</td>
 </tr>
 <tr class="even">
 <td>propagates</td>
@@ -616,89 +1150,169 @@
 </tr>
 <tr class="odd">
 <td>assimilates</td>
-<td>The model iteratively updates this term through data assimilation.</td>
+<td>The model iteratively updates this term through data
+assimilation.</td>
 </tr>
 </tbody>
 </table>
-<p>Except for ‘absent’ this list is ordinal (e.g. data_driven implies present)</p>
-<p>Next, the <code>&lt;complexity&gt;</code> tag is recommended, but not required, and should list the size/dimension of each status/uncertainty class at a single location (per dimensions defined above). For example, the logistic model has two initial conditions (n[1], n[2]), six parameters (r, K, and alpha for each species), and both process and observation error on the two state variables. <code>absent</code> statuses don’t need to be documented as 0 as this is implied.</p>
-<p>The <code>&lt;covariance&gt;</code> tag states whether the errors/uncertainties within an uncertainty class are being treated as independent or not.</p>
-<p>Finally, the <code>&lt;propagation&gt;</code> and <code>&lt;assimilation&gt;</code> tags provide additional information about the methods used (see EFI standard doc).</p>
+<p>Except for ‘absent’ this list is ordinal (e.g. data_driven implies
+present)</p>
+<p>Next, the <code>&lt;complexity&gt;</code> tag is recommended, but not
+required, and should list the size/dimension of each status/uncertainty
+class at a single location (per dimensions defined above). For example,
+the logistic model has two initial conditions (n[1], n[2]), six
+parameters (r, K, and alpha for each species), and both process and
+observation error on the two state variables. <code>absent</code>
+statuses don’t need to be documented as 0 as this is implied.</p>
+<p>The <code>&lt;covariance&gt;</code> tag states whether the
+errors/uncertainties within an uncertainty class are being treated as
+independent or not.</p>
+<p>Finally, the <code>&lt;propagation&gt;</code> and
+<code>&lt;assimilation&gt;</code> tags provide additional information
+about the methods used (see EFI standard doc).</p>
 </div>
-<div id="assembling-and-validating-the-metadata" class="section level2">
-<h2 class="hasAnchor">
-<a href="#assembling-and-validating-the-metadata" class="anchor"></a>Assembling and validating the metadata</h2>
-<p>All we need now is to combine the dataset metadata with the forecast additionalMetadata</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+</div>
+<div class="section level3">
+<h3 id="assembling-and-validating-the-metadata">Assembling and validating the metadata<a class="anchor" aria-label="anchor" href="#assembling-and-validating-the-metadata"></a>
+</h3>
+<p>All we need now is to combine the dataset metadata with the forecast
+additionalMetadata</p>
+<div class="section level5">
+<h5 class="tabset" id="code-18">Code<a class="anchor" aria-label="anchor" href="#code-18"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-18">R<a class="anchor" aria-label="anchor" href="#r-18"></a>
+</h6>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">my_eml</span> <span class="op">&lt;-</span> <span class="va">eml</span><span class="op">$</span><span class="fu">eml</span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">dataset</span>,
            additionalMetadata <span class="op">=</span> <span class="va">additionalMetadata</span>,
            packageId <span class="op">=</span> <span class="va">forecast_iteration_id</span> , 
            system <span class="op">=</span> <span class="st">"datetime"</span>  <span class="co">## system used to generate packageId</span>
            <span class="op">)</span></code></pre></div>
-<p>Once we have finished building our EML metadata, we can confirm it is valid.<br>
-This will catch any missing elements. (Recall that what is ‘required’ depends on what you include – for example, you don’t have to document a <code>dataTable</code> at all, but if you do, you have to document the “physical” file format it is in<br>
+</div>
+<div class="section level6">
+<h6 id="python-18">Python<a class="anchor" aria-label="anchor" href="#python-18"></a>
+</h6>
+<p>(Under construction)</p>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-18"></h5>
+<p>Once we have finished building our EML metadata, we can confirm it is
+valid.<br>
+This will catch any missing elements. (Recall that what is ‘required’
+depends on what you include – for example, you don’t have to document a
+<code>dataTable</code> at all, but if you do, you have to document the
+“physical” file format it is in<br>
 (e.g. <code>csv</code>) and the attributes and units it uses!)</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+</div>
+<div class="section level5">
+<h5 class="tabset" id="code-19">Code<a class="anchor" aria-label="anchor" href="#code-19"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-19">R<a class="anchor" aria-label="anchor" href="#r-19"></a>
+</h6>
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## check base EML</span>
-<span class="fu"><a href="https://docs.ropensci.org/EML/reference/eml_validate.html">eml_validate</a></span><span class="op">(</span><span class="va">my_eml</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] TRUE
-## attr(,"errors")
-## character(0)</code></pre>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<span class="fu"><a href="https://docs.ropensci.org/EML/reference/eml_validate.html" class="external-link">eml_validate</a></span><span class="op">(</span><span class="va">my_eml</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] TRUE</span>
+<span class="co">## attr(,"errors")</span>
+<span class="co">## character(0)</span></code></pre>
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## check that the EML is also a valid EFI forecast</span>
 <span class="fu">EFIstandards</span><span class="fu">::</span><span class="fu"><a href="../reference/forecast_validator.html">forecast_validator</a></span><span class="op">(</span><span class="va">my_eml</span><span class="op">)</span></code></pre></div>
-<pre><code>## * Checking Validity of EML file...</code></pre>
-<pre><code>## √ EML is valid</code></pre>
-<pre><code>## √ additionalMetadata found</code></pre>
-<pre><code>## √ metadata found</code></pre>
-<pre><code>## √ forecast found</code></pre>
-<pre><code>## √ timestep parsable</code></pre>
-<pre><code>## √ forecast_horizon parsable</code></pre>
-<pre><code>## √ forecast_issue_time found</code></pre>
-<pre><code>## √ forecast_iteration_id found</code></pre>
-<pre><code>## √ forecast_project_id found</code></pre>
-<pre><code>## √ metadata_standard_version found</code></pre>
-<pre><code>## √ model_description found</code></pre>
-<pre><code>## √ forecast_model_id found</code></pre>
-<pre><code>## √ name found</code></pre>
-<pre><code>## √ type found</code></pre>
-<pre><code>## √ repository found</code></pre>
-<pre><code>## √ initial_conditions found</code></pre>
-<pre><code>## √ status found</code></pre>
-<pre><code>## √ initial_conditions status/uncertainty class valid: present</code></pre>
-<pre><code>## √ complexity valid</code></pre>
-<pre><code>## √ parameters found</code></pre>
-<pre><code>## √ status found</code></pre>
-<pre><code>## √ parameters status/uncertainty class valid: present</code></pre>
-<pre><code>## √ complexity valid</code></pre>
-<pre><code>## √ drivers found</code></pre>
-<pre><code>## √ status found</code></pre>
-<pre><code>## √ drivers status/uncertainty class valid: absent</code></pre>
-<pre><code>## √ random_effects found</code></pre>
-<pre><code>## √ status found</code></pre>
-<pre><code>## √ random_effects status/uncertainty class valid: absent</code></pre>
-<pre><code>## √ process_error found</code></pre>
-<pre><code>## √ status found</code></pre>
-<pre><code>## √ process_error status/uncertainty class valid: propagates</code></pre>
-<pre><code>## √ complexity valid</code></pre>
-<pre><code>## √ type found</code></pre>
-<pre><code>## √ process_error propagation type valid: ensemble</code></pre>
-<pre><code>## √ size valid</code></pre>
-<pre><code>## √ obs_error found</code></pre>
-<pre><code>## √ status found</code></pre>
-<pre><code>## √ obs_error status/uncertainty class valid: present</code></pre>
-<pre><code>## √ complexity valid</code></pre>
-<pre><code>## [1] TRUE
-## attr(,"errors")
-## character(0)</code></pre>
+<pre><code><span class="co">## <span style="color: #BB0000;">•</span> Checking Validity of EML file...</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> EML is valid</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> additionalMetadata found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> timestep parsable</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> forecast_horizon parsable</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> forecast_issue_time found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> forecast_iteration_id found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> forecast_project_id found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> metadata_standard_version found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> model_description found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> forecast_model_id found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> name found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> type found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> repository found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> initial_conditions found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> status found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> initial_conditions status/uncertainty class valid: present</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> complexity valid</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> parameters found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> status found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> parameters status/uncertainty class valid: present</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> complexity valid</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> drivers found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> status found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> drivers status/uncertainty class valid: absent</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> random_effects found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> status found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> random_effects status/uncertainty class valid: absent</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> process_error found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> status found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> process_error status/uncertainty class valid: propagates</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> complexity valid</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> type found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> process_error propagation type valid: ensemble</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> size valid</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> obs_error found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> status found</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> obs_error status/uncertainty class valid: present</span>
+<span class="co">## <span style="color: #00BB00;">✔</span> complexity valid</span></code></pre>
+<pre><code><span class="co">## [1] TRUE</span>
+<span class="co">## attr(,"errors")</span>
+<span class="co">## character(0)</span></code></pre>
+</div>
+<div class="section level6">
+<h6 id="python-19">Python<a class="anchor" aria-label="anchor" href="#python-19"></a>
+</h6>
+<p>(Under construction)</p>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-19"></h5>
 <p>We are now ready to write out a valid EML document:</p>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://docs.ropensci.org/EML/reference/write_eml.html">write_eml</a></span><span class="op">(</span><span class="va">my_eml</span>, <span class="st">"forecast-eml.xml"</span><span class="op">)</span></code></pre></div>
-<pre><code>## NULL</code></pre>
-<p>At this point, we could easily upload this metadata along with the data itself to a repository (e.g. DataONE) manually or via an API.</p>
+</div>
+<div class="section level5">
+<h5 class="tabset" id="code-20">Code<a class="anchor" aria-label="anchor" href="#code-20"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-20">R<a class="anchor" aria-label="anchor" href="#r-20"></a>
+</h6>
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://docs.ropensci.org/EML/reference/write_eml.html" class="external-link">write_eml</a></span><span class="op">(</span><span class="va">my_eml</span>, <span class="st">"forecast-eml.xml"</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level6">
+<h6 id="python-20">Python<a class="anchor" aria-label="anchor" href="#python-20"></a>
+</h6>
+<p>(Under construction)</p>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-20"></h5>
+<p>At this point, we could easily upload this metadata along with the
+data itself to a repository (e.g. DataONE) manually or via an API.</p>
 <p>We can also generate a JSON-LD version of EML:</p>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">emld</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/as_json.html">as_json</a></span><span class="op">(</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/as_emld.html">as_emld</a></span><span class="op">(</span><span class="st">"forecast-eml.xml"</span><span class="op">)</span>, file <span class="op">=</span> <span class="st">"forecast-eml.json"</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level5">
+<h5 class="tabset" id="code-21">Code<a class="anchor" aria-label="anchor" href="#code-21"></a>
+</h5>
+<div class="section level6">
+<h6 id="r-21">R<a class="anchor" aria-label="anchor" href="#r-21"></a>
+</h6>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">emld</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/as_json.html" class="external-link">as_json</a></span><span class="op">(</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/as_emld.html" class="external-link">as_emld</a></span><span class="op">(</span><span class="st">"forecast-eml.xml"</span><span class="op">)</span>, file <span class="op">=</span> <span class="st">"forecast-eml.json"</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level6">
+<h6 id="python-21">Python<a class="anchor" aria-label="anchor" href="#python-21"></a>
+</h6>
+<p>(Under construction)</p>
+</div>
+</div>
+<div class="section level5">
+<h5 class="unnumbered" id="section-21"></h5>
+</div>
 </div>
 </div>
   </div>
@@ -714,11 +1328,13 @@ This will catch any missing elements. (Recall that what is ‘required’ depend
 
 
       <footer><div class="copyright">
-  <p>Developed by Carl Boettiger, Quinn Thomas, Michael Dietze, Alexey Shiklomanov.</p>
+  <p></p>
+<p>Developed by Carl Boettiger, Quinn Thomas, Michael Dietze, Alexey Shiklomanov, Jaime Ashander.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>
@@ -726,6 +1342,8 @@ This will catch any missing elements. (Recall that what is ‘required’ depend
 
   
 
+
+  
 
   </body>
 </html>

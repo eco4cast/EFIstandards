@@ -21,6 +21,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -33,23 +35,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">EFIstandards</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -66,6 +62,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
 </div>
@@ -80,67 +79,81 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
-<p><!-- badges: start --> <a href="https://github.com/cboettig/forecast-standards/actions"><img src="https://github.com/cboettig/forecast-standards/workflows/R-CMD-check/badge.svg" alt="R build status"></a> <a href="https://CRAN.R-project.org/package=EFIstandards"><img src="https://www.r-pkg.org/badges/version/EFIstandards" alt="CRAN status"></a> <a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a> <!-- badges: end --></p>
+<p><!-- badges: start --> <a href="https://github.com/cboettig/forecast-standards/actions" class="external-link"><img src="https://github.com/cboettig/forecast-standards/workflows/R-CMD-check/badge.svg" alt="R build status"></a> <a href="https://CRAN.R-project.org/package=EFIstandards" class="external-link"><img src="https://www.r-pkg.org/badges/version/EFIstandards" alt="CRAN status"></a> <a href="https://www.tidyverse.org/lifecycle/#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a> <!-- badges: end --></p>
 <p>This package summarizes the proposed community standards for the common formatting and archiving of ecological forecasts developed by the Ecological Forecasting Initiative (EFI). Such open standards are intended to promote interoperability and facilitate forecast adoption, distribution, validation, and synthesis.</p>
-<div id="output-files" class="section level3">
-<h3 class="hasAnchor">
-<a href="#output-files" class="anchor"></a>Output Files:</h3>
+<div class="section level3">
+<h3 id="output-files">Output Files:<a class="anchor" aria-label="anchor" href="#output-files"></a>
+</h3>
 <p>EFI has proposed a three-tiered approach reflecting trade-offs in forecast data volume and technical expertise. The prefered output file format is in netCDF following standard CF conventions for dimensions and variable naming conventions, with ensemble member as a dimension where appropriate. The second-tier option is a semi-long CSV format, with state variables as columns and each row representing a unique issue datetime, prediction datetime, location, ensemble member, etc. The third-tier option is similar to option 2, but each row represents a specific summary statistic (mean, upper/lower CI) rather than individual ensemble members.</p>
 </div>
-<div id="output-metadata" class="section level3">
-<h3 class="hasAnchor">
-<a href="#output-metadata" class="anchor"></a>Output Metadata:</h3>
+<div class="section level3">
+<h3 id="output-metadata">Output Metadata:<a class="anchor" aria-label="anchor" href="#output-metadata"></a>
+</h3>
 <p>EFI’s proposed metadata represents an expansion upon the Ecological Metadata Language (EML), with two key differences. First, is the specification of additonalMetadata tags to store forecast specific information (e.g. uncertainty propagation and data assimilation) as well as some summary information about model complexity, included uncertainties, etc. designed to facilitate cross-forecast synthesis. Second, a number of EML tags (e.g. temporal resolution, output variables) are considered a required part of forecast metadata that are otherwise optional in base EML.</p>
 <p>This package includes an R tool for validating these EML files.</p>
 </div>
-<div id="archiving" class="section level3">
-<h3 class="hasAnchor">
-<a href="#archiving" class="anchor"></a>Archiving:</h3>
+<div class="section level3">
+<h3 id="archiving">Archiving:<a class="anchor" aria-label="anchor" href="#archiving"></a>
+</h3>
 <p>EFI envisions a three-tiered approach to forecast archiving. At the most basic level, forecasts should be archived before new observations become available (not possible for hindcasts), preferably in a FAIR public archive that permits forecasts to be uploaded automatically, allows metadata to be searchable, and assigns a DOI. Second, in addition to this the codes used to generate forecasts should also be archived, preferably in an open archive or code repository (e.g. Github) that can be assigned a DOI. Finally, in addition to output and code archiving, we encourage running forecast workflows to be archived using virtualization approaches, such as Docker or Singularity containers.</p>
 </div>
-<div id="vignettes" class="section level3">
-<h3 class="hasAnchor">
-<a href="#vignettes" class="anchor"></a>Vignettes:</h3>
+<div class="section level3">
+<h3 id="vignettes">Vignettes:<a class="anchor" aria-label="anchor" href="#vignettes"></a>
+</h3>
 <p>This package includes a number of vignettes illustrating the application of the EFI standards to different forecasts</p>
 </div>
-<div id="documentation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#documentation" class="anchor"></a>Documentation:</h3>
-<p>A more detailed description of the EFI standard can be found at <a href="https://shorturl.at/irMQW">https://shorturl.at/irMQW</a>. Note that the Standard is a work in progress. If you find issues as you are applying them, let us know at <a href="mailto:eco4cast.initiative@gmail.com" class="email">eco4cast.initiative@gmail.com</a>.</p>
-<p>Pkgdown rendered documentation of functions and vignettes can be found at <a href="https://eco4cast.github.io/EFIstandards/" class="uri">https://eco4cast.github.io/EFIstandards/</a></p>
+<div class="section level3">
+<h3 id="documentation">Documentation:<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h3>
+<p>A more detailed description of the EFI standard can be found at <a href="https://shorturl.at/irMQW" class="external-link">https://shorturl.at/irMQW</a>. Note that the Standard is a work in progress. If you find issues as you are applying them, let us know at <a href="mailto:eco4cast.initiative@gmail.com" class="email">eco4cast.initiative@gmail.com</a>.</p>
+<p>Pkgdown rendered documentation of functions and vignettes can be found at <a href="https://eco4cast.github.io/EFIstandards/" class="external-link uri">https://eco4cast.github.io/EFIstandards/</a></p>
 </div>
 
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://opensource.org/licenses/BSD-3-Clause">BSD</a> 2-clause License + file <a href="LICENSE-text.html">LICENSE</a>
+<a href="https://opensource.org/licenses/BSD-3-Clause" class="external-link">BSD</a> 2-clause License + file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
-<div class="developers">
-<h2>Developers</h2>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li>Carl Boettiger <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-1642-628X" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html#citation">Citing EFIstandards</a></li>
+</ul>
+</div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>Carl Boettiger <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-1642-628X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Quinn Thomas <br><small class="roles"> Author </small>  </li>
 <li>Michael Dietze <br><small class="roles"> Author </small>  </li>
 <li>Alexey Shiklomanov <br><small class="roles"> Author </small>  </li>
+<li>Jaime Ashander <br><small class="roles"> Author </small>  </li>
 </ul>
 </div>
+
+
 
   </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Carl Boettiger, Quinn Thomas, Michael Dietze, Alexey Shiklomanov.</p>
+  <p></p>
+<p>Developed by Carl Boettiger, Quinn Thomas, Michael Dietze, Alexey Shiklomanov, Jaime Ashander.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>
@@ -148,6 +161,8 @@
 
   
 
+
+  
 
   </body>
 </html>

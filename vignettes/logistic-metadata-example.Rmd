@@ -33,6 +33,7 @@ import datetime
 import tempfile
 
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import netCDF4
 
@@ -199,7 +200,9 @@ legend("bottomright",legend=species,col = seq_along(species),lty = 1)
 
 ##### Python
 
-```{python}
+```{python dev="png"}
+# Plot won't show due to pkgdown bug
+# matplotlib.use('Agg')
 plt.plot(times, n[:,0,0,0,0], "-")
 colors = ["r", "b"]
 for s in range(n_species):
