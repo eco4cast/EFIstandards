@@ -34,7 +34,8 @@ Suggests:
     dplyr,
     tidyr,
     reshape2,
-    reticulate
+    reticulate,
+    units
 VignetteBuilder: knitr
 Config/reticulate:
  list(
