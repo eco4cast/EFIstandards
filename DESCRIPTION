@@ -16,7 +16,7 @@ Description: Community standard for the common formatting and archiving of ecolo
 License: BSD 2-clause License + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports:
     EML,
     udunits2,
@@ -34,7 +34,9 @@ Suggests:
     dplyr,
     tidyr,
     reshape2,
-    reticulate
+    reticulate,
+    units,
+    remotes
 VignetteBuilder: knitr
 Config/reticulate:
  list(

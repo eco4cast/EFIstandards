@@ -1,35 +1,57 @@
-on: [push, pull_request]
+# Workflow derived from https://github.com/r-lib/actions/tree/master/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
 
 name: R-CMD-check
 
 jobs:
   R-CMD-check:
-    runs-on: macOS-latest
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macOS-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
     steps:
       - uses: actions/checkout@v2
-      - uses: r-lib/actions/setup-r@master
-      - uses: docker://pandoc/core
-      - name: Install dependencies
-        run: |
-          install.packages(c("remotes", "rcmdcheck"))
-          remotes::install_deps(dependencies = TRUE)
-        shell: Rscript {0}
+      - uses: r-lib/actions/setup-pandoc@v1
 
-      # Extra steps for Python support, based on:
-      # https://github.com/rstudio/reticulate/issues/793#issuecomment-653690366
-      - name: Install Miniconda (for Python support)
-        env:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      - uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v1
+        with:
+          extra-packages: rcmdcheck
+
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
         run: |
-          remotes::install_github("rstudio/reticulate")
+          while read -r cmd
+          do
+            eval sudo $cmd
+          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
+
+      - name: Install Miniconda
+        shell: Rscript {0}
+        run: |
           reticulate::install_miniconda()
-        shell: Rscript {0}
-      - if: runner.os == 'macOS'
-        run: echo "options(reticulate.conda_binary = reticulate::miniconda_conda())"
-
-      - name: Install Python dependencies
-        run: reticulate::py_install(c("numpy", "matplotlib", "NetCDF4", "pandas"))
-        shell: Rscript {0}
+          reticulate::py_install(c("matplotlib", "NetCDF4", "pandas", "numpy"))
 
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
