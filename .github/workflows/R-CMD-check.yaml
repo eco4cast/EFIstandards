@@ -17,6 +17,8 @@ jobs:
       # Extra steps for Python support, based on:
       # https://github.com/rstudio/reticulate/issues/793#issuecomment-653690366
       - name: Install Miniconda (for Python support)
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           remotes::install_github("rstudio/reticulate")
           reticulate::install_miniconda()
