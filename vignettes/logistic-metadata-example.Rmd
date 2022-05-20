@@ -116,10 +116,10 @@ n <- array(NA,dim = c(n_time, n_depths, n_ensembles, obs_dim,2)) ## last dim is 
 n[1,,,,] <- n0
 
 ## forecast flag
-forecast <- rep(0, n_time) ## this code indicated a hindcast
+forecast <- rep(as.integer(0), n_time) ## this code indicated a hindcast
 
 ## data assimilation flag
-data_assimilation <- rep(0, n_time)  ## this code indicates a 'free-run' that didn't assimilate new data
+data_assimilation <- rep(as.integer(0), n_time)  ## this code indicates a 'free-run' that didn't assimilate new data
 
 ## forward simulation
 for(t in 2:n_time){
@@ -512,7 +512,8 @@ dfs <- df_combined %>% add_column(family="normal") %>%
                    summarize(mu = mean(prediction),
                              sigma   = sd(prediction)) %>%
                    pivot_longer(8:9,names_to="parameter",values_to = "predictions") %>%
-                   relocate(parameter,.after = family)
+                   relocate(parameter,.after = family) %>%
+                   relocate(predictions,.after=variable)
 
 
 head(dfs,n=10)
