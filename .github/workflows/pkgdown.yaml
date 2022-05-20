@@ -30,7 +30,9 @@ jobs:
 
       - name: Install Miniconda
         shell: Rscript {0}
-        run: reticulate::install_miniconda()
+        run: |
+          reticulate::install_miniconda()
+          reticulate::py_install(c("matplotlib", "NetCDF4", "pandas", "numpy"))
 
       - name: Deploy package
         run: |
