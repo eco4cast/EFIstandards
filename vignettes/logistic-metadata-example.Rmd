@@ -52,9 +52,9 @@ To illustrate the application of the forecast standard, we'll consider the class
 ##### R
 
 ```{r}
-forecast_start_time = as.Date("2001-03-04")  ## start date of our forecast
+start_time = as.Date("2001-03-04")  ## start date of our forecast
 n_time <- 30
-times = seq(from=forecast_start_time,by="1 day",length=n_time)
+times = seq(from=start_time,by="1 day",length=n_time)
 
 depths <- c(1, 3, 5)
 n_depths <- length(depths)
@@ -72,9 +72,9 @@ obs_dim <- 2 ## 1 = latent state
 ##### Python
 
 ```{python}
-forecast_start_time = datetime.date(2001, 3, 4)
+start_time = datetime.date(2001, 3, 4)
 n_time = 30
-times = [forecast_start_time + datetime.timedelta(days = x) for x in range(n_time)]
+times = [start_time + datetime.timedelta(days = x) for x in range(n_time)]
 
 depths = [1, 3, 5]
 n_depths = len(depths)
@@ -223,37 +223,37 @@ plt.show()
 Because netCDF is a self-documenting format we're going to start by defining some forecast 
 identifiers (which we'll also later use in the metadata)
 
-`forecast_project_id` identifies forecasts coming from a single project and is used to link 
+`project_id` identifies forecasts coming from a single project and is used to link 
 forecasts different model versions. Examples might include a project Github repository or a 
 team name.
 
-`forecast_model_id` is updated each time the forecast code is modified (e.g. model structure, 
+`model_id` is updated each time the forecast code is modified (e.g. model structure, 
 model calibration, forecast workflow).  Examples might be a DOI, version number, or Github 
-hash. Results from a single forecast_model_id are considered comparable.
+hash. Results from a single model_id are considered comparable.
 
-`forecast_iteration_id` represents a unique ID for each forecast run. Examples might be a
+`iteration_id` represents a unique ID for each forecast run. Examples might be a
 start time or database ID.
 
 For example, if you have a forecast code base on GitHub and launch a forecast from that code 
-that runs daily for 365 days, then there will be one forecast_project_id and 365 
-forecast_iteration_ids. A paper analyzing the forecasts would cite the forecast_project_id.
+that runs daily for 365 days, then there will be one project_id and 365 
+iteration_ids. A paper analyzing the forecasts would cite the project_id.
 
 #### Code {.tabset}
 
 ##### R
 
 ``` {r}
-forecast_project_id <- "LogisticDemo"
-forecast_model_id   <- "v0.3"
-forecast_iteration_id <- "20010304T060000"   # ISO datetime should make a valid Forecast_id
+project_id <- "LogisticDemo"
+model_id   <- "v0.3"
+iteration_id <- "20010304T060000"   # ISO datetime should make a valid Forecast_id
 ```
 
 ##### Python
 
 ```{python}
-forecast_project_id = "LogisticDemo"
-forecast_model_id = "v0.3"
-forecast_iteration_id = "20010304T060000"
+project_id = "LogisticDemo"
+model_id = "v0.3"
+iteration_id = "20010304T060000"
 ```
 
 #### {-}
@@ -269,12 +269,12 @@ Once we have our ID's defined, we're going to use `ncdim_def` to define the dime
 ```{r}
 ## Set dimensions
 timedim <- ncdim_def("time",   ## dimension name
-                     units = paste('days since',forecast_start_time),
+                     units = paste('days since',start_time),
                                ## size of timestep, with units and start date
-                     vals = as.numeric(times - forecast_start_time),
+                     vals = as.numeric(times - start_time),
                                ## sequence of values that defines the dimension.
                                ## netCDF expresses time dimensions relative to a
-                               ## specified start date, in this case forecast_start_time
+                               ## specified start date, in this case start_time
                      longname = 'time')
                                ## descriptive name
 
@@ -311,8 +311,8 @@ ncout = netCDF4.Dataset(ncfile.name, mode='w')
 
 timedim = ncout.createDimension("time", n_time)
 timevar = ncout.createVariable("time", "f4", "time")
-timevar.units = f"days since {forecast_start_time}"
-timevar[:] = [(t - forecast_start_time).days for t in times]
+timevar.units = f"days since {start_time}"
+timevar[:] = [(t - start_time).days for t in times]
 
 depthdim = ncout.createDimension("depth", n_depths)
 depthvar = ncout.createVariable("depth", "f4", "depth")
@@ -417,11 +417,11 @@ ncvar_put(ncout,def_list[[3]] , forecast) ## forecast flag
 ncvar_put(ncout,def_list[[4]] , data_assimilation) ## data_assimilation flag
 
 ## Global attributes (metadata)
-ncatt_put(ncout,0,"forecast_project_id", as.character(forecast_project_id), 
+ncatt_put(ncout,0,"project_id", as.character(project_id), 
           prec =  "text")
-ncatt_put(ncout,0,"forecast_model_id",as.character(forecast_model_id), 
+ncatt_put(ncout,0,"model_id",as.character(model_id), 
           prec =  "text")
-ncatt_put(ncout,0,"forecast_iteration_id",as.character(forecast_iteration_id), 
+ncatt_put(ncout,0,"iteration_id",as.character(iteration_id), 
           prec =  "text")
 
 nc_close(ncout)   ## make sure to close the file
@@ -439,9 +439,9 @@ forecastnc[:] = forecast
 danc[:] = data_assimilation
 
 # Set global attributes (metadata)
-ncout.forecast_project_id = forecast_project_id
-ncout.forecast_model_id = forecast_model_id
-ncout.forecast_iteration_id = forecast_iteration_id
+ncout.project_id = project_id
+ncout.model_id = model_id
+ncout.iteration_id = iteration_id
 
 ncout.close()
 ```
@@ -755,7 +755,7 @@ dataset = eml$dataset(
                title = "A very simple Lotka-Volterra forecast",
                creator = me,
                contact = list(references="https://orcid.org/0000-0003-1282-7825"),
-               pubDate = forecast_start_time,
+               pubDate = start_time,
                intellectualRights = "http://www.lternet.edu/data/netpolicy.html.",
                abstract =  "An illustration of how we might use EML metadata to describe an ecological forecast",
                dataTable = dataTable,
@@ -785,12 +785,12 @@ additionalMetadata <- eml$additionalMetadata(
 ## Basic elements
       timestep = "1 day", ## should be udunits parsable; already in coverage -> temporalCoverage?
       forecast_horizon = "30 days",
-      forecast_start_time = forecast_start_time,
-      forecast_iteration_id = forecast_iteration_id,
-      forecast_project_id = forecast_project_id,
+      start_time = start_time,
+      iteration_id = iteration_id,
+      project_id = project_id,
       metadata_standard_version = "0.3",
       model_description = list(
-        forecast_model_id = forecast_model_id,
+        model_id = model_id,
         name = "discrete Lotka–Volterra model",
         type = "process-based",
         repository = "https://github.com/eco4cast/EFIstandards/blob/master/vignettes/logistic-metadata-example.Rmd"
@@ -878,7 +878,7 @@ All we need now is to combine the dataset metadata with the forecast additionalM
 ```{r}
 my_eml <- eml$eml(dataset = dataset,
            additionalMetadata = additionalMetadata,
-           packageId = forecast_iteration_id , 
+           packageId = iteration_id , 
            system = "datetime"  ## system used to generate packageId
            )
 ```
