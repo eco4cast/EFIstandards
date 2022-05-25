@@ -134,7 +134,7 @@ forecast_validator <- function(eml){
         check_exists(alist,"reference")
 
         ## complexity
-        check_whole(alist,"complexity")
+        check_whole(alist,"complexity",required = FALSE)
 
         ## attributeName (optional)
         check_whole(alist,"attributeName",required = FALSE)
