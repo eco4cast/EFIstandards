@@ -52,9 +52,9 @@ To illustrate the application of the forecast standard, we'll consider the class
 ##### R
 
 ```{r}
-start_time = as.Date("2001-03-04")  ## start date of our forecast
+reference_datetime = as.Date("2001-03-04")  ## start date of our forecast
 n_time <- 30
-times = seq(from=start_time,by="1 day",length=n_time)
+datetimes = seq(from=reference_datetime,by="1 day",length=n_time)
 
 depths <- c(1, 3, 5)
 n_depths <- length(depths)
@@ -72,9 +72,9 @@ obs_dim <- 2 ## 1 = latent state
 ##### Python
 
 ```{python}
-start_time = datetime.date(2001, 3, 4)
+reference_datetime = datetime.date(2001, 3, 4)
 n_time = 30
-times = [start_time + datetime.timedelta(days = x) for x in range(n_time)]
+datetimes = [reference_datetime + datetime.timedelta(days = x) for x in range(n_time)]
 
 depths = [1, 3, 5]
 n_depths = len(depths)
@@ -185,11 +185,11 @@ Here's a simple visualization of our ensemble forecast at one depth
 ##### R
 
 ```{r}
-plot(times,n[,1,1,1,1],ylim=range(n),ylab="Population Density",type='l')
+plot(datetimes,n[,1,1,1,1],ylim=range(n),ylab="Population Density",type='l')
 for(s in seq_along(species)){ ##species
   for(e in ensembles){
-    lines(times,n[,1,e,1,s],col=s)                                  ## latent
-    points(times+runif(n_time,-0.12,0.12),n[,1,e,2,s],col=s,cex=0.35)  ## pseudo-obs w/ jitter
+    lines(datetimes,n[,1,e,1,s],col=s)                                  ## latent
+    points(datetimes+runif(n_time,-0.12,0.12),n[,1,e,2,s],col=s,cex=0.35)  ## pseudo-obs w/ jitter
   }
 }
 legend("bottomright",legend=species,col = seq_along(species),lty = 1)
@@ -198,12 +198,12 @@ legend("bottomright",legend=species,col = seq_along(species),lty = 1)
 ##### Python
 
 ```{python}
-plt.plot(times, n[:,0,0,0,0], "-")
+plt.plot(datetimes, n[:,0,0,0,0], "-")
 colors = ["r", "b"]
 for s in range(n_species):
     for e in range(n_ensembles):
-        plt.plot(times, n[:,0,e,0,s], "-", color=colors[s])
-        plt.plot(times, n[:,0,e,1,s], "+", color=colors[s])
+        plt.plot(datetimes, n[:,0,e,0,s], "-", color=colors[s])
+        plt.plot(datetimes, n[:,0,e,1,s], "+", color=colors[s])
 leg_lines = [plt.Line2D([0], [0], color=colors[x]) for x in range(n_species)]
 leg_labs = [f"Species {x}" for x in range(n_species)]
 plt.legend(leg_lines, leg_labs)
@@ -268,14 +268,14 @@ Once we have our ID's defined, we're going to use `ncdim_def` to define the dime
 
 ```{r}
 ## Set dimensions
-timedim <- ncdim_def("time",   ## dimension name
-                     units = paste('days since',start_time),
+timedim <- ncdim_def("datetime",   ## dimension name
+                     units = paste('days since',reference_datetime),
                                ## size of timestep, with units and start date
-                     vals = as.numeric(times - start_time),
+                     vals = as.numeric(datetimes - reference_datetime),
                                ## sequence of values that defines the dimension.
                                ## netCDF expresses time dimensions relative to a
-                               ## specified start date, in this case start_time
-                     longname = 'time')
+                               ## specified start date, in this case reference_datetime
+                     longname = 'datetime')
                                ## descriptive name
 
 depthdim <- ncdim_def("depth", 
@@ -309,10 +309,10 @@ Note that unlike R, the Python interface expects us to create the output NetCDF 
 ncfile = tempfile.NamedTemporaryFile(suffix=".nc")
 ncout = netCDF4.Dataset(ncfile.name, mode='w')
 
-timedim = ncout.createDimension("time", n_time)
-timevar = ncout.createVariable("time", "f4", "time")
-timevar.units = f"days since {start_time}"
-timevar[:] = [(t - start_time).days for t in times]
+timedim = ncout.createDimension("datetime", n_time)
+timevar = ncout.createVariable("datetime", "f4", "datetime")
+timevar.units = f"days since {reference_datetime}"
+timevar[:] = [(t - reference_datetime).days for t in datetimes]
 
 depthdim = ncout.createDimension("depth", n_depths)
 depthvar = ncout.createVariable("depth", "f4", "depth")
@@ -375,19 +375,19 @@ def_list[[4]] <- ncvar_def(name =  "data_assimilation",
 ##### Python
 
 ```{python}
-spp1nc = ncout.createVariable("species_1", "f4", ("time", "depth", "parameter", "obs_flag"))
+spp1nc = ncout.createVariable("species_1", "f4", ("datetime", "depth", "parameter", "obs_flag"))
 spp1nc.units = "number of individuals"
 spp1nc.longname = "<scientific name of species 1>"
 
-spp2nc = ncout.createVariable("species_2", "f4", ("time", "depth", "parameter", "obs_flag"))
+spp2nc = ncout.createVariable("species_2", "f4", ("datetime", "depth", "parameter", "obs_flag"))
 spp2nc.units = "number of individuals"
 spp2nc.longname = "<scientific name of species 2>"
 
-forecastnc = ncout.createVariable("forecast", "i4", ("time"))
+forecastnc = ncout.createVariable("forecast", "i4", ("datetime"))
 forecastnc.units = "integer"
 forecastnc.longname = "EFI standard forecast code. 0 = hindcast"
 
-danc = ncout.createVariable("data_assimilation", "i4", ("time"))
+danc = ncout.createVariable("data_assimilation", "i4", ("datetime"))
 danc.units = "integer"
 danc.longname = "EFI standard data assimilation code. 0 = no data"
 ```
@@ -459,12 +459,12 @@ ensemble members saved
 
 ```{r}
 ## wrangle data from an array into a long format
-df_combined <- reshape2::melt(n,varnames=c("time","depth","parameter","obs_flag","species")) %>%
+df_combined <- reshape2::melt(n,varnames=c("datetime","depth","parameter","obs_flag","species")) %>%
   pivot_wider(id_cols = 1:4,names_from = "species",names_prefix = "species_",values_from = "value") %>% 
   pivot_longer(cols = starts_with("species"),names_to = "variable",values_to = "prediction") %>%
-  mutate(time = times[time]) %>%
+  mutate(datetime = datetimes[time]) %>%
   mutate(depth = depths[depth]) %>%
-  right_join(tibble(time=times,forecast=forecast,data_assimilation = data_assimilation))
+  right_join(tibble(datetime=datetimes,forecast=forecast,data_assimilation = data_assimilation))
 
 head(df_combined,n=10)
 
@@ -508,7 +508,7 @@ Convert to a flat file format (CSV) with forecast distributions saved
 ```{r}
 ## calculate summary statistics across ensemble members and output variables
 dfs <- df_combined %>% add_column(family="normal") %>%
-                   group_by(time, depth,family,obs_flag,variable,forecast,data_assimilation) %>%
+                   group_by(datetime, depth,family,obs_flag,variable,forecast,data_assimilation) %>%
                    summarize(mu = mean(prediction),
                              sigma   = sd(prediction)) %>%
                    pivot_longer(8:9,names_to="parameter",values_to = "predictions") %>%
@@ -573,7 +573,7 @@ To start, the `attributes` table stores the basic metadata about the variable na
 ## in practice, this might be kept in a spreadsheet
 attributes <- tibble::tribble(
  ~attributeName,     ~attributeDefinition,                          ~unit,                  ~formatString, ~numberType, ~definition,
- "time",              "[dimension]{time}",                          "year",                 "YYYY-MM-DD",  "numberType", NA,
+ "datetime",              "[dimension]{datetime}",                          "year",                 "YYYY-MM-DD",  "numberType", NA,
  "depth",             "[dimension]{depth in reservior}",            "meter",                 NA,           "real",       NA,
  "ensemble",          "[dimension]{index of ensemble member}",      "dimensionless",         NA,           "integer",    NA,
  "obs_flag",          "[dimension]{observation error}",             "dimensionless",         NA,           "integer",    NA,
@@ -686,8 +686,8 @@ taxa <- tibble::tribble(
 "Gloeotrichia", "echinulata",
 "Anabaena",     "circinalis")
 coverage <- 
-  set_coverage(begin = first(times), 
-               end = last(times),
+  set_coverage(begin = first(datetimes), 
+               end = last(datetimes),
                sci_names = taxa,
                geographicDescription = "Lake Sunapee, NH, USA ",
                west = -72.15, east = -72.05, 
@@ -755,7 +755,7 @@ dataset = eml$dataset(
                title = "A very simple Lotka-Volterra forecast",
                creator = me,
                contact = list(references="https://orcid.org/0000-0003-1282-7825"),
-               pubDate = start_time,
+               pubDate = reference_datetime,
                intellectualRights = "http://www.lternet.edu/data/netpolicy.html.",
                abstract =  "An illustration of how we might use EML metadata to describe an ecological forecast",
                dataTable = dataTable,
@@ -785,7 +785,7 @@ additionalMetadata <- eml$additionalMetadata(
 ## Basic elements
       timestep = "1 day", ## should be udunits parsable; already in coverage -> temporalCoverage?
       forecast_horizon = "30 days",
-      start_time = start_time,
+      reference_datetime = reference_datetime,
       iteration_id = iteration_id,
       project_id = project_id,
       metadata_standard_version = "0.3",
