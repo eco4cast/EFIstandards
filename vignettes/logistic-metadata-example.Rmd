@@ -587,7 +587,7 @@ To start, the `attributes` table stores the basic metadata about the variable na
 ## in practice, this might be kept in a spreadsheet
 attributes <- tibble::tribble(
  ~attributeName,     ~attributeDefinition,                          ~unit,                  ~formatString, ~numberType, ~definition,
- "datetime",              "[dimension]{datetime}",                          "year",                 "YYYY-MM-DD",  "numberType", NA,
+ "datetime",          "[dimension]{datetime}",                      "year",                 "YYYY-MM-DD",   NA,          NA,
  "depth",             "[dimension]{depth in reservior}",            "meter",                 NA,           "real",       NA,
  "ensemble",          "[dimension]{index of ensemble member}",      "dimensionless",         NA,           "integer",    NA,
  "obs_flag",          "[dimension]{observation error}",             "dimensionless",         NA,           "integer",    NA,
@@ -797,7 +797,7 @@ additionalMetadata <- eml$additionalMetadata(
     forecast = list(
 ## Basic elements
       timestep = "1 day", ## should be udunits parsable; already in coverage -> temporalCoverage?
-      forecast_horizon = "30 days",
+      horizon = "30 days",
       reference_datetime = reference_datetime,
       iteration_id = iteration_id,
       project_id = project_id,
@@ -811,21 +811,29 @@ additionalMetadata <- eml$additionalMetadata(
 ## MODEL STRUCTURE & UNCERTAINTY CLASSES
       initial_conditions = list(
         # Possible values: absent, present, data_driven, propagates, assimilates
-        status = "present",
+        present = TRUE,
+        data_driven = TRUE,
         # Number of parameters / dimensionality
-        complexity = 2  ## [species 1, species 2] per depth
+        complexity = 2,  ## [species 1, species 2] per depth
+        propagation = list(
+          type = "ensemble",
+          size = 10
+        )
       ),
       drivers = list(
-        status = "absent"
+        present = FALSE
       ),
       parameters = list(
-        status = "present",
+        present = TRUE,
+        data_driven = TRUE,
         complexity = 6  ## [r, K, alpha] x 2 spp
       ),
       random_effects = list(
-        status = "absent"
+        present = FALSE
       ),
       process_error = list(
+        present = TRUE,
+        data_driven = TRUE,
         status = "propagates",
         propagation = list(
           type = "ensemble", # ensemble vs analytic
@@ -835,7 +843,8 @@ additionalMetadata <- eml$additionalMetadata(
         covariance = FALSE
       ),
       obs_error = list(
-        status = "present",
+        present = TRUE,
+        data_driven = TRUE,
         complexity = 2,   
         covariance = FALSE
       )
@@ -862,23 +871,15 @@ random_effects     | Unexplained variability and heterogeneity in model paramete
 obs_error          | Uncertainty in the observations of the output variables (g)
 process_error      | Dynamic uncertainty in the process model ($\epsilon$)
 
-Each class has a very similar structure and the only required element in each is `status` which can take on the following valid values
+Each class has a very similar structure and the only required element in each is `<present>` which is a boolean indicating whether this concept is included in the model (TRUE) or not (FALSE).
 
-status      | Description
------------ | --------------------------------------------------------------
-absent      | This model does not contain this concept (e.g. a linear regression model doesn't have initial conditions, random effects, or process_error). 
-present     | The model contains this concept (e.g. the model has parameters), but the values used are not derived from data and no uncertainty is represented
-data_driven | The model contains this concept and the inputs are data driven but uncertainty in this input is not explicitly propagated into predictions.
-propagates  | The model propagates uncertainty about this term into forecasts
-assimilates | The model iteratively updates this term through data assimilation.
+If present = TRUE then the `<data_driven>` tag is also required, and is a boolean indicating whether the quantity being discussed is based on data (TRUE) or not (FALSE). Examples of non-data-driven inputs include scenario-based drivers, spin-up initial conditions, and hand-tuned or theoretical parameters.
 
-Except for 'absent' this list is ordinal (e.g. data_driven implies present)
-
-Next, the `<complexity>` tag is recommended, but not required, and should list the size/dimension of each status/uncertainty class at a single location (per dimensions defined above). For example, the logistic model has two initial conditions (n[1], n[2]), six parameters (r, K, and alpha for each species), and both process and observation error on the two state variables. `absent` statuses don't need to be documented as 0 as this is implied.
+Next, if present = TRUE the `<complexity>` tag is recommended, but not required, and should list the size/dimension of each status/uncertainty class at a single location (per dimensions defined above). For example, the logistic model has two initial conditions (n[1], n[2]), six parameters (r, K, and alpha for each species), and both process and observation error on the two state variables.
 
 The `<covariance>` tag states whether the errors/uncertainties within an uncertainty class are being treated as independent or not.
 
-Finally, the `<propagation>` and `<assimilation>` tags provide additional information about the methods used (see EFI standard doc). 
+Finally, the `<propagation>` and `<assimilation>` tags are used to indicate, respectively, which uncertainties are propagated into the forecast and which are updated iteratively. Both include a set of recommended subtags used to provide additional information about the methods used (see EFI standard doc). If subtags are not used, one should just include a empty tag (e.g. `<propagation />`) to indicate that this concept is present.
 
 ## Assembling and validating the metadata
 

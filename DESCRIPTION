@@ -19,6 +19,7 @@ LazyData: true
 RoxygenNote: 7.1.2
 Imports:
     EML,
+    purrr,
     udunits2,
     usethis
 Suggests: 
