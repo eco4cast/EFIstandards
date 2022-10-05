@@ -1,6 +1,8 @@
 ---
 title: "Example metadata for a Lotka-Volterra population growth forecast"
-output: rmarkdown::html_document
+output: 
+  rmarkdown::html_document:
+    dev: png
 vignette: >
   %\VignetteIndexEntry{Logistic Growth Simulation}
   %\VignetteEngine{knitr::rmarkdown}
@@ -31,6 +33,7 @@ import datetime
 import tempfile
 
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import netCDF4
 
@@ -215,9 +218,13 @@ legend("bottomright",legend=species,col = seq_along(species),lty = 1)
 
 ##### Python
 
-```{python}
+
+```{python dev="png"}
+# Plot won't show due to pkgdown bug
+# matplotlib.use('Agg')
 plt.rc('xtick', labelsize=8) 
-plt.plot(datetimes, n[:,0,0,0,0], "-")
+plt.plot(times, n[:,0,0,0,0], "-")
+
 colors = ["r", "b"]
 for s in range(n_species):
     for e in range(n_ensembles):
@@ -794,7 +801,7 @@ additionalMetadata <- eml$additionalMetadata(
       reference_datetime = reference_datetime,
       iteration_id = iteration_id,
       project_id = project_id,
-      metadata_standard_version = "0.3",
+      metadata_standard_version = "0.5",
       model_description = list(
         model_id = model_id,
         name = "discrete Lotka–Volterra model",

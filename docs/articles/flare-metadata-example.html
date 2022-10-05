@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EFIstandards</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -64,6 +60,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
 </div>
@@ -75,8 +74,7 @@
 
       
 
-      </header><script src="flare-metadata-example_files/header-attrs-2.5/header-attrs.js"></script><link href="flare-metadata-example_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="flare-metadata-example_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Example metadata for a FLARE forecast</h1>
@@ -90,330 +88,350 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/EML/">EML</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.rforge.net/uuid">uuid</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://cirrus.ucsd.edu/~pierce/ncdf">ncdf4</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/emld/">emld</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/">tibble</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
-<span class="fu">emld</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/eml_version.html">eml_version</a></span><span class="op">(</span><span class="st">"eml-2.2.0"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "eml-2.2.0"</code></pre>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/EML/" class="external-link">EML</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.rforge.net/uuid" class="external-link">uuid</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://cirrus.ucsd.edu/~pierce/ncdf/" class="external-link">ncdf4</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/emld/" class="external-link">emld</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span>
+<span class="fu">emld</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/eml_version.html" class="external-link">eml_version</a></span><span class="op">(</span><span class="st">"eml-2.2.0"</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "eml-2.2.0"</span></code></pre>
 <p>First, set the forecast identifiers</p>
-<p>ForecastProject_id represents the launch of an automated, iterative forecast. It is created each time a human modifies the forecast code. It can be a DOI because this is the level that we envision citations occuring.</p>
-<p>Forecast_id represents each forecast cycle within a ForecastProject_id</p>
-<p>For example, if you have a forecast code base on GitHub and launch a forecast from that code that runs daily for 365 days, then there will be one ForecastProject_id and 365 Forecast_ids. A paper analyzing the forecasts would cite the ForecastProject_id.</p>
+<p>ForecastProject_id represents the launch of an automated, iterative
+forecast. It is created each time a human modifies the forecast code. It
+can be a DOI because this is the level that we envision citations
+occuring.</p>
+<p>Forecast_id represents each forecast cycle within a
+ForecastProject_id</p>
+<p>For example, if you have a forecast code base on GitHub and launch a
+forecast from that code that runs daily for 365 days, then there will be
+one ForecastProject_id and 365 Forecast_ids. A paper analyzing the
+forecasts would cite the ForecastProject_id.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ForecastProject_id</span> <span class="op">&lt;-</span> <span class="fl">30405043</span> <span class="co">#Some ID that applies to a bunch of forecasts</span>
-<span class="va">Forecast_id</span> <span class="op">&lt;-</span> <span class="fu">uuid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/uuid/man/UUIDgenerate.html">UUIDgenerate</a></span><span class="op">(</span><span class="op">)</span> <span class="co">#The ID that applies to the specific forecast in the cycel</span></code></pre></div>
-<div id="scenario-1-oxygen-system-turned-on" class="section level1">
-<h1 class="hasAnchor">
-<a href="#scenario-1-oxygen-system-turned-on" class="anchor"></a>Scenario 1: Oxygen System turned on</h1>
-<div id="generating-the-forecast" class="section level2">
-<h2 class="hasAnchor">
-<a href="#generating-the-forecast" class="anchor"></a>Generating the forecast</h2>
+<span class="va">Forecast_id</span> <span class="op">&lt;-</span> <span class="fu">uuid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/uuid/man/UUIDgenerate.html" class="external-link">UUIDgenerate</a></span><span class="op">(</span><span class="op">)</span> <span class="co">#The ID that applies to the specific forecast in the cycel</span></code></pre></div>
+<div class="section level2">
+<h2 id="scenario-1-oxygen-system-turned-on">Scenario 1: Oxygen System turned on<a class="anchor" aria-label="anchor" href="#scenario-1-oxygen-system-turned-on"></a>
+</h2>
+<div class="section level3">
+<h3 id="generating-the-forecast">Generating the forecast<a class="anchor" aria-label="anchor" href="#generating-the-forecast"></a>
+</h3>
 <p>First, get the output as we are currently saving it</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">netcdf_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"IW2_1_SSSon_H_2019_05_27_2019_06_03_F_16_2132020_21_32.nc"</span>, 
+<code class="sourceCode R"><span class="va">netcdf_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"IW2_1_SSSon_H_2019_05_27_2019_06_03_F_16_2132020_21_32.nc"</span>, 
                            package<span class="op">=</span><span class="st">"EFIstandards"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/nc_open.html">nc_open</a></span><span class="op">(</span><span class="va">netcdf_file</span><span class="op">)</span>
+<span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/nc_open.html" class="external-link">nc_open</a></span><span class="op">(</span><span class="va">netcdf_file</span><span class="op">)</span>
 
 <span class="co">#Dimnesions</span>
-<span class="va">depth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"z"</span><span class="op">)</span>
-<span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>,<span class="st">'time'</span><span class="op">)</span>
-<span class="va">local_tzone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_get.html">ncatt_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="fl">0</span><span class="op">)</span><span class="op">$</span><span class="va">time_zone_of_simulation</span>
-<span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span><span class="op">(</span><span class="va">time</span>, origin <span class="op">=</span> <span class="st">'1970-01-01 00:00.00 UTC'</span>, tz <span class="op">=</span> <span class="va">local_tzone</span><span class="op">)</span>
-<span class="va">time</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/strptime.html">strftime</a></span><span class="op">(</span><span class="va">time</span> , <span class="st">"%Y-%m-%dT%H:%M:%S%z"</span><span class="op">)</span>
+<span class="va">depth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"z"</span><span class="op">)</span>
+<span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>,<span class="st">'time'</span><span class="op">)</span>
+<span class="va">local_tzone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_get.html" class="external-link">ncatt_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="fl">0</span><span class="op">)</span><span class="op">$</span><span class="va">time_zone_of_simulation</span>
+<span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="va">time</span>, origin <span class="op">=</span> <span class="st">'1970-01-01 00:00.00 UTC'</span>, tz <span class="op">=</span> <span class="va">local_tzone</span><span class="op">)</span>
+<span class="va">time</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strftime</a></span><span class="op">(</span><span class="va">time</span> , <span class="st">"%Y-%m-%dT%H:%M:%S%z"</span><span class="op">)</span>
 
 <span class="co">#States</span>
-<span class="va">temperature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"temp"</span><span class="op">)</span>
-<span class="va">oxygen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"OXY_oxy"</span><span class="op">)</span>
-<span class="va">zone1temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"zone1temp"</span><span class="op">)</span>
-<span class="va">zone2temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"zone2temp"</span><span class="op">)</span>
-<span class="va">sw_factor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"sw_factor"</span><span class="op">)</span>
-<span class="va">inflow_factor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"inflow_factor"</span><span class="op">)</span>
+<span class="va">temperature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"temp"</span><span class="op">)</span>
+<span class="va">oxygen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"OXY_oxy"</span><span class="op">)</span>
+<span class="va">zone1temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"zone1temp"</span><span class="op">)</span>
+<span class="va">zone2temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"zone2temp"</span><span class="op">)</span>
+<span class="va">sw_factor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"sw_factor"</span><span class="op">)</span>
+<span class="va">inflow_factor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"inflow_factor"</span><span class="op">)</span>
 
 <span class="co">#Forecast timings</span>
-<span class="va">forecasted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"forecasted"</span><span class="op">)</span>
-<span class="va">data_assimilation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">forecasted</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>
+<span class="va">forecasted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"forecasted"</span><span class="op">)</span>
+<span class="va">data_assimilation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">forecasted</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>
 <span class="co">#This doesn't work but we need to update our writing script to just have the date</span>
-<span class="va">forecast_issue_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_get.html">ncatt_get</a></span><span class="op">(</span><span class="va">nc</span>, varid<span class="op">=</span><span class="fl">0</span>, attname <span class="op">=</span> <span class="st">"history"</span><span class="op">)</span> 
+<span class="va">forecast_issue_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_get.html" class="external-link">ncatt_get</a></span><span class="op">(</span><span class="va">nc</span>, varid<span class="op">=</span><span class="fl">0</span>, attname <span class="op">=</span> <span class="st">"history"</span><span class="op">)</span> 
 
 <span class="va">forecast_issue_time</span> <span class="op">&lt;-</span> <span class="st">"2020-02-13T21:32:52-05:00"</span>
 
-<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/nc_close.html">nc_close</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/nc_close.html" class="external-link">nc_close</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="saving-to-a-standardized-output-format-option-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#saving-to-a-standardized-output-format-option-1" class="anchor"></a>Saving to a standardized output format (Option 1)</h2>
-<p>Second, build a data frame for all variables with a depth dimension</p>
+<div class="section level3">
+<h3 id="saving-to-a-standardized-output-format-option-1">Saving to a standardized output format (Option 1)<a class="anchor" aria-label="anchor" href="#saving-to-a-standardized-output-format-option-1"></a>
+</h3>
+<p>Second, build a data frame for all variables with a depth
+dimension</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">n_depths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">depth</span><span class="op">)</span>
-<span class="va">state_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"temperature"</span>, <span class="st">"oxygen"</span><span class="op">)</span>
-<span class="va">states</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">temperature</span>, <span class="va">oxygen</span><span class="op">)</span>
-<span class="va">n_states</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">state_names</span><span class="op">)</span>
-<span class="va">df_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">n_depths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">depth</span><span class="op">)</span>
+<span class="va">state_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temperature"</span>, <span class="st">"oxygen"</span><span class="op">)</span>
+<span class="va">states</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">temperature</span>, <span class="va">oxygen</span><span class="op">)</span>
+<span class="va">n_states</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">state_names</span><span class="op">)</span>
+<span class="va">df_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">n_states</span><span class="op">)</span><span class="op">{</span>
 <span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">n_depths</span><span class="op">)</span><span class="op">{</span>
-    <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="va">states</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, ,<span class="va">i</span><span class="op">]</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">states</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, ,<span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">df</span>, <span class="va">data_assimilation</span><span class="op">)</span>
-    <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">time</span>,<span class="va">data_assimilation</span><span class="op">)</span>, 
+    <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">states</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, ,<span class="va">i</span><span class="op">]</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">states</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, ,<span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+    <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">df</span>, <span class="va">data_assimilation</span><span class="op">)</span>
+    <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">time</span>,<span class="va">data_assimilation</span><span class="op">)</span>, 
                    names_to <span class="op">=</span> <span class="st">"ensemble"</span>, 
-                   values_to <span class="op">=</span> <span class="va">state_names</span><span class="op">[</span><span class="va">k</span><span class="op">]</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>depth <span class="op">=</span> <span class="va">depth</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span>
+                   values_to <span class="op">=</span> <span class="va">state_names</span><span class="op">[</span><span class="va">k</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>depth <span class="op">=</span> <span class="va">depth</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span>
     <span class="kw">if</span><span class="op">(</span><span class="va">i</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">{</span>
     <span class="va">running_df</span> <span class="op">&lt;-</span> <span class="va">df</span>
     <span class="op">}</span><span class="kw">else</span><span class="op">{</span>
-      <span class="va">running_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">running_df</span>, <span class="va">df</span><span class="op">)</span>
+      <span class="va">running_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">running_df</span>, <span class="va">df</span><span class="op">)</span>
     <span class="op">}</span>
 <span class="op">}</span>
       <span class="va">df_combined</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">running_df</span>
 <span class="op">}</span></code></pre></div>
-<pre><code>## Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.
-## Using compatibility `.name_repair`.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
+<pre><code><span class="co">## Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.</span>
+<span class="co">## Using compatibility `.name_repair`.</span>
+<span class="co">## <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span>
+<span class="co">## <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">df_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join</a></span><span class="op">(</span><span class="va">df_combined</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">df_combined</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, 
-                          by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"ensemble"</span>, <span class="st">"depth"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>forecast_issue_time <span class="op">=</span> <span class="va">forecast_issue_time</span>,
+<code class="sourceCode R"><span class="va">df_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="va">df_combined</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">df_combined</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, 
+                          by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"ensemble"</span>, <span class="st">"depth"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>forecast_issue_time <span class="op">=</span> <span class="va">forecast_issue_time</span>,
          ForecastProject_id <span class="op">=</span> <span class="va">ForecastProject_id</span>,
          Forecast_id <span class="op">=</span> <span class="va">Forecast_id</span>,
-         scenario <span class="op">=</span> <span class="st">"oxygen_on"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">depth</span>, <span class="va">scenario</span>, <span class="va">ensemble</span>, <span class="va">temperature</span>, 
+         scenario <span class="op">=</span> <span class="st">"oxygen_on"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">depth</span>, <span class="va">scenario</span>, <span class="va">ensemble</span>, <span class="va">temperature</span>, 
          <span class="va">oxygen</span>, <span class="va">forecast_issue_time</span>, 
          <span class="va">data_assimilation</span>, <span class="va">Forecast_id</span>, <span class="va">ForecastProject_id</span><span class="op">)</span> 
 
 <span class="va">df_combined_scenario_1</span> <span class="op">&lt;-</span> <span class="va">df_combined</span></code></pre></div>
-<p>Second, build a data frame for all variables without a depth dimension (parameters).</p>
+<p>Second, build a data frame for all variables without a depth
+dimension (parameters).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="va">zone1temp</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">zone1temp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
-<span class="va">df_combined_p1</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
+<code class="sourceCode R"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">zone1temp</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">zone1temp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
+<span class="va">df_combined_p1</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
                    names_to <span class="op">=</span> <span class="st">"ensemble"</span>, 
-                   values_to <span class="op">=</span> <span class="st">"zone1temp"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
+                   values_to <span class="op">=</span> <span class="st">"zone1temp"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
              scenario <span class="op">=</span> <span class="st">"oxygen_on"</span><span class="op">)</span> 
 
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="va">zone2temp</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">zone2temp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
-<span class="va">df_combined_p2</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">zone2temp</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">zone2temp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
+<span class="va">df_combined_p2</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
                    names_to <span class="op">=</span> <span class="st">"ensemble"</span>, 
-                   values_to <span class="op">=</span> <span class="st">"zone2temp"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
+                   values_to <span class="op">=</span> <span class="st">"zone2temp"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
              scenario <span class="op">=</span> <span class="st">"oxygen_on"</span><span class="op">)</span> 
 
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="va">sw_factor</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">sw_factor</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
-<span class="va">df_combined_p3</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">sw_factor</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sw_factor</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
+<span class="va">df_combined_p3</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
                    names_to <span class="op">=</span> <span class="st">"ensemble"</span>, 
-                   values_to <span class="op">=</span> <span class="st">"sw_factor"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
+                   values_to <span class="op">=</span> <span class="st">"sw_factor"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
              scenario <span class="op">=</span> <span class="st">"oxygen_on"</span><span class="op">)</span> 
 
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="va">inflow_factor</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">inflow_factor</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
-<span class="va">df_combined_p4</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">inflow_factor</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">inflow_factor</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
+<span class="va">df_combined_p4</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
                    names_to <span class="op">=</span> <span class="st">"ensemble"</span>, 
-                   values_to <span class="op">=</span> <span class="st">"inflow_factor"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
+                   values_to <span class="op">=</span> <span class="st">"inflow_factor"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
              scenario <span class="op">=</span> <span class="st">"oxygen_on"</span><span class="op">)</span> 
 
-<span class="va">df_parameters_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join</a></span><span class="op">(</span><span class="va">df_combined_p1</span>, 
+<span class="va">df_parameters_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="va">df_combined_p1</span>, 
                               <span class="va">df_combined_p2</span>, 
-                              by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>,
+                              by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>,
                                      <span class="st">"data_assimilation"</span>,
                                      <span class="st">"ensemble"</span>,
-                                     <span class="st">"scenario"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-                  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join</a></span><span class="op">(</span><span class="va">df_combined_p3</span>, 
-                              by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>,
+                                     <span class="st">"scenario"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+                  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="va">df_combined_p3</span>, 
+                              by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>,
                                      <span class="st">"data_assimilation"</span>,
                                      <span class="st">"ensemble"</span>,
-                                     <span class="st">"scenario"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-                  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join</a></span><span class="op">(</span><span class="va">df_combined_p4</span>, 
-                              by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>,
+                                     <span class="st">"scenario"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+                  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="va">df_combined_p4</span>, 
+                              by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>,
                                      <span class="st">"data_assimilation"</span>,
                                      <span class="st">"ensemble"</span>,
-                                     <span class="st">"scenario"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>forecast_issue_time <span class="op">=</span> <span class="va">forecast_issue_time</span>,
+                                     <span class="st">"scenario"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>forecast_issue_time <span class="op">=</span> <span class="va">forecast_issue_time</span>,
          Forecast_id <span class="op">=</span> <span class="va">Forecast_id</span>,
-         ForecastProject_id <span class="op">=</span> <span class="va">ForecastProject_id</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">scenario</span>, <span class="va">ensemble</span>, <span class="va">forecast_issue_time</span>, 
+         ForecastProject_id <span class="op">=</span> <span class="va">ForecastProject_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">scenario</span>, <span class="va">ensemble</span>, <span class="va">forecast_issue_time</span>, 
          <span class="va">data_assimilation</span>, <span class="va">Forecast_id</span>, <span class="va">ForecastProject_id</span>, 
          <span class="va">zone1temp</span>, <span class="va">zone2temp</span>, <span class="va">sw_factor</span>, <span class="va">inflow_factor</span><span class="op">)</span> </code></pre></div>
 </div>
 </div>
-<div id="scenario-2-oxygen-system-turned-off" class="section level1">
-<h1 class="hasAnchor">
-<a href="#scenario-2-oxygen-system-turned-off" class="anchor"></a>Scenario 2: Oxygen System turned off</h1>
-<div id="generating-the-forecast-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#generating-the-forecast-1" class="anchor"></a>Generating the forecast</h2>
+<div class="section level2">
+<h2 id="scenario-2-oxygen-system-turned-off">Scenario 2: Oxygen System turned off<a class="anchor" aria-label="anchor" href="#scenario-2-oxygen-system-turned-off"></a>
+</h2>
+<div class="section level3">
+<h3 id="generating-the-forecast-1">Generating the forecast<a class="anchor" aria-label="anchor" href="#generating-the-forecast-1"></a>
+</h3>
 <p>First, get the output as we are currently saving it</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">netcdf_file2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"IW2_1_SSSoff_H_2019_05_27_2019_06_03_F_16_2132020_21_19.nc"</span>, package<span class="op">=</span><span class="st">"EFIstandards"</span><span class="op">)</span>
-<span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/nc_open.html">nc_open</a></span><span class="op">(</span><span class="va">netcdf_file2</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">netcdf_file2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"IW2_1_SSSoff_H_2019_05_27_2019_06_03_F_16_2132020_21_19.nc"</span>, package<span class="op">=</span><span class="st">"EFIstandards"</span><span class="op">)</span>
+<span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/nc_open.html" class="external-link">nc_open</a></span><span class="op">(</span><span class="va">netcdf_file2</span><span class="op">)</span>
 
 <span class="co">#Dimnesions</span>
-<span class="va">depth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"z"</span><span class="op">)</span>
-<span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>,<span class="st">'time'</span><span class="op">)</span>
-<span class="va">local_tzone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_get.html">ncatt_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="fl">0</span><span class="op">)</span><span class="op">$</span><span class="va">time_zone_of_simulation</span>
-<span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span><span class="op">(</span><span class="va">time</span>, origin <span class="op">=</span> <span class="st">'1970-01-01 00:00.00 UTC'</span>, tz <span class="op">=</span> <span class="va">local_tzone</span><span class="op">)</span>
-<span class="va">time</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/strptime.html">strftime</a></span><span class="op">(</span><span class="va">time</span> , <span class="st">"%Y-%m-%dT%H:%M:%S%z"</span><span class="op">)</span>
+<span class="va">depth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"z"</span><span class="op">)</span>
+<span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>,<span class="st">'time'</span><span class="op">)</span>
+<span class="va">local_tzone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_get.html" class="external-link">ncatt_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="fl">0</span><span class="op">)</span><span class="op">$</span><span class="va">time_zone_of_simulation</span>
+<span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="va">time</span>, origin <span class="op">=</span> <span class="st">'1970-01-01 00:00.00 UTC'</span>, tz <span class="op">=</span> <span class="va">local_tzone</span><span class="op">)</span>
+<span class="va">time</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strftime</a></span><span class="op">(</span><span class="va">time</span> , <span class="st">"%Y-%m-%dT%H:%M:%S%z"</span><span class="op">)</span>
 
 <span class="co">#States</span>
-<span class="va">temperature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"temp"</span><span class="op">)</span>
-<span class="va">oxygen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"OXY_oxy"</span><span class="op">)</span>
-<span class="va">zone1temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"zone1temp"</span><span class="op">)</span>
-<span class="va">zone2temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"zone2temp"</span><span class="op">)</span>
-<span class="va">sw_factor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"sw_factor"</span><span class="op">)</span>
-<span class="va">inflow_factor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"inflow_factor"</span><span class="op">)</span>
+<span class="va">temperature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"temp"</span><span class="op">)</span>
+<span class="va">oxygen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"OXY_oxy"</span><span class="op">)</span>
+<span class="va">zone1temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"zone1temp"</span><span class="op">)</span>
+<span class="va">zone2temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"zone2temp"</span><span class="op">)</span>
+<span class="va">sw_factor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"sw_factor"</span><span class="op">)</span>
+<span class="va">inflow_factor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"inflow_factor"</span><span class="op">)</span>
 
 <span class="co">#Forecast timings</span>
-<span class="va">forecasted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"forecasted"</span><span class="op">)</span>
-<span class="va">data_assimilation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">forecasted</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>
+<span class="va">forecasted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncvar_get.html" class="external-link">ncvar_get</a></span><span class="op">(</span><span class="va">nc</span>, <span class="st">"forecasted"</span><span class="op">)</span>
+<span class="va">data_assimilation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">forecasted</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>
 <span class="co">#This doesn't work but we need to update our writing script to just have the date</span>
-<span class="va">forecast_issue_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_get.html">ncatt_get</a></span><span class="op">(</span><span class="va">nc</span>, varid<span class="op">=</span><span class="fl">0</span>, attname <span class="op">=</span> <span class="st">"history"</span><span class="op">)</span> 
+<span class="va">forecast_issue_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/ncatt_get.html" class="external-link">ncatt_get</a></span><span class="op">(</span><span class="va">nc</span>, varid<span class="op">=</span><span class="fl">0</span>, attname <span class="op">=</span> <span class="st">"history"</span><span class="op">)</span> 
 <span class="va">forecast_issue_time</span> <span class="op">&lt;-</span> <span class="st">"2020-02-13T21:32:52-05:00"</span>
 
-<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/nc_close.html">nc_close</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/ncdf4/man/nc_close.html" class="external-link">nc_close</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="saving-to-a-standardized-output-format-option-1-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#saving-to-a-standardized-output-format-option-1-1" class="anchor"></a>Saving to a standardized output format (Option 1)</h2>
+<div class="section level3">
+<h3 id="saving-to-a-standardized-output-format-option-1-1">Saving to a standardized output format (Option 1)<a class="anchor" aria-label="anchor" href="#saving-to-a-standardized-output-format-option-1-1"></a>
+</h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">n_depths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">depth</span><span class="op">)</span>
-<span class="va">state_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"temperature"</span>, <span class="st">"oxygen"</span><span class="op">)</span>
-<span class="va">states</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">temperature</span>, <span class="va">oxygen</span><span class="op">)</span>
-<span class="va">n_states</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">state_names</span><span class="op">)</span>
-<span class="va">df_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">n_depths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">depth</span><span class="op">)</span>
+<span class="va">state_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"temperature"</span>, <span class="st">"oxygen"</span><span class="op">)</span>
+<span class="va">states</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">temperature</span>, <span class="va">oxygen</span><span class="op">)</span>
+<span class="va">n_states</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">state_names</span><span class="op">)</span>
+<span class="va">df_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">n_states</span><span class="op">)</span><span class="op">{</span>
 <span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">n_depths</span><span class="op">)</span><span class="op">{</span>
-    <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="va">states</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, ,<span class="va">i</span><span class="op">]</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">states</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, ,<span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">df</span>, <span class="va">data_assimilation</span><span class="op">)</span>
-    <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">time</span>,<span class="va">data_assimilation</span><span class="op">)</span>, 
+    <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">states</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, ,<span class="va">i</span><span class="op">]</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">states</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, ,<span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+    <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">df</span>, <span class="va">data_assimilation</span><span class="op">)</span>
+    <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">time</span>,<span class="va">data_assimilation</span><span class="op">)</span>, 
                    names_to <span class="op">=</span> <span class="st">"ensemble"</span>, 
-                   values_to <span class="op">=</span> <span class="va">state_names</span><span class="op">[</span><span class="va">k</span><span class="op">]</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>depth <span class="op">=</span> <span class="va">depth</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span>
+                   values_to <span class="op">=</span> <span class="va">state_names</span><span class="op">[</span><span class="va">k</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>depth <span class="op">=</span> <span class="va">depth</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span>
     <span class="kw">if</span><span class="op">(</span><span class="va">i</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">{</span>
     <span class="va">running_df</span> <span class="op">&lt;-</span> <span class="va">df</span>
     <span class="op">}</span><span class="kw">else</span><span class="op">{</span>
-      <span class="va">running_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">running_df</span>, <span class="va">df</span><span class="op">)</span>
+      <span class="va">running_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">running_df</span>, <span class="va">df</span><span class="op">)</span>
     <span class="op">}</span>
 <span class="op">}</span>
       <span class="va">df_combined</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">running_df</span>
 <span class="op">}</span>
 
-<span class="va">df_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join</a></span><span class="op">(</span><span class="va">df_combined</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">df_combined</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, 
-                          by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"ensemble"</span>, <span class="st">"depth"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>forecast_issue_time <span class="op">=</span> <span class="va">forecast_issue_time</span>,
+<span class="va">df_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="va">df_combined</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">df_combined</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, 
+                          by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"ensemble"</span>, <span class="st">"depth"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>forecast_issue_time <span class="op">=</span> <span class="va">forecast_issue_time</span>,
          Forecast_id <span class="op">=</span> <span class="va">Forecast_id</span>,
          ForecastProject_id <span class="op">=</span> <span class="va">ForecastProject_id</span>,
-         scenario <span class="op">=</span> <span class="st">"oxygen_off"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">depth</span>, <span class="va">scenario</span>, <span class="va">ensemble</span>, <span class="va">temperature</span>, 
+         scenario <span class="op">=</span> <span class="st">"oxygen_off"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">depth</span>, <span class="va">scenario</span>, <span class="va">ensemble</span>, <span class="va">temperature</span>, 
          <span class="va">oxygen</span>, <span class="va">forecast_issue_time</span>, 
          <span class="va">data_assimilation</span>, <span class="va">Forecast_id</span>, <span class="va">ForecastProject_id</span><span class="op">)</span> 
 
 <span class="va">df_combined_scenario_2</span> <span class="op">&lt;-</span> <span class="va">df_combined</span></code></pre></div>
-<p>Second, build a data frame for all variables without a depth dimension (parameters).</p>
+<p>Second, build a data frame for all variables without a depth
+dimension (parameters).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="va">zone1temp</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">zone1temp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
-<span class="va">df_combined_p1</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
+<code class="sourceCode R"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">zone1temp</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">zone1temp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
+<span class="va">df_combined_p1</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
                    names_to <span class="op">=</span> <span class="st">"ensemble"</span>, 
-                   values_to <span class="op">=</span> <span class="st">"zone1temp"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
+                   values_to <span class="op">=</span> <span class="st">"zone1temp"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
              scenario <span class="op">=</span> <span class="st">"oxygen_off"</span><span class="op">)</span> 
 
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="va">zone2temp</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">zone2temp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
-<span class="va">df_combined_p2</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">zone2temp</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">zone2temp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
+<span class="va">df_combined_p2</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
                    names_to <span class="op">=</span> <span class="st">"ensemble"</span>, 
-                   values_to <span class="op">=</span> <span class="st">"zone2temp"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
+                   values_to <span class="op">=</span> <span class="st">"zone2temp"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
              scenario <span class="op">=</span> <span class="st">"oxygen_off"</span><span class="op">)</span> 
 
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="va">sw_factor</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">sw_factor</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
-<span class="va">df_combined_p3</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">sw_factor</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sw_factor</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
+<span class="va">df_combined_p3</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
                    names_to <span class="op">=</span> <span class="st">"ensemble"</span>, 
-                   values_to <span class="op">=</span> <span class="st">"sw_factor"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
+                   values_to <span class="op">=</span> <span class="st">"sw_factor"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
              scenario <span class="op">=</span> <span class="st">"oxygen_off"</span><span class="op">)</span> 
 
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="va">inflow_factor</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">inflow_factor</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
-<span class="va">df_combined_p4</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">inflow_factor</span><span class="op">[</span> , <span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">inflow_factor</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">data_assimilation</span>, <span class="va">df</span><span class="op">)</span>
+<span class="va">df_combined_p4</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"data_assimilation"</span><span class="op">)</span>, 
                    names_to <span class="op">=</span> <span class="st">"ensemble"</span>, 
-                   values_to <span class="op">=</span> <span class="st">"inflow_factor"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
+                   values_to <span class="op">=</span> <span class="st">"inflow_factor"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>ensemble <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ensemble</span><span class="op">)</span>,
              scenario <span class="op">=</span> <span class="st">"oxygen_off"</span><span class="op">)</span> 
 
-<span class="va">df_parameters_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join</a></span><span class="op">(</span><span class="va">df_combined_p1</span>, 
+<span class="va">df_parameters_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="va">df_combined_p1</span>, 
                               <span class="va">df_combined_p2</span>, 
-                              by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>,
+                              by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>,
                                      <span class="st">"data_assimilation"</span>,
                                      <span class="st">"ensemble"</span>,
-                                     <span class="st">"scenario"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-                  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join</a></span><span class="op">(</span><span class="va">df_combined_p3</span>, 
-                              by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>,
+                                     <span class="st">"scenario"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+                  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="va">df_combined_p3</span>, 
+                              by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>,
                                      <span class="st">"data_assimilation"</span>,
                                      <span class="st">"ensemble"</span>,
-                                     <span class="st">"scenario"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-                  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join</a></span><span class="op">(</span><span class="va">df_combined_p4</span>, 
-                              by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>,
+                                     <span class="st">"scenario"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+                  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="va">df_combined_p4</span>, 
+                              by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>,
                                      <span class="st">"data_assimilation"</span>,
                                      <span class="st">"ensemble"</span>,
-                                     <span class="st">"scenario"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>forecast_issue_time <span class="op">=</span> <span class="va">forecast_issue_time</span>,
+                                     <span class="st">"scenario"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>forecast_issue_time <span class="op">=</span> <span class="va">forecast_issue_time</span>,
          Forecast_id <span class="op">=</span> <span class="va">Forecast_id</span>,
-         ForecastProject_id <span class="op">=</span> <span class="va">ForecastProject_id</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">scenario</span>, <span class="va">ensemble</span>, <span class="va">forecast_issue_time</span>, 
+         ForecastProject_id <span class="op">=</span> <span class="va">ForecastProject_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">scenario</span>, <span class="va">ensemble</span>, <span class="va">forecast_issue_time</span>, 
          <span class="va">data_assimilation</span>, <span class="va">Forecast_id</span>, <span class="va">ForecastProject_id</span>, 
          <span class="va">zone1temp</span>, <span class="va">zone2temp</span>, <span class="va">sw_factor</span>, <span class="va">inflow_factor</span><span class="op">)</span> </code></pre></div>
 </div>
-<div id="saving-to-a-standardized-output-format-option-1-2" class="section level2">
-<h2 class="hasAnchor">
-<a href="#saving-to-a-standardized-output-format-option-1-2" class="anchor"></a>Saving to a standardized output format (Option 1)</h2>
+<div class="section level3">
+<h3 id="saving-to-a-standardized-output-format-option-1-2">Saving to a standardized output format (Option 1)<a class="anchor" aria-label="anchor" href="#saving-to-a-standardized-output-format-option-1-2"></a>
+</h3>
 <p>Create the 1D and 0D tables</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">df_combined_0D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">df_parameters_1</span>, <span class="va">df_parameters_2</span><span class="op">)</span>
-<span class="va">df_combined_1D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">df_combined_scenario_1</span>, <span class="va">df_combined_scenario_2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">df_combined_0D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">df_parameters_1</span>, <span class="va">df_parameters_2</span><span class="op">)</span>
+<span class="va">df_combined_1D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">df_combined_scenario_1</span>, <span class="va">df_combined_scenario_2</span><span class="op">)</span></code></pre></div>
 <p>Write tables to CSV.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">df_combined_1D</span>, <span class="st">"flare-forecast-ensemble-multi-variable-1D.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">df_combined_0D</span>, <span class="st">"flare-forecast-ensemble-parameters-0D.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">df_combined_1D</span>, <span class="st">"flare-forecast-ensemble-multi-variable-1D.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">df_combined_0D</span>, <span class="st">"flare-forecast-ensemble-parameters-0D.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="standardized-metadata" class="section level2">
-<h2 class="hasAnchor">
-<a href="#standardized-metadata" class="anchor"></a>Standardized Metadata</h2>
-<p>Let’s document the metadata of the data table itself. It may well be that we decide an Ecological Forecast has to have specific columns like the ones described above, which would thus correspond to a partially pre-defined attributes table (e.g. the units would probably still be allowed to vary, but format would be the same.)</p>
-<p>Note one weakness of this format is that it assumes all data in a column have the same units. This common assumption might be violoated by transformations to “long” form data, where you have columns like “variable”, “value”, and “units”. (The long form may be useful, but it exposes much less information in the metadata layer – e.g. we no longer know what’s actually being measured without looking at the data file itself).</p>
+<div class="section level3">
+<h3 id="standardized-metadata">Standardized Metadata<a class="anchor" aria-label="anchor" href="#standardized-metadata"></a>
+</h3>
+<p>Let’s document the metadata of the data table itself. It may well be
+that we decide an Ecological Forecast has to have specific columns like
+the ones described above, which would thus correspond to a partially
+pre-defined attributes table (e.g. the units would probably still be
+allowed to vary, but format would be the same.)</p>
+<p>Note one weakness of this format is that it assumes all data in a
+column have the same units. This common assumption might be violoated by
+transformations to “long” form data, where you have columns like
+“variable”, “value”, and “units”. (The long form may be useful, but it
+exposes much less information in the metadata layer – e.g. we no longer
+know what’s actually being measured without looking at the data file
+itself).</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#attributes &lt;- tibble::tribble(</span>
 <span class="co">#  ~attributeName, ~attributeDefinition, ~unit, ~formatString, ~numberType,</span>
@@ -433,7 +451,7 @@
 <span class="co">#  "ForecastProject_id",     "ID for forecasting project", "dimensionless", NA,  "character",</span>
 <span class="co">#  )</span>
 
-<span class="va">attributes</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span>
+<span class="va">attributes</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
   <span class="op">~</span><span class="va">attributeName</span>, <span class="op">~</span><span class="va">attributeDefinition</span>, <span class="op">~</span><span class="va">unit</span>, <span class="op">~</span><span class="va">formatString</span>, <span class="op">~</span><span class="va">numberType</span>, <span class="op">~</span><span class="va">definition</span>,
   <span class="st">"time"</span>,          <span class="st">"time"</span>,                       <span class="st">"year"</span>,     <span class="st">"YYYY-MM-DD"</span>, <span class="st">"numberType"</span>, <span class="cn">NA</span>,
   <span class="st">"depth"</span>,         <span class="st">"depth in reservior"</span>,         <span class="st">"meter"</span>,   <span class="cn">NA</span>,          <span class="st">"real"</span>, <span class="cn">NA</span>,
@@ -448,54 +466,67 @@
 <span class="op">)</span>
 
 
-<span class="va">attrList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://docs.ropensci.org/EML/reference/set_attributes.html">set_attributes</a></span><span class="op">(</span><span class="va">attributes</span>, 
-                           col_classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Date"</span>, <span class="st">"numeric"</span>, <span class="st">"character"</span>, <span class="st">"numeric"</span>, 
+<span class="va">attrList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://docs.ropensci.org/EML/reference/set_attributes.html" class="external-link">set_attributes</a></span><span class="op">(</span><span class="va">attributes</span>, 
+                           col_classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Date"</span>, <span class="st">"numeric"</span>, <span class="st">"character"</span>, <span class="st">"numeric"</span>, 
                                            <span class="co">#EDIT STARTING HERE </span>
                                            <span class="st">"numeric"</span>,<span class="st">"numeric"</span>,
                                            <span class="co">#EDIT ENDING HERE</span>
                                            <span class="st">"Date"</span>,
                                            <span class="st">"numeric"</span>, <span class="st">"character"</span>, <span class="st">"character"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Warning in set_attribute(attributes[i, ], factors = factors, missingValues
-## = missingValues): Unit 'NA' is not a recognized standard unit; treating
-## as custom unit. Please be sure you also define a custom unit in your EML
-## record, or replace with a recognized standard unit. For unitless values, use
-## "dimensionless" as the unit. See set_unitList() for details.</code></pre>
+<pre><code><span class="co">## Warning in set_attribute(attributes[i, ], factors = factors, missingValues</span>
+<span class="co">## = missingValues): Unit 'NA' is not a recognized standard unit; treating</span>
+<span class="co">## as custom unit. Please be sure you also define a custom unit in your EML</span>
+<span class="co">## record, or replace with a recognized standard unit. For unitless values, use</span>
+<span class="co">## "dimensionless" as the unit. See set_unitList() for details.</span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">physical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://docs.ropensci.org/EML/reference/set_physical.html">set_physical</a></span><span class="op">(</span><span class="st">"flare-forecast-ensemble-multi-variable-1D.csv"</span><span class="op">)</span></code></pre></div>
-<pre><code>## Automatically calculated file size using file.size("flare-forecast-ensemble-multi-variable-1D.csv")</code></pre>
-<pre><code>## Automatically calculated authentication size using digest::digest("flare-forecast-ensemble-multi-variable-1D.csv", algo = "md5", file = TRUE)</code></pre>
+<code class="sourceCode R"><span class="va">physical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://docs.ropensci.org/EML/reference/set_physical.html" class="external-link">set_physical</a></span><span class="op">(</span><span class="st">"flare-forecast-ensemble-multi-variable-1D.csv"</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Automatically calculated file size using file.size("flare-forecast-ensemble-multi-variable-1D.csv")</span></code></pre>
+<pre><code><span class="co">## Automatically calculated authentication size using digest::digest("flare-forecast-ensemble-multi-variable-1D.csv", algo = "md5", file = TRUE)</span></code></pre>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dataTable</span> <span class="op">&lt;-</span> <span class="va">eml</span><span class="op">$</span><span class="fu">dataTable</span><span class="op">(</span>
                  entityName <span class="op">=</span> <span class="st">"flare-forecast-ensemble-multi-variable-1D.csv"</span>,
                  entityDescription <span class="op">=</span> <span class="st">"Falling Creek Reservior Forecast"</span>,
                  physical <span class="op">=</span> <span class="va">physical</span>,
                  attributeList <span class="op">=</span> <span class="va">attrList</span><span class="op">)</span></code></pre></div>
-<p>There’s a lot more optional terminology that could be exploited here – for instance, the specification lets us define different missing value codes (and explanations) for each column, and allows us to indicate <code>precision</code>, <code>minimum</code> and <code>maximum</code>.</p>
-<p>Note that <code>physical</code> type can document almost any formats as well, including NetCDF etc. A NetCDF file would still document the variables measured in much the same way regardless of the underlying representation. Note that</p>
-<p>Now that we’ve documented the actual data.frame itself, we can add additional metadata to the record describing our forecast, which is essential for citing, discovering, and interpreting the result. We start with some authorship information.</p>
+<p>There’s a lot more optional terminology that could be exploited here
+– for instance, the specification lets us define different missing value
+codes (and explanations) for each column, and allows us to indicate
+<code>precision</code>, <code>minimum</code> and
+<code>maximum</code>.</p>
+<p>Note that <code>physical</code> type can document almost any formats
+as well, including NetCDF etc. A NetCDF file would still document the
+variables measured in much the same way regardless of the underlying
+representation. Note that</p>
+<p>Now that we’ve documented the actual data.frame itself, we can add
+additional metadata to the record describing our forecast, which is
+essential for citing, discovering, and interpreting the result. We start
+with some authorship information.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">me</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>individualName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>givenName <span class="op">=</span> <span class="st">"Quinn"</span>, 
+<code class="sourceCode R"><span class="va">me</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>individualName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>givenName <span class="op">=</span> <span class="st">"Quinn"</span>, 
                                  surName <span class="op">=</span> <span class="st">"Thomas"</span><span class="op">)</span>,
            electronicMailAddress <span class="op">=</span> <span class="st">"rqthomas@vt.edu"</span>,
            id <span class="op">=</span> <span class="st">"https://orcid.org/0000-0003-1282-7825"</span><span class="op">)</span></code></pre></div>
 <p>Set Taxonomic, Temporal, and Geographic Coverage.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coverage</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://docs.ropensci.org/EML/reference/set_coverage.html">set_coverage</a></span><span class="op">(</span>begin <span class="op">=</span> <span class="fu"><a href="http://lubridate.tidyverse.org/reference/as_date.html">as_datetime</a></span><span class="op">(</span><span class="va">time</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, 
-               end <span class="op">=</span> <span class="fu"><a href="http://lubridate.tidyverse.org/reference/as_date.html">as_datetime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,
+  <span class="fu"><a href="https://docs.ropensci.org/EML/reference/set_coverage.html" class="external-link">set_coverage</a></span><span class="op">(</span>begin <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html" class="external-link">as_datetime</a></span><span class="op">(</span><span class="va">time</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, 
+               end <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html" class="external-link">as_datetime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,
                geographicDescription <span class="op">=</span> <span class="st">"Falling Creek Reservior"</span>,
                west <span class="op">=</span> <span class="op">-</span><span class="fl">79.9</span>, east <span class="op">=</span> <span class="op">-</span><span class="fl">79.9</span>, 
                north <span class="op">=</span> <span class="fl">37.27</span>, south <span class="op">=</span> <span class="fl">37.27</span><span class="op">)</span></code></pre></div>
-<p>Set key words. We will need to develop a EFI controlled vocabulary</p>
+<p>Set key words. We will need to develop a EFI controlled
+vocabulary</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">keywordSet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">keywordSet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
         keywordThesaurus <span class="op">=</span> <span class="st">"EFI controlled vocabulary"</span>,
-        keyword <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"forecast"</span>,
+        keyword <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"forecast"</span>,
                     <span class="st">"ecosystem"</span>,
                     <span class="st">"timeseries"</span><span class="op">)</span>
     <span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Our dataset needs an abstract describing what this is all about. Also, a methods section is not required but it’s probably a good idea. Here we import a methods section that was written in Markdown.</p>
+<p>Our dataset needs an abstract describing what this is all about.
+Also, a methods section is not required but it’s probably a good idea.
+Here we import a methods section that was written in Markdown.</p>
 <p><strong>Forecast timestep</strong>: 1 day</p>
 <p><strong>Forecast time horizon</strong> 16 days</p>
 <p><strong>Data assimilation</strong></p>
@@ -503,14 +534,15 @@
 <li>Data Assimilation used: Yes</li>
 <li>If, DA used - type of method: EnKF</li>
 <li>If, DA used - Number of parameters calibrated: 3</li>
-<li>If, DA used - Sources of training data (DOI, GitHub): <a href="https://github.com/CareyLabVT/SCCData/tree/carina-data" class="uri">https://github.com/CareyLabVT/SCCData/tree/carina-data</a>
+<li>If, DA used - Sources of training data (DOI, GitHub): <a href="https://github.com/CareyLabVT/SCCData/tree/carina-data" class="external-link uri">https://github.com/CareyLabVT/SCCData/tree/carina-data</a>
 </li>
 </ul>
 <p><strong>Model Description</strong></p>
 <ul>
-<li>Type of model (Empirical, process-based, machine learning): Process-based</li>
+<li>Type of model (Empirical, process-based, machine learning):
+Process-based</li>
 <li>Model name: General Lake Model-AED V3</li>
-<li>Location of repository with model code: * GLM: <a href="https://github.com/AquaticEcoDynamics/GLM" class="uri">https://github.com/AquaticEcoDynamics/GLM</a> * AED: <a href="https://github.com/AquaticEcoDynamics/libaed2" class="uri">https://github.com/AquaticEcoDynamics/libaed2</a>
+<li>Location of repository with model code: * GLM: <a href="https://github.com/AquaticEcoDynamics/GLM" class="external-link uri">https://github.com/AquaticEcoDynamics/GLM</a> * AED: <a href="https://github.com/AquaticEcoDynamics/libaed2" class="external-link uri">https://github.com/AquaticEcoDynamics/libaed2</a>
 </li>
 <li>Model citation: Hipsey et al. 2019 GMD</li>
 <li>Total number of model process parameters: Hard to count</li>
@@ -518,10 +550,11 @@
 <p><strong>Model Covariates</strong></p>
 <ul>
 <li>Type (i.e., meteorology): meteorology, Stream Inflow</li>
-<li>Source (i.e., NOAA GEFS): NOAA GEFS 16-day, <a href="https://github.com/CareyLabVT/SCCData/tree/diana-data" class="uri">https://github.com/CareyLabVT/SCCData/tree/diana-data</a>
+<li>Source (i.e., NOAA GEFS): NOAA GEFS 16-day, <a href="https://github.com/CareyLabVT/SCCData/tree/diana-data" class="external-link uri">https://github.com/CareyLabVT/SCCData/tree/diana-data</a>
 </li>
 </ul>
-<p><strong>Uncertainty (No, Derived from data, Propagates, Assimilates)</strong></p>
+<p><strong>Uncertainty (No, Derived from data, Propagates,
+Assimilates)</strong></p>
 <ul>
 <li>Initial conditions: Assimilates</li>
 <li>Parameter: Assimilates</li>
@@ -530,28 +563,28 @@
 <li>Multi-model: No</li>
 <li>Driver: Derived from data</li>
 <li>Scenario: Yes - oxygen system on and off</li>
-<li>Method for propagating uncertainty (Analytic, ensemble numeric): ensemble numeric</li>
+<li>Method for propagating uncertainty (Analytic, ensemble numeric):
+ensemble numeric</li>
 <li>If Analytic, specific method</li>
 <li>If ensemble numeric, number of ensembles: 210</li>
 </ul>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">abstract_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"abstract.md"</span>, package<span class="op">=</span><span class="st">"EFIstandards"</span><span class="op">)</span>
-<span class="va">methods_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"methods.md"</span>,  package<span class="op">=</span><span class="st">"EFIstandards"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">abstract_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"abstract.md"</span>, package<span class="op">=</span><span class="st">"EFIstandards"</span><span class="op">)</span>
+<span class="va">methods_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"methods.md"</span>,  package<span class="op">=</span><span class="st">"EFIstandards"</span><span class="op">)</span>
 
-<span class="va">abstract</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>markdown <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span><span class="op">(</span><span class="va">abstract_text</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Warning in readLines(abstract_text): incomplete final line found on 'C:/Users/
-## ashander/AppData/Local/Temp/RtmpMT2Hdy/temp_libpath490c42f238c/EFIstandards/
-## extdata/abstract.md'</code></pre>
+<span class="va">abstract</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>markdown <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">abstract_text</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Warning in readLines(abstract_text): incomplete final line found on '/tmp/</span>
+<span class="co">## RtmpRUcquq/temp_libpath155314228a9395/EFIstandards/extdata/abstract.md'</span></code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">methods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>id<span class="op">=</span><span class="st">"forecast"</span>, 
-                methodStep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>description <span class="op">=</span> 
-                                    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>markdown <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span><span class="op">(</span><span class="va">methods_text</span><span class="op">)</span>, 
+<code class="sourceCode R"><span class="va">methods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id<span class="op">=</span><span class="st">"forecast"</span>, 
+                methodStep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>description <span class="op">=</span> 
+                                    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>markdown <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">methods_text</span><span class="op">)</span>, 
                                                           collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>  <span class="co">## to be dropped</span></code></pre></div>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dataset</span> <span class="op">=</span> <span class="va">eml</span><span class="op">$</span><span class="fu">dataset</span><span class="op">(</span>
                title <span class="op">=</span> <span class="st">"FLARE forecast"</span>,
                creator <span class="op">=</span> <span class="va">me</span>,
-               contact <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>references<span class="op">=</span><span class="st">"https://orcid.org/0000-0003-1282-7825"</span><span class="op">)</span>,
+               contact <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>references<span class="op">=</span><span class="st">"https://orcid.org/0000-0003-1282-7825"</span><span class="op">)</span>,
                pubDate <span class="op">=</span> <span class="va">forecast_issue_time</span>,
                intellectualRights <span class="op">=</span> <span class="st">"http://www.lternet.edu/data/netpolicy.html."</span>,
                abstract <span class="op">=</span>  <span class="st">"An illustration of how we might use EML metadata to describe an ecological forecast"</span>,
@@ -560,30 +593,38 @@
                coverage <span class="op">=</span> <span class="va">coverage</span>,
                methods <span class="op">=</span> <span class="va">methods</span>
                <span class="op">)</span></code></pre></div>
-<p>All we need now is to add a unique identifier for the project and we are good to go! This could be a DOI or merely an identifier we create, e.g. a UUID.</p>
+<p>All we need now is to add a unique identifier for the project and we
+are good to go! This could be a DOI or merely an identifier we create,
+e.g. a UUID.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">my_eml</span> <span class="op">&lt;-</span> <span class="va">eml</span><span class="op">$</span><span class="fu">eml</span><span class="op">(</span>dataset <span class="op">=</span> <span class="va">dataset</span>,
            packageId <span class="op">=</span> <span class="va">ForecastProject_id</span>,  
            system <span class="op">=</span> <span class="st">"uuid"</span>
            <span class="op">)</span></code></pre></div>
-<p>Once we have finished building our EML metadata, we can confirm it is valid. This will catch any missing elements. (Recall that what is ‘required’ depends on what you include – for example, you don’t have to document a <code>dataTable</code> at all, but if you do, you have to document the “physical” file format it is in (e.g. <code>csv</code>) and the attributes and units it uses!)</p>
+<p>Once we have finished building our EML metadata, we can confirm it is
+valid. This will catch any missing elements. (Recall that what is
+‘required’ depends on what you include – for example, you don’t have to
+document a <code>dataTable</code> at all, but if you do, you have to
+document the “physical” file format it is in (e.g. <code>csv</code>) and
+the attributes and units it uses!)</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://docs.ropensci.org/EML/reference/eml_validate.html">eml_validate</a></span><span class="op">(</span><span class="va">my_eml</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] FALSE
-## attr(,"errors")
-## [1] "Element 'pubDate': '2020-02-13T21:32:52-05:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'."
-## [2] "Element 'calendarDate': '2019-05-27 12:00:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'." 
-## [3] "Element 'calendarDate': '2019-05-27 12:00:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'." 
-## [4] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."                          
-## [5] "Element 'numericDomain': This element is not expected. Expected is ( unit )."</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://docs.ropensci.org/EML/reference/eml_validate.html" class="external-link">eml_validate</a></span><span class="op">(</span><span class="va">my_eml</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] FALSE</span>
+<span class="co">## attr(,"errors")</span>
+<span class="co">## [1] "Element 'pubDate': '2020-02-13T21:32:52-05:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'."</span>
+<span class="co">## [2] "Element 'calendarDate': '2019-05-27 12:00:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'." </span>
+<span class="co">## [3] "Element 'calendarDate': '2019-05-27 12:00:00' is not a valid value of the union type '{https://eml.ecoinformatics.org/resource-2.2.0}yearDate'." </span>
+<span class="co">## [4] "Element 'nonNumericDomain': Missing child element(s). Expected is one of ( references, enumeratedDomain, textDomain )."                          </span>
+<span class="co">## [5] "Element 'numericDomain': This element is not expected. Expected is ( unit )."</span></code></pre>
 <p>We are now ready to write out a valid EML document:</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://docs.ropensci.org/EML/reference/write_eml.html">write_eml</a></span><span class="op">(</span><span class="va">my_eml</span>, <span class="st">"forecast-flare-eml.xml"</span><span class="op">)</span></code></pre></div>
-<pre><code>## NULL</code></pre>
-<p>At this point, we could easily upload this metadata along with the data itself to DataONE via the API (or <code>dataone</code> R package.)</p>
+<code class="sourceCode R"><span class="fu"><a href="https://docs.ropensci.org/EML/reference/write_eml.html" class="external-link">write_eml</a></span><span class="op">(</span><span class="va">my_eml</span>, <span class="st">"forecast-flare-eml.xml"</span><span class="op">)</span></code></pre></div>
+<p>At this point, we could easily upload this metadata along with the
+data itself to DataONE via the API (or <code>dataone</code> R
+package.)</p>
 <p>We can also generate a JSON-LD version of EML:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">emld</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/as_json.html">as_json</a></span><span class="op">(</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/as_emld.html">as_emld</a></span><span class="op">(</span><span class="st">"forecast-flare-eml.xml"</span><span class="op">)</span>, file <span class="op">=</span> <span class="st">"forecast-flare-eml.json"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">emld</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/as_json.html" class="external-link">as_json</a></span><span class="op">(</span><span class="fu"><a href="https://docs.ropensci.org/emld/reference/as_emld.html" class="external-link">as_emld</a></span><span class="op">(</span><span class="st">"forecast-flare-eml.xml"</span><span class="op">)</span>, file <span class="op">=</span> <span class="st">"forecast-flare-eml.json"</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
   </div>
@@ -599,11 +640,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Carl Boettiger, Quinn Thomas, Michael Dietze, Alexey Shiklomanov.</p>
+  <p></p>
+<p>Developed by Carl Boettiger, Quinn Thomas, Michael Dietze, Alexey Shiklomanov, Jaime Ashander.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>
@@ -611,6 +654,8 @@
 
   
 
+
+  
 
   </body>
 </html>
