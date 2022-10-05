@@ -35,6 +35,8 @@ import matplotlib.pyplot as plt
 import netCDF4
 
 import pandas as pd
+
+rng = np.random.default_rng(42)
 ```
 
 #### {-}
@@ -98,25 +100,31 @@ Next we're going to assume fixed parameters and initial conditions, set up stora
 
 ```{r}
 ## parameters for species_1 and species_2
-r <- c(1, 3)
+r <- c(1, 2.75)
 K <-  c(10, 20)
 alpha <-  c(0.2, 0.3)
 
 ## process error
-process_sd <- 0.01
+process_sd <- c(0.02,0.01)
 
 ## observation error
-obs_sd <- c(0.5,0.2)
+obs_sd <- c(0.5,0.75)
 
-## initial conditions
-n0 <-  0.5
+## initial condition uncertainties
+n0_mu <-  c(0.5,0.25,1,0.5,2,1)
+n0_sd <- n0_mu*c(0.5,0.1)
+## initial condition: gamma parameters
+n0_r  <- n0_mu/(n0_sd^2)
+n0_a  <- n0_mu*n0_r
 
 ## forecast output storage
 n <- array(NA,dim = c(n_time, n_depths, n_ensembles, obs_dim,2)) ## last dim is species
-n[1,,,,] <- n0
 
-## forecast flag
-forecast <- rep(as.integer(0), n_time) ## this code indicated a hindcast
+## initial conditions
+for(i in 1:n_ensembles){
+  n[1,,i,1,] <- matrix(rgamma(n_depths*2,n0_a,n0_r),nrow = n_depths,ncol = 2,byrow = TRUE)
+}
+n[1,,,2,] = n[1,,,1,] # assume that there's no additional observation error on the initial condition uncertainty
 
 ## data assimilation flag
 data_assimilation <- rep(as.integer(0), n_time)  ## this code indicates a 'free-run' that didn't assimilate new data
@@ -129,10 +137,10 @@ for(t in 2:n_time){
       n_curr <- n[t-1,depth,ens,1,] ## current state
       n[t, depth, ens,1,1] <-  n_curr[1] + 
           r[1]*n_curr[1]*(1-((n_curr[1] + 
-          alpha[1]*n_curr[2])/K[1])) + rnorm(1, 0, process_sd)
+          alpha[1]*n_curr[2])/K[1])) + rnorm(1, 0, process_sd[1])
       n[t, depth, ens,1,2] <-  n_curr[2] + 
           r[2]*n_curr[2]*(1-((n_curr[2] + 
-          alpha[2]*n[1])/K[2])) + rnorm(1, 0, process_sd)
+          alpha[2]*n[1])/K[2])) + rnorm(1, 0, process_sd[2])
       ## predict observed values
       n[t,depth,ens,2,] = rnorm(2,n[t,depth,ens,1,],obs_sd)
     }
@@ -143,19 +151,29 @@ for(t in 2:n_time){
 ##### Python
 
 ```{python}
-r = [1, 3]
+r = [1, 2.75]
 K = [10, 20]
 alpha = [0.2, 0.3]
 
-process_sd = 0.01
-obs_sd = [0.5, 0.2]
+process_sd = [0.02, 0.01]
+obs_sd = [0.5, 0.75]
 
 n0 = 0.5
+n0_mu = [[0.5, 0.25],
+         [1, 0.5],
+         [2, 1]]
+n0_sd = np.multiply(n0_mu,[[0.5,0.1],[0.5,0.1],[0.5,0.1]])
+n0_s  = np.divide(np.multiply(n0_sd,n0_sd),n0_mu)
+n0_a  = np.divide(n0_mu,n0_s)
 
 n = np.zeros((n_time, n_depths, n_ensembles, obs_dim, n_species))
 n[0,:,:,:,:] = n0
 
-forecast = np.zeros((n_time), dtype=int)
+for i in range(0,n_ensembles-1):
+  n[0,:,i,0,:] = rng.gamma(n0_a,n0_s)
+
+n[0,:,:,1,:] = n[0,:,:,0,:] 
+
 data_assimilation = np.zeros((n_time), dtype=int)
 
 for t in range(1, n_time):
@@ -166,11 +184,11 @@ for t in range(1, n_time):
             n[t, depth, ens, 0, 0] = n_curr[0] + \
                 r[0] * n_curr[0] * \
                 (1 - ((n_curr[0] + alpha[0]*n_curr[1]) / K[0])) + \
-                np.random.randn(1) * process_sd
+                np.random.randn(1) * process_sd[0]
             n[t, depth, ens, 0, 1] = n_curr[1] + \
                 r[1] * n_curr[1] * \
                 (1 - ((n_curr[1] + alpha[1]*n_curr[0]) / K[1])) + \
-                np.random.randn(1) * process_sd
+                np.random.randn(1) * process_sd[1]
             # predict observed values
             n[t,depth,ens,1,:] = n[t,depth,ens,0,:] + np.random.randn(2) * obs_sd
 
@@ -198,6 +216,7 @@ legend("bottomright",legend=species,col = seq_along(species),lty = 1)
 ##### Python
 
 ```{python}
+plt.rc('xtick', labelsize=8) 
 plt.plot(datetimes, n[:,0,0,0,0], "-")
 colors = ["r", "b"]
 for s in range(n_species):
@@ -244,7 +263,7 @@ iteration_ids. A paper analyzing the forecasts would cite the project_id.
 
 ``` {r}
 project_id <- "LogisticDemo"
-model_id   <- "v0.3"
+model_id   <- "v0.5"
 iteration_id <- "20010304T060000"   # ISO datetime should make a valid Forecast_id
 ```
 
@@ -252,7 +271,7 @@ iteration_id <- "20010304T060000"   # ISO datetime should make a valid Forecast_
 
 ```{python}
 project_id = "LogisticDemo"
-model_id = "v0.3"
+model_id = "v0.5"
 iteration_id = "20010304T060000"
 ```
 
@@ -358,13 +377,7 @@ def_list[[2]] <- ncvar_def(name =  "species_2",
                            missval = fillvalue,
                            longname = '<scientific name of species 2>',
                            prec="single")
-def_list[[3]] <- ncvar_def(name =  "forecast",
-                           units = "integer",
-                           dim = list(timedim),
-                           missval = fillvalue,
-                           longname = 'EFI standard forecast code. 0 = hindcast',
-                           prec="single")
-def_list[[4]] <- ncvar_def(name =  "data_assimilation",
+def_list[[3]] <- ncvar_def(name =  "data_assimilation",
                            units = "integer",
                            dim = list(timedim),
                            missval = fillvalue,
@@ -382,10 +395,6 @@ spp1nc.longname = "<scientific name of species 1>"
 spp2nc = ncout.createVariable("species_2", "f4", ("datetime", "depth", "parameter", "obs_flag"))
 spp2nc.units = "number of individuals"
 spp2nc.longname = "<scientific name of species 2>"
-
-forecastnc = ncout.createVariable("forecast", "i4", ("datetime"))
-forecastnc.units = "integer"
-forecastnc.longname = "EFI standard forecast code. 0 = hindcast"
 
 danc = ncout.createVariable("data_assimilation", "i4", ("datetime"))
 danc.units = "integer"
@@ -413,8 +422,7 @@ ncout <- nc_create(ncfname,def_list,force_v4=T)
 ## fill in our output data
 ncvar_put(ncout,def_list[[1]] , n[, , , ,1 ])        ## species 1
 ncvar_put(ncout,def_list[[2]] , n[, , , ,2 ])        ## species 2
-ncvar_put(ncout,def_list[[3]] , forecast) ## forecast flag
-ncvar_put(ncout,def_list[[4]] , data_assimilation) ## data_assimilation flag
+ncvar_put(ncout,def_list[[3]] , data_assimilation) ## data_assimilation flag
 
 ## Global attributes (metadata)
 ncatt_put(ncout,0,"project_id", as.character(project_id), 
@@ -435,7 +443,6 @@ Recall: We already created the file above.
 # Write data to file
 spp1nc[:,:,:,:] = n[:,:,:,:,0]
 spp2nc[:,:,:,:] = n[:,:,:,:,1]
-forecastnc[:] = forecast
 danc[:] = data_assimilation
 
 # Set global attributes (metadata)
@@ -462,9 +469,9 @@ ensemble members saved
 df_combined <- reshape2::melt(n,varnames=c("datetime","depth","parameter","obs_flag","species")) %>%
   pivot_wider(id_cols = 1:4,names_from = "species",names_prefix = "species_",values_from = "value") %>% 
   pivot_longer(cols = starts_with("species"),names_to = "variable",values_to = "prediction") %>%
-  mutate(datetime = datetimes[time]) %>%
+  mutate(datetime = datetimes[datetime]) %>%
   mutate(depth = depths[depth]) %>%
-  right_join(tibble(datetime=datetimes,forecast=forecast,data_assimilation = data_assimilation))
+  right_join(tibble(datetime=datetimes,data_assimilation = data_assimilation))
 
 head(df_combined,n=10)
 
@@ -508,10 +515,10 @@ Convert to a flat file format (CSV) with forecast distributions saved
 ```{r}
 ## calculate summary statistics across ensemble members and output variables
 dfs <- df_combined %>% add_column(family="normal") %>%
-                   group_by(datetime, depth,family,obs_flag,variable,forecast,data_assimilation) %>%
+                   group_by(datetime, depth,family,obs_flag,variable,data_assimilation) %>%
                    summarize(mu = mean(prediction),
                              sigma   = sd(prediction)) %>%
-                   pivot_longer(8:9,names_to="parameter",values_to = "predictions") %>%
+                   pivot_longer(7:8,names_to="parameter",values_to = "predictions") %>%
                    relocate(parameter,.after = family) %>%
                    relocate(predictions,.after=variable)
 
@@ -579,14 +586,13 @@ attributes <- tibble::tribble(
  "obs_flag",          "[dimension]{observation error}",             "dimensionless",         NA,           "integer",    NA,
  "species_1",         "[variable]{Pop. density of species 1}",      "numberPerMeterSquared", NA,           "real",       NA,
  "species_2",         "[variable]{Pop. density of species 2}",      "numberPerMeterSquared", NA,           "real",       NA,
- "forecast",          "[flag]{whether time step assimilated data}", "dimensionless",         NA,           "integer",    NA,
  "data_assimilation", "[flag]{whether time step assimilated data}", "dimensionless",         NA,           "integer",    NA
 ) 
 ## note: EML uses a different unit standard than UDUNITS. For now use EML. EFI needs to provide a custom unitList.
 attributes
 attrList <- set_attributes(attributes, 
                            col_classes = c("Date", "numeric", "numeric","numeric", 
-                                           "numeric","numeric", "numeric","numeric"))
+                                           "numeric","numeric", "numeric"))
 ```
 
 ##### Python
