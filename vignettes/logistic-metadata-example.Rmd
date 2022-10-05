@@ -491,18 +491,22 @@ write.csv(df_combined,
 ** this code needs updating for the new format**
 
 ```{python}
-n_names = ["time", "depth", "ensemble", "obs_flag", "species"]
+n_names = ["datetime", "depth", "ensemble", "obs_flag", "species"]
 n_index = pd.MultiIndex.from_product([range(s) for s in n.shape], names=n_names)
 df = pd.DataFrame({"pop": n.flatten()}, index = n_index)["pop"]
 
-df_wide = df.unstack("species").reset_index()
-df_wide["time"] = [times[x] for x in df_wide["time"]]
-df_wide["depth"] = [depths[x] for x in df_wide["depth"]]
-df_wide.rename(columns={0: "Species_1", 1: "Species_2"}, inplace=True)
+## would like to find a more elegant solution than long -> wide -> long
+df = df.unstack("species").reset_index()
+df.rename(columns={0:"species 1",1:"species 2"},inplace=True)
+df = pd.melt(df,id_vars=['datetime','depth','ensemble','obs_flag'],value_vars=["species 1","species 2"])
+df.rename(columns={'species':'variable','value'='prediction'}, inplace=True)
+df["datetime"] = [datetimes[x] for x in df["datetime"]]
+df["depth"] = [depths[x] for x in df["depth"]]
 
-meta_df = pd.DataFrame({"time": times, "forecast": forecast, "data_assimilation": data_assimilation})
 
-df_combined = df_wide.merge(meta_df, on="time", how="right")
+meta_df = pd.DataFrame({"datetime": datetimes, "data_assimilation": data_assimilation})
+
+df_combined = df.merge(meta_df, on="datetime", how="right")
 df_combined.head()
 
 out_csv = tempfile.NamedTemporaryFile(suffix=".csv")
