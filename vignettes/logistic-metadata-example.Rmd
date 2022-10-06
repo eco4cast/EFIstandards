@@ -41,6 +41,7 @@ import matplotlib.pyplot as plt
 import netCDF4
 import pandas as pd
 import dicttoxml
+import rpy2
 
 rng = np.random.default_rng(42)
 
@@ -613,8 +614,8 @@ No easy function for this, so have to do it (tediously) by hand:
 # NOTE: List of dicts 
 attrList = [
     {
-        "attributeName": "time",
-        "attributeDefinition": "[dimension]{time}",
+        "attributeName": "datetime",
+        "attributeDefinition": "[dimension]{datetime}",
         "storageType": "date",
         "measurementScale": {
             "dateTime": {
@@ -675,17 +676,6 @@ attrList = [
             "ratio": {
                 "unit": {"standardUnit": "numberPerMeterSquared"},
                 "numericDomain": {"numberType": "real"}
-            }
-        }
-    },
-    {
-        "attributeName": "forecast",
-        "attributeDefinition": "[flag]{whether time step was a forecast}",
-        "storageType": "float",
-        "measurementScale": {
-            "ratio": {
-                "unit": {"standardUnit": "dimensionless"},
-                "numericDomain": {"numberType": "integer"}
             }
         }
     },
@@ -849,8 +839,8 @@ coverage = {
         }
     },
     "temporalCoverage": {"rangeOfDates": {
-        "beginDate": {"calendarDate": str(times[0])},
-        "endDate": {"calendarDate": str(times[-1])}
+        "beginDate": {"calendarDate": str(datetimes[0])},
+        "endDate": {"calendarDate": str(datetimes[-1])}
     }},
     "taxonomicCoverage": {
         "taxonomicClassification": {
@@ -955,7 +945,7 @@ dataset = {
     "title" : "A very simple Lotka-Volterra forecast",
     "creator" : me,
     "contact" : {"references": "https://orcid.org/0000-0003-1282-7825"},
-    "pubDate" : forecast_issue_time,
+    "pubDate" : reference_datetime,
     "intellectualRights" : "http://www.lternet.edu/data/netpolicy.html.",
     "abstract" :  "An illustration of how we might use EML metadata to describe an ecological forecast",
     "dataTable" : dataTable,
@@ -1040,49 +1030,56 @@ additionalMetadata <- eml$additionalMetadata(
 
 ```{python}
 additionalMetadata = {
-    "metadata" : { 
-        "forecast" : { 
-            ## Basic elements
-            "timestep" : "1 day", ## should be udunits parsable; already in coverage -> temporalCoverage?
-            "forecast_horizon" : "30 days",
-            "forecast_issue_time" : forecast_issue_time,
-            "forecast_iteration_id" : forecast_iteration_id,
-            "forecast_project_id" : forecast_project_id,
-            "metadata_standard_version" : "0.3",
-            "model_description" : {
-                "forecast_model_id" : forecast_model_id,
-                "name" : "discrete Lotka–Volterra model",
-                "type" : "process-based",
-                "repository" : "https://github.com/eco4cast/EFIstandards/blob/master/vignettes/logistic-metadata-example.Rmd"
+  "metadata" : { 
+    "forecast" : { 
+      ## Basic elements
+      "timestep" : "1 day", ## should be udunits parsable; already in coverage -> temporalCoverage?
+      "horizon" : "30 days",
+      "reference_datetime" : reference_datetime,
+      "iteration_id" : iteration_id,
+      "project_id" : project_id,
+      "metadata_standard_version" : "0.5",
+      "model_description" : {
+        "model_id" : model_id,
+        "name" : "discrete Lotka–Volterra model",
+        "type" : "process-based",
+        "repository" : "https://github.com/eco4cast/EFIstandards/blob/master/vignettes/logistic-metadata-example.Rmd"
+        },
+        ## MODEL STRUCTURE & UNCERTAINTY CLASSES
+      "initial_conditions" : {
+        "present" : True,
+        "date_driven" : True,
+        # Number of parameters / dimensionality
+        "complexity" : 2,  ## [species 1, species 2] per depth
+        "propagation" : {
+          "type" : "ensemble",
+          "size" : 10
+          }
+        },
+        "drivers" : {"present" : False},
+        "parameters" : {
+          "present" : True,
+          "date_driven" : True,
+          "complexity" : 6  ## [r, K, alpha] x 2 spp
+        },
+        "random_effects" : {"present" : False},
+        "process_error" : {
+          "present" : True,
+          "date_driven" : True,
+          "propagation" : {
+            "type" : "ensemble", # ensemble vs analytic
+            "size" : 10          # required if ensemble
             },
-            ## MODEL STRUCTURE & UNCERTAINTY CLASSES
-            "initial_conditions" : {
-                # Possible values: absent, present, data_driven, propagates, assimilates
-                "status" : "present",
-                # Number of parameters / dimensionality
-                "complexity" : 2  ## [species 1, species 2] per depth
-            },
-            "drivers" : {"status" : "absent"},
-            "parameters" : {
-                "status" : "present",
-                "complexity" : 6  ## [r, K, alpha] x 2 spp
-            },
-            "random_effects" : {"status" : "absent"},
-            "process_error" : {
-                "status" : "propagates",
-                "propagation" : {
-                    "type" : "ensemble", # ensemble vs analytic
-                    "size" : 10          # required if ensemble
-                },
-                "complexity" : 2,   
-                "covariance" : False
-            },
-            "obs_error" : {
-                "status" : "present",
-                "complexity" : 2,
-                "covariance" : False
-            }
-        } # forecast
+            "complexity" : 2,   
+            "covariance" : False
+        },
+        "obs_error" : {
+            "present" : True,
+            "date_driven" : True,
+            "complexity" : 2,
+            "covariance" : False
+        }
+      } # forecast
     } # metadata
 }
 ```
@@ -1150,7 +1147,7 @@ my_eml = ET.Element("eml:eml", {
     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
     "xmlns:stmml": "http://www.xml-cml.org/schema/stmml-1.2",
     "system": "datetime",
-    "packageId": forecast_iteration_id,
+    "packageId": iteration_id,
     "xsi:schemaLocation": "https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd"
 })
 
