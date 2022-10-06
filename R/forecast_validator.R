@@ -7,8 +7,9 @@
 #' @importFrom usethis ui_todo ui_done ui_stop
 #' @importFrom EML read_eml eml_validate
 #' @examples
-#'\dontrun{
+#'\donttest{
 #' forecast_validator(system.file("extdata", "forecast-eml.xml", package="EFIstandards"))
+#' forecast_validator(system.file("extdata", "beetles-eml.xml", package="EFIstandards"))
 #'}
 forecast_validator <- function(eml){
 
@@ -27,12 +28,9 @@ forecast_validator <- function(eml){
                            attr(valid, "errors")))
   }
 
-  ## Check that additonalMetadata exists
-
+  ## Check that forecast metadata exists. Can be in any additionalMetadata element
   check_exists(meta,"additionalMetadata")
-  check_exists(meta$additionalMetadata,"metadata")
-  check_exists(meta$additionalMetadata$metadata,"forecast")
-  AM <- meta$additionalMetadata$metadata$forecast
+  AM <- extract_forecast_metadata(meta)
 
   ## Check REQUIRED CORE EML elements
 
@@ -152,6 +150,19 @@ forecast_validator <- function(eml){
   ## return status
   valid
 }
+
+
+extract_forecast_metadata <- function(meta){
+
+  if(!is.null(names(meta$additionalMetadata)))
+    return(meta$additionalMetadata$metadata$forecast)
+
+  i  <- vapply(meta$additionalMetadata,
+               function(x) names(x$metadata)[[1]] == "forecast", logical(1L))
+  AM <- meta$additionalMetadata[i]
+  AM[[1]]$metadata$forecast
+}
+
 
 
 #forecast_validator("forecast-eml.xml")
