@@ -488,7 +488,7 @@ write.csv(df_combined,
 
 ##### Python
 
-** this code needs updating for the new format**
+Ensemble format
 
 ```{python}
 n_names = ["datetime", "depth", "ensemble", "obs_flag", "species"]
@@ -499,7 +499,7 @@ df = pd.DataFrame({"pop": n.flatten()}, index = n_index)["pop"]
 df = df.unstack("species").reset_index()
 df.rename(columns={0:"species 1",1:"species 2"},inplace=True)
 df = pd.melt(df,id_vars=['datetime','depth','ensemble','obs_flag'],value_vars=["species 1","species 2"])
-df.rename(columns={'species':'variable','value'='prediction'}, inplace=True)
+df.columns = ['datetime', 'depth', 'ensemble', 'obs_flag', 'variable', 'prediction']
 df["datetime"] = [datetimes[x] for x in df["datetime"]]
 df["depth"] = [depths[x] for x in df["depth"]]
 
@@ -507,6 +507,7 @@ df["depth"] = [depths[x] for x in df["depth"]]
 meta_df = pd.DataFrame({"datetime": datetimes, "data_assimilation": data_assimilation})
 
 df_combined = df.merge(meta_df, on="datetime", how="right")
+df_combined.rename(columns={"species":"variable","value"="prediction"}, inplace=True)
 df_combined.head()
 
 out_csv = tempfile.NamedTemporaryFile(suffix=".csv")
@@ -542,30 +543,25 @@ write.csv(dfs, file = "logistic-forecast-summary-multi-variable-multi-depth.csv"
 ##### Python
 
 ```{python}
-keep_cols = [col for col in df_combined.columns if not "Species" in col]
-df_long = df_combined.melt(id_vars=keep_cols, var_name="species")
+#keep_cols = [col for col in df_combined.columns if not "Species" in col]
+#df_long = df_combined.melt(id_vars=keep_cols, var_name="species")
 
-dfs_wide = df_long\
-    .groupby(["time", "depth", "obs_flag", "species", "forecast", "data_assimilation"])\
+dfs = df_combined\
+    .groupby(["datetime", "depth", "obs_flag", "variable",  "data_assimilation"])\
     .agg(
-        mean = ("value", np.mean), sd = ("value", np.std),
-        Conf_interv_025 = ("value", lambda x: np.quantile(x, 0.025)),
-        Conf_interv_975 = ("value", lambda x: np.quantile(x, 0.975)),
+        mean = ("prediction", np.mean), sd = ("prediction", np.std)
     )\
     .reset_index()\
     .melt(
-        id_vars = ["time", "depth", "obs_flag", "forecast",
-                   "data_assimilation", "species"],
-        value_vars = ["mean", "sd", "Conf_interv_025", "Conf_interv_975"],
-        var_name = "statistic"
+        id_vars = ["datetime", "depth", "obs_flag",
+                   "data_assimilation", "variable"],
+        value_vars = ["mean", "sd"],
+        var_name = "prediction"
     )
 
-dfs = dfs_wide.pivot(
-    index = ["time", "depth", "obs_flag", "forecast",
-             "data_assimilation", "statistic"],
-    columns="species",
-    values = "value"
-).reset_index()
+#        Conf_interv_025 = ("value", lambda x: np.quantile(x, 0.025)),
+#        Conf_interv_975 = ("value", lambda x: np.quantile(x, 0.975)),
+
 
 dfs.head()
 
