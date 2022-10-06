@@ -41,7 +41,6 @@ import matplotlib.pyplot as plt
 import netCDF4
 import pandas as pd
 import dicttoxml
-import rpy2
 
 rng = np.random.default_rng(42)
 
@@ -1200,6 +1199,7 @@ result = subprocess.run([
 Alternatively, we can use the `rpy2` module to run R directly from within Python (analogous to R's `reticulate`).
 
 ```{python r-rpy2, eval=FALSE}
+import rpy2
 from rpy2.robjects.packages import importr
 emld = importr("emld")
 EFIstandards = importr("EFIstandards")
