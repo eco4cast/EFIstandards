@@ -227,7 +227,7 @@ legend("bottomright",legend=species,col = seq_along(species),lty = 1)
 # Plot won't show due to pkgdown bug
 # matplotlib.use('Agg')
 plt.rc('xtick', labelsize=8) 
-plt.plot(times, n[:,0,0,0,0], "-")
+plt.plot(datetimes, n[:,0,0,0,0], "-")
 
 colors = ["r", "b"]
 for s in range(n_species):
@@ -511,7 +511,6 @@ df["depth"] = [depths[x] for x in df["depth"]]
 meta_df = pd.DataFrame({"datetime": datetimes, "data_assimilation": data_assimilation})
 
 df_combined = df.merge(meta_df, on="datetime", how="right")
-df_combined.rename(columns={"species":"variable","value"="prediction"}, inplace=True)
 df_combined.head()
 
 out_csv = tempfile.NamedTemporaryFile(suffix=".csv")
