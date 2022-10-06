@@ -23,10 +23,16 @@ jobs:
         with:
           use-public-rspm: true
 
+
+      - name: Install Python dependencies
+        run: reticulate::py_install(c("numpy", "matplotlib", "NetCDF4", "pandas", "dicttoxml"))
+        shell: Rscript {0}
+
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: pkgdown
           needs: website
+
 
       - name: Install Miniconda
         shell: Rscript {0}
