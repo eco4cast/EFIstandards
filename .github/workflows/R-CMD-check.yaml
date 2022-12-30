@@ -30,13 +30,13 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
 
-      - uses: r-lib/actions/setup-r@v1
+      - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: rcmdcheck
 
@@ -49,11 +49,10 @@ jobs:
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
 
       - name: Install Python dependencies
-        run: reticulate::py_install(c("numpy", "matplotlib", "NetCDF4", "pandas", "dicttoxml"))
-        shell: Rscript {0}
         run: |
           reticulate::install_miniconda()
-          reticulate::py_install(c("matplotlib", "NetCDF4", "pandas", "numpy"))
+          reticulate::py_install(c("numpy", "matplotlib", "NetCDF4", "pandas", "dicttoxml"))
+        shell: Rscript {0}
 
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")

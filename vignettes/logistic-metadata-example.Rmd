@@ -24,6 +24,9 @@ library(tidyr)
 library(reshape2)
 emld::eml_version("eml-2.2.0")
 set.seed(42)
+
+#reticulate::install_miniconda()
+reticulate::use_condaenv("r-reticulate")
 ```
 
 ##### Python
@@ -41,6 +44,9 @@ import matplotlib.pyplot as plt
 import netCDF4
 import pandas as pd
 import dicttoxml
+
+rng = np.random.default_rng(42)
+
 ```
 
 #### {-}
@@ -58,9 +64,9 @@ To illustrate the application of the forecast standard, we'll consider the class
 ##### R
 
 ```{r}
-forecast_start_time = as.Date("2001-03-04")  ## start date of our forecast
+reference_datetime = as.Date("2001-03-04")  ## start date of our forecast
 n_time <- 30
-times = seq(from=forecast_start_time,by="1 day",length=n_time)
+datetimes = seq(from=reference_datetime,by="1 day",length=n_time)
 
 depths <- c(1, 3, 5)
 n_depths <- length(depths)
@@ -78,9 +84,9 @@ obs_dim <- 2 ## 1 = latent state
 ##### Python
 
 ```{python}
-forecast_start_time = datetime.date(2001, 3, 4)
+reference_datetime = datetime.date(2001, 3, 4)
 n_time = 30
-times = [forecast_start_time + datetime.timedelta(days = x) for x in range(n_time)]
+datetimes = [reference_datetime + datetime.timedelta(days = x) for x in range(n_time)]
 
 depths = [1, 3, 5]
 n_depths = len(depths)
@@ -104,25 +110,31 @@ Next we're going to assume fixed parameters and initial conditions, set up stora
 
 ```{r}
 ## parameters for species_1 and species_2
-r <- c(1, 3)
+r <- c(1, 2.75)
 K <-  c(10, 20)
 alpha <-  c(0.2, 0.3)
 
 ## process error
-process_sd <- 0.01
+process_sd <- c(0.02,0.01)
 
 ## observation error
-obs_sd <- c(0.5,0.2)
+obs_sd <- c(0.5,0.75)
 
-## initial conditions
-n0 <-  0.5
+## initial condition uncertainties
+n0_mu <-  c(0.5,0.25,1,0.5,2,1)
+n0_sd <- n0_mu*c(0.5,0.1)
+## initial condition: gamma parameters
+n0_r  <- n0_mu/(n0_sd^2)
+n0_a  <- n0_mu*n0_r
 
 ## forecast output storage
 n <- array(NA,dim = c(n_time, n_depths, n_ensembles, obs_dim,2)) ## last dim is species
-n[1,,,,] <- n0
 
-## forecast flag
-forecast <- rep(as.integer(0), n_time) ## this code indicated a hindcast
+## initial conditions
+for(i in 1:n_ensembles){
+  n[1,,i,1,] <- matrix(rgamma(n_depths*2,n0_a,n0_r),nrow = n_depths,ncol = 2,byrow = TRUE)
+}
+n[1,,,2,] = n[1,,,1,] # assume that there's no additional observation error on the initial condition uncertainty
 
 ## data assimilation flag
 data_assimilation <- rep(as.integer(0), n_time)  ## this code indicates a 'free-run' that didn't assimilate new data
@@ -135,10 +147,10 @@ for(t in 2:n_time){
       n_curr <- n[t-1,depth,ens,1,] ## current state
       n[t, depth, ens,1,1] <-  n_curr[1] + 
           r[1]*n_curr[1]*(1-((n_curr[1] + 
-          alpha[1]*n_curr[2])/K[1])) + rnorm(1, 0, process_sd)
+          alpha[1]*n_curr[2])/K[1])) + rnorm(1, 0, process_sd[1])
       n[t, depth, ens,1,2] <-  n_curr[2] + 
           r[2]*n_curr[2]*(1-((n_curr[2] + 
-          alpha[2]*n[1])/K[2])) + rnorm(1, 0, process_sd)
+          alpha[2]*n[1])/K[2])) + rnorm(1, 0, process_sd[2])
       ## predict observed values
       n[t,depth,ens,2,] = rnorm(2,n[t,depth,ens,1,],obs_sd)
     }
@@ -149,19 +161,29 @@ for(t in 2:n_time){
 ##### Python
 
 ```{python}
-r = [1, 3]
+r = [1, 2.75]
 K = [10, 20]
 alpha = [0.2, 0.3]
 
-process_sd = 0.01
-obs_sd = [0.5, 0.2]
+process_sd = [0.02, 0.01]
+obs_sd = [0.5, 0.75]
 
 n0 = 0.5
+n0_mu = [[0.5, 0.25],
+         [1, 0.5],
+         [2, 1]]
+n0_sd = np.multiply(n0_mu,[[0.5,0.1],[0.5,0.1],[0.5,0.1]])
+n0_s  = np.divide(np.multiply(n0_sd,n0_sd),n0_mu)
+n0_a  = np.divide(n0_mu,n0_s)
 
 n = np.zeros((n_time, n_depths, n_ensembles, obs_dim, n_species))
 n[0,:,:,:,:] = n0
 
-forecast = np.zeros((n_time), dtype=int)
+for i in range(0,n_ensembles-1):
+  n[0,:,i,0,:] = rng.gamma(n0_a,n0_s)
+
+n[0,:,:,1,:] = n[0,:,:,0,:] 
+
 data_assimilation = np.zeros((n_time), dtype=int)
 
 for t in range(1, n_time):
@@ -172,11 +194,11 @@ for t in range(1, n_time):
             n[t, depth, ens, 0, 0] = n_curr[0] + \
                 r[0] * n_curr[0] * \
                 (1 - ((n_curr[0] + alpha[0]*n_curr[1]) / K[0])) + \
-                np.random.randn(1) * process_sd
+                np.random.randn(1) * process_sd[0]
             n[t, depth, ens, 0, 1] = n_curr[1] + \
                 r[1] * n_curr[1] * \
                 (1 - ((n_curr[1] + alpha[1]*n_curr[0]) / K[1])) + \
-                np.random.randn(1) * process_sd
+                np.random.randn(1) * process_sd[1]
             # predict observed values
             n[t,depth,ens,1,:] = n[t,depth,ens,0,:] + np.random.randn(2) * obs_sd
 
@@ -191,26 +213,29 @@ Here's a simple visualization of our ensemble forecast at one depth
 ##### R
 
 ```{r}
-plot(times,n[,1,1,1,1],ylim=range(n),ylab="Population Density",type='l')
+plot(datetimes,n[,1,1,1,1],ylim=range(n),ylab="Population Density",type='l')
 for(s in seq_along(species)){ ##species
   for(e in ensembles){
-    lines(times,n[,1,e,1,s],col=s)                                  ## latent
-    points(times+runif(n_time,-0.12,0.12),n[,1,e,2,s],col=s,cex=0.35)  ## pseudo-obs w/ jitter
+    lines(datetimes,n[,1,e,1,s],col=s)                                  ## latent
+    points(datetimes+runif(n_time,-0.12,0.12),n[,1,e,2,s],col=s,cex=0.35)  ## pseudo-obs w/ jitter
   }
 }
 legend("bottomright",legend=species,col = seq_along(species),lty = 1)
 ```
 
 ##### Python
+
 ```{python dev="png"}
 # Plot won't show due to pkgdown bug
 # matplotlib.use('Agg')
-plt.plot(times, n[:,0,0,0,0], "-")
+plt.rc('xtick', labelsize=8) 
+plt.plot(datetimes, n[:,0,0,0,0], "-")
+
 colors = ["r", "b"]
 for s in range(n_species):
     for e in range(n_ensembles):
-        plt.plot(times, n[:,0,e,0,s], "-", color=colors[s])
-        plt.plot(times, n[:,0,e,1,s], "+", color=colors[s])
+        plt.plot(datetimes, n[:,0,e,0,s], "-", color=colors[s])
+        plt.plot(datetimes, n[:,0,e,1,s], "+", color=colors[s])
 leg_lines = [plt.Line2D([0], [0], color=colors[x]) for x in range(n_species)]
 leg_labs = [f"Species {x}" for x in range(n_species)]
 plt.legend(leg_lines, leg_labs)
@@ -230,37 +255,37 @@ plt.show()
 Because netCDF is a self-documenting format we're going to start by defining some forecast 
 identifiers (which we'll also later use in the metadata)
 
-`forecast_project_id` identifies forecasts coming from a single project and is used to link 
+`project_id` identifies forecasts coming from a single project and is used to link 
 forecasts different model versions. Examples might include a project Github repository or a 
 team name.
 
-`forecast_model_id` is updated each time the forecast code is modified (e.g. model structure, 
+`model_id` is updated each time the forecast code is modified (e.g. model structure, 
 model calibration, forecast workflow).  Examples might be a DOI, version number, or Github 
-hash. Results from a single forecast_model_id are considered comparable.
+hash. Results from a single model_id are considered comparable.
 
-`forecast_iteration_id` represents a unique ID for each forecast run. Examples might be a
+`iteration_id` represents a unique ID for each forecast run. Examples might be a
 start time or database ID.
 
 For example, if you have a forecast code base on GitHub and launch a forecast from that code 
-that runs daily for 365 days, then there will be one forecast_project_id and 365 
-forecast_iteration_ids. A paper analyzing the forecasts would cite the forecast_project_id.
+that runs daily for 365 days, then there will be one project_id and 365 
+iteration_ids. A paper analyzing the forecasts would cite the project_id.
 
 #### Code {.tabset}
 
 ##### R
 
 ``` {r}
-forecast_project_id <- "LogisticDemo"
-forecast_model_id   <- "v0.3"
-forecast_iteration_id <- "20010304T060000"   # ISO datetime should make a valid Forecast_id
+project_id <- "LogisticDemo"
+model_id   <- "v0.5"
+iteration_id <- "20010304T060000"   # ISO datetime should make a valid Forecast_id
 ```
 
 ##### Python
 
 ```{python}
-forecast_project_id = "LogisticDemo"
-forecast_model_id = "v0.3"
-forecast_iteration_id = "20010304T060000"
+project_id = "LogisticDemo"
+model_id = "v0.5"
+iteration_id = "20010304T060000"
 ```
 
 #### {-}
@@ -275,14 +300,14 @@ Once we have our ID's defined, we're going to use `ncdim_def` to define the dime
 
 ```{r}
 ## Set dimensions
-timedim <- ncdim_def("time",   ## dimension name
-                     units = paste('days since',forecast_start_time),
+timedim <- ncdim_def("datetime",   ## dimension name
+                     units = paste('days since',reference_datetime),
                                ## size of timestep, with units and start date
-                     vals = as.numeric(times - forecast_start_time),
+                     vals = as.numeric(datetimes - reference_datetime),
                                ## sequence of values that defines the dimension.
                                ## netCDF expresses time dimensions relative to a
-                               ## specified start date, in this case forecast_start_time
-                     longname = 'time')
+                               ## specified start date, in this case reference_datetime
+                     longname = 'datetime')
                                ## descriptive name
 
 depthdim <- ncdim_def("depth", 
@@ -316,10 +341,10 @@ Note that unlike R, the Python interface expects us to create the output NetCDF 
 ncfile = tempfile.NamedTemporaryFile(suffix=".nc")
 ncout = netCDF4.Dataset(ncfile.name, mode='w')
 
-timedim = ncout.createDimension("time", n_time)
-timevar = ncout.createVariable("time", "f4", "time")
-timevar.units = f"days since {forecast_start_time}"
-timevar[:] = [(t - forecast_start_time).days for t in times]
+timedim = ncout.createDimension("datetime", n_time)
+timevar = ncout.createVariable("datetime", "f4", "datetime")
+timevar.units = f"days since {reference_datetime}"
+timevar[:] = [(t - reference_datetime).days for t in datetimes]
 
 depthdim = ncout.createDimension("depth", n_depths)
 depthvar = ncout.createVariable("depth", "f4", "depth")
@@ -365,13 +390,7 @@ def_list[[2]] <- ncvar_def(name =  "species_2",
                            missval = fillvalue,
                            longname = '<scientific name of species 2>',
                            prec="single")
-def_list[[3]] <- ncvar_def(name =  "forecast",
-                           units = "integer",
-                           dim = list(timedim),
-                           missval = fillvalue,
-                           longname = 'EFI standard forecast code. 0 = hindcast',
-                           prec="single")
-def_list[[4]] <- ncvar_def(name =  "data_assimilation",
+def_list[[3]] <- ncvar_def(name =  "data_assimilation",
                            units = "integer",
                            dim = list(timedim),
                            missval = fillvalue,
@@ -382,19 +401,15 @@ def_list[[4]] <- ncvar_def(name =  "data_assimilation",
 ##### Python
 
 ```{python}
-spp1nc = ncout.createVariable("species_1", "f4", ("time", "depth", "parameter", "obs_flag"))
+spp1nc = ncout.createVariable("species_1", "f4", ("datetime", "depth", "parameter", "obs_flag"))
 spp1nc.units = "number of individuals"
 spp1nc.longname = "<scientific name of species 1>"
 
-spp2nc = ncout.createVariable("species_2", "f4", ("time", "depth", "parameter", "obs_flag"))
+spp2nc = ncout.createVariable("species_2", "f4", ("datetime", "depth", "parameter", "obs_flag"))
 spp2nc.units = "number of individuals"
 spp2nc.longname = "<scientific name of species 2>"
 
-forecastnc = ncout.createVariable("forecast", "i4", ("time"))
-forecastnc.units = "integer"
-forecastnc.longname = "EFI standard forecast code. 0 = hindcast"
-
-danc = ncout.createVariable("data_assimilation", "i4", ("time"))
+danc = ncout.createVariable("data_assimilation", "i4", ("datetime"))
 danc.units = "integer"
 danc.longname = "EFI standard data assimilation code. 0 = no data"
 ```
@@ -420,15 +435,14 @@ ncout <- nc_create(ncfname,def_list,force_v4=T)
 ## fill in our output data
 ncvar_put(ncout,def_list[[1]] , n[, , , ,1 ])        ## species 1
 ncvar_put(ncout,def_list[[2]] , n[, , , ,2 ])        ## species 2
-ncvar_put(ncout,def_list[[3]] , forecast) ## forecast flag
-ncvar_put(ncout,def_list[[4]] , data_assimilation) ## data_assimilation flag
+ncvar_put(ncout,def_list[[3]] , data_assimilation) ## data_assimilation flag
 
 ## Global attributes (metadata)
-ncatt_put(ncout,0,"forecast_project_id", as.character(forecast_project_id), 
+ncatt_put(ncout,0,"project_id", as.character(project_id), 
           prec =  "text")
-ncatt_put(ncout,0,"forecast_model_id",as.character(forecast_model_id), 
+ncatt_put(ncout,0,"model_id",as.character(model_id), 
           prec =  "text")
-ncatt_put(ncout,0,"forecast_iteration_id",as.character(forecast_iteration_id), 
+ncatt_put(ncout,0,"iteration_id",as.character(iteration_id), 
           prec =  "text")
 
 nc_close(ncout)   ## make sure to close the file
@@ -442,13 +456,12 @@ Recall: We already created the file above.
 # Write data to file
 spp1nc[:,:,:,:] = n[:,:,:,:,0]
 spp2nc[:,:,:,:] = n[:,:,:,:,1]
-forecastnc[:] = forecast
 danc[:] = data_assimilation
 
 # Set global attributes (metadata)
-ncout.forecast_project_id = forecast_project_id
-ncout.forecast_model_id = forecast_model_id
-ncout.forecast_iteration_id = forecast_iteration_id
+ncout.project_id = project_id
+ncout.model_id = model_id
+ncout.iteration_id = iteration_id
 
 ncout.close()
 ```
@@ -466,14 +479,16 @@ ensemble members saved
 
 ```{r}
 ## wrangle data from an array into a long format
-df_combined <- reshape2::melt(n,varnames=c("time","depth","parameter","obs_flag","species")) %>%
+df_combined <- reshape2::melt(n,varnames=c("datetime","depth","parameter","obs_flag","species")) %>%
   pivot_wider(id_cols = 1:4,names_from = "species",names_prefix = "species_",values_from = "value") %>% 
   pivot_longer(cols = starts_with("species"),names_to = "variable",values_to = "prediction") %>%
-  mutate(time = times[time]) %>%
+  mutate(datetime = datetimes[datetime]) %>%
   mutate(depth = depths[depth]) %>%
-  right_join(tibble(time=times,forecast=forecast,data_assimilation = data_assimilation))
+  right_join(tibble(datetime=datetimes,data_assimilation = data_assimilation))
 
 head(df_combined,n=10)
+
+df_combined %>% filter(parameter < 3,obs_flag == 1,datetime == as.Date("2001-03-05")) %>% arrange(datetime) %>% select(-data_assimilation)
 
 write.csv(df_combined, 
           file = "logistic-forecast-ensemble-multi-variable-multi-depth.csv")
@@ -481,21 +496,25 @@ write.csv(df_combined,
 
 ##### Python
 
-** this code needs updating for the new format**
+Ensemble format
 
 ```{python}
-n_names = ["time", "depth", "ensemble", "obs_flag", "species"]
+n_names = ["datetime", "depth", "ensemble", "obs_flag", "species"]
 n_index = pd.MultiIndex.from_product([range(s) for s in n.shape], names=n_names)
 df = pd.DataFrame({"pop": n.flatten()}, index = n_index)["pop"]
 
-df_wide = df.unstack("species").reset_index()
-df_wide["time"] = [times[x] for x in df_wide["time"]]
-df_wide["depth"] = [depths[x] for x in df_wide["depth"]]
-df_wide.rename(columns={0: "Species_1", 1: "Species_2"}, inplace=True)
+## would like to find a more elegant solution than long -> wide -> long
+df = df.unstack("species").reset_index()
+df.rename(columns={0:"species 1",1:"species 2"},inplace=True)
+df = pd.melt(df,id_vars=['datetime','depth','ensemble','obs_flag'],value_vars=["species 1","species 2"])
+df.columns = ['datetime', 'depth', 'ensemble', 'obs_flag', 'variable', 'prediction']
+df["datetime"] = [datetimes[x] for x in df["datetime"]]
+df["depth"] = [depths[x] for x in df["depth"]]
 
-meta_df = pd.DataFrame({"time": times, "forecast": forecast, "data_assimilation": data_assimilation})
 
-df_combined = df_wide.merge(meta_df, on="time", how="right")
+meta_df = pd.DataFrame({"datetime": datetimes, "data_assimilation": data_assimilation})
+
+df_combined = df.merge(meta_df, on="datetime", how="right")
 df_combined.head()
 
 out_csv = tempfile.NamedTemporaryFile(suffix=".csv")
@@ -515,10 +534,10 @@ Convert to a flat file format (CSV) with forecast distributions saved
 ```{r}
 ## calculate summary statistics across ensemble members and output variables
 dfs <- df_combined %>% add_column(family="normal") %>%
-                   group_by(time, depth,family,obs_flag,variable,forecast,data_assimilation) %>%
+                   group_by(datetime, depth,family,obs_flag,variable,data_assimilation) %>%
                    summarize(mu = mean(prediction),
                              sigma   = sd(prediction)) %>%
-                   pivot_longer(8:9,names_to="parameter",values_to = "predictions") %>%
+                   pivot_longer(7:8,names_to="parameter",values_to = "predictions") %>%
                    relocate(parameter,.after = family) %>%
                    relocate(predictions,.after=variable)
 
@@ -531,30 +550,29 @@ write.csv(dfs, file = "logistic-forecast-summary-multi-variable-multi-depth.csv"
 ##### Python
 
 ```{python}
-keep_cols = [col for col in df_combined.columns if not "Species" in col]
-df_long = df_combined.melt(id_vars=keep_cols, var_name="species")
+#keep_cols = [col for col in df_combined.columns if not "Species" in col]
+#df_long = df_combined.melt(id_vars=keep_cols, var_name="species")
 
-dfs_wide = df_long\
-    .groupby(["time", "depth", "obs_flag", "species", "forecast", "data_assimilation"])\
+dfs = df_combined\
+    .groupby(["datetime", "depth", "obs_flag", "variable",  "data_assimilation"])\
     .agg(
-        mean = ("value", np.mean), sd = ("value", np.std),
-        Conf_interv_025 = ("value", lambda x: np.quantile(x, 0.025)),
-        Conf_interv_975 = ("value", lambda x: np.quantile(x, 0.975)),
+        mu = ("prediction", np.mean), sigma = ("prediction", np.std)
     )\
     .reset_index()\
     .melt(
-        id_vars = ["time", "depth", "obs_flag", "forecast",
-                   "data_assimilation", "species"],
-        value_vars = ["mean", "sd", "Conf_interv_025", "Conf_interv_975"],
-        var_name = "statistic"
+        id_vars = ["datetime", "depth", "obs_flag",
+                    "variable","data_assimilation"],
+        value_vars = ["mu", "sigma"],
+        var_name = "parameter",
+        value_name = "prediction"
     )
 
-dfs = dfs_wide.pivot(
-    index = ["time", "depth", "obs_flag", "forecast",
-             "data_assimilation", "statistic"],
-    columns="species",
-    values = "value"
-).reset_index()
+dfs['family'] = 'normal'
+dfs = dfs[['datetime','depth','family','parameter','obs_flag','variable','prediction']]
+
+#        Conf_interv_025 = ("value", lambda x: np.quantile(x, 0.025)),
+#        Conf_interv_975 = ("value", lambda x: np.quantile(x, 0.975)),
+
 
 dfs.head()
 
@@ -580,20 +598,19 @@ To start, the `attributes` table stores the basic metadata about the variable na
 ## in practice, this might be kept in a spreadsheet
 attributes <- tibble::tribble(
  ~attributeName,     ~attributeDefinition,                          ~unit,                  ~formatString, ~numberType, ~definition,
- "time",              "[dimension]{time}",                          "year",                 "YYYY-MM-DD",  "numberType", NA,
+ "datetime",          "[dimension]{datetime}",                      "year",                 "YYYY-MM-DD",   NA,          NA,
  "depth",             "[dimension]{depth in reservior}",            "meter",                 NA,           "real",       NA,
  "ensemble",          "[dimension]{index of ensemble member}",      "dimensionless",         NA,           "integer",    NA,
  "obs_flag",          "[dimension]{observation error}",             "dimensionless",         NA,           "integer",    NA,
  "species_1",         "[variable]{Pop. density of species 1}",      "numberPerMeterSquared", NA,           "real",       NA,
  "species_2",         "[variable]{Pop. density of species 2}",      "numberPerMeterSquared", NA,           "real",       NA,
- "forecast",          "[flag]{whether time step was a forecast}",   "dimensionless",         NA,           "integer",    NA,
  "data_assimilation", "[flag]{whether time step assimilated data}", "dimensionless",         NA,           "integer",    NA
 ) 
 ## note: EML uses a different unit standard than UDUNITS. For now use EML. EFI needs to provide a custom unitList.
 attributes
 attrList <- set_attributes(attributes, 
                            col_classes = c("Date", "numeric", "numeric","numeric", 
-                                           "numeric","numeric", "numeric","numeric"))
+                                           "numeric","numeric", "numeric"))
 ```
 
 ##### Python
@@ -604,8 +621,8 @@ No easy function for this, so have to do it (tediously) by hand:
 # NOTE: List of dicts 
 attrList = [
     {
-        "attributeName": "time",
-        "attributeDefinition": "[dimension]{time}",
+        "attributeName": "datetime",
+        "attributeDefinition": "[dimension]{datetime}",
         "storageType": "date",
         "measurementScale": {
             "dateTime": {
@@ -666,17 +683,6 @@ attrList = [
             "ratio": {
                 "unit": {"standardUnit": "numberPerMeterSquared"},
                 "numericDomain": {"numberType": "real"}
-            }
-        }
-    },
-    {
-        "attributeName": "forecast",
-        "attributeDefinition": "[flag]{whether time step was a forecast}",
-        "storageType": "float",
-        "measurementScale": {
-            "ratio": {
-                "unit": {"standardUnit": "dimensionless"},
-                "numericDomain": {"numberType": "integer"}
             }
         }
     },
@@ -816,8 +822,8 @@ taxa <- tibble::tribble(
 "Gloeotrichia", "echinulata",
 "Anabaena",     "circinalis")
 coverage <- 
-  set_coverage(begin = first(times), 
-               end = last(times),
+  set_coverage(begin = first(datetimes), 
+               end = last(datetimes),
                sci_names = taxa,
                geographicDescription = "Lake Sunapee, NH, USA ",
                west = -72.15, east = -72.05, 
@@ -840,8 +846,8 @@ coverage = {
         }
     },
     "temporalCoverage": {"rangeOfDates": {
-        "beginDate": {"calendarDate": str(times[0])},
-        "endDate": {"calendarDate": str(times[-1])}
+        "beginDate": {"calendarDate": str(datetimes[0])},
+        "endDate": {"calendarDate": str(datetimes[-1])}
     }},
     "taxonomicCoverage": {
         "taxonomicClassification": {
@@ -930,7 +936,7 @@ dataset = eml$dataset(
                title = "A very simple Lotka-Volterra forecast",
                creator = me,
                contact = list(references="https://orcid.org/0000-0003-1282-7825"),
-               pubDate = forecast_start_time,
+               pubDate = reference_datetime,
                intellectualRights = "http://www.lternet.edu/data/netpolicy.html.",
                abstract =  "An illustration of how we might use EML metadata to describe an ecological forecast",
                dataTable = dataTable,
@@ -946,7 +952,7 @@ dataset = {
     "title" : "A very simple Lotka-Volterra forecast",
     "creator" : me,
     "contact" : {"references": "https://orcid.org/0000-0003-1282-7825"},
-    "pubDate" : forecast_issue_time,
+    "pubDate" : reference_datetime,
     "intellectualRights" : "http://www.lternet.edu/data/netpolicy.html.",
     "abstract" :  "An illustration of how we might use EML metadata to describe an ecological forecast",
     "dataTable" : dataTable,
@@ -971,14 +977,13 @@ additionalMetadata <- eml$additionalMetadata(
     forecast = list(
 ## Basic elements
       timestep = "1 day", ## should be udunits parsable; already in coverage -> temporalCoverage?
-      forecast_horizon = "30 days",
-      forecast_start_time = forecast_start_time,
-      forecast_issue_time = Sys.time(),
-      forecast_iteration_id = forecast_iteration_id,
-      forecast_project_id = forecast_project_id,
-      metadata_standard_version = "0.3",
+      horizon = "30 days",
+      reference_datetime = reference_datetime,
+      iteration_id = iteration_id,
+      project_id = project_id,
+      metadata_standard_version = "0.5",
       model_description = list(
-        forecast_model_id = forecast_model_id,
+        model_id = model_id,
         name = "discrete Lotka–Volterra model",
         type = "process-based",
         repository = "https://github.com/eco4cast/EFIstandards/blob/master/vignettes/logistic-metadata-example.Rmd"
@@ -986,21 +991,29 @@ additionalMetadata <- eml$additionalMetadata(
 ## MODEL STRUCTURE & UNCERTAINTY CLASSES
       initial_conditions = list(
         # Possible values: absent, present, data_driven, propagates, assimilates
-        status = "present",
+        present = TRUE,
+        data_driven = TRUE,
         # Number of parameters / dimensionality
-        complexity = 2  ## [species 1, species 2] per depth
+        complexity = 2,  ## [species 1, species 2] per depth
+        propagation = list(
+          type = "ensemble",
+          size = 10
+        )
       ),
       drivers = list(
-        status = "absent"
+        present = FALSE
       ),
       parameters = list(
-        status = "present",
+        present = TRUE,
+        data_driven = TRUE,
         complexity = 6  ## [r, K, alpha] x 2 spp
       ),
       random_effects = list(
-        status = "absent"
+        present = FALSE
       ),
       process_error = list(
+        present = TRUE,
+        data_driven = TRUE,
         status = "propagates",
         propagation = list(
           type = "ensemble", # ensemble vs analytic
@@ -1010,7 +1023,8 @@ additionalMetadata <- eml$additionalMetadata(
         covariance = FALSE
       ),
       obs_error = list(
-        status = "present",
+        present = TRUE,
+        data_driven = TRUE,
         complexity = 2,   
         covariance = FALSE
       )
@@ -1023,49 +1037,56 @@ additionalMetadata <- eml$additionalMetadata(
 
 ```{python}
 additionalMetadata = {
-    "metadata" : { 
-        "forecast" : { 
-            ## Basic elements
-            "timestep" : "1 day", ## should be udunits parsable; already in coverage -> temporalCoverage?
-            "forecast_horizon" : "30 days",
-            "forecast_issue_time" : forecast_issue_time,
-            "forecast_iteration_id" : forecast_iteration_id,
-            "forecast_project_id" : forecast_project_id,
-            "metadata_standard_version" : "0.3",
-            "model_description" : {
-                "forecast_model_id" : forecast_model_id,
-                "name" : "discrete Lotka–Volterra model",
-                "type" : "process-based",
-                "repository" : "https://github.com/eco4cast/EFIstandards/blob/master/vignettes/logistic-metadata-example.Rmd"
+  "metadata" : { 
+    "forecast" : { 
+      ## Basic elements
+      "timestep" : "1 day", ## should be udunits parsable; already in coverage -> temporalCoverage?
+      "horizon" : "30 days",
+      "reference_datetime" : reference_datetime,
+      "iteration_id" : iteration_id,
+      "project_id" : project_id,
+      "metadata_standard_version" : "0.5",
+      "model_description" : {
+        "model_id" : model_id,
+        "name" : "discrete Lotka–Volterra model",
+        "type" : "process-based",
+        "repository" : "https://github.com/eco4cast/EFIstandards/blob/master/vignettes/logistic-metadata-example.Rmd"
+        },
+        ## MODEL STRUCTURE & UNCERTAINTY CLASSES
+      "initial_conditions" : {
+        "present" : True,
+        "date_driven" : True,
+        # Number of parameters / dimensionality
+        "complexity" : 2,  ## [species 1, species 2] per depth
+        "propagation" : {
+          "type" : "ensemble",
+          "size" : 10
+          }
+        },
+        "drivers" : {"present" : False},
+        "parameters" : {
+          "present" : True,
+          "date_driven" : True,
+          "complexity" : 6  ## [r, K, alpha] x 2 spp
+        },
+        "random_effects" : {"present" : False},
+        "process_error" : {
+          "present" : True,
+          "date_driven" : True,
+          "propagation" : {
+            "type" : "ensemble", # ensemble vs analytic
+            "size" : 10          # required if ensemble
             },
-            ## MODEL STRUCTURE & UNCERTAINTY CLASSES
-            "initial_conditions" : {
-                # Possible values: absent, present, data_driven, propagates, assimilates
-                "status" : "present",
-                # Number of parameters / dimensionality
-                "complexity" : 2  ## [species 1, species 2] per depth
-            },
-            "drivers" : {"status" : "absent"},
-            "parameters" : {
-                "status" : "present",
-                "complexity" : 6  ## [r, K, alpha] x 2 spp
-            },
-            "random_effects" : {"status" : "absent"},
-            "process_error" : {
-                "status" : "propagates",
-                "propagation" : {
-                    "type" : "ensemble", # ensemble vs analytic
-                    "size" : 10          # required if ensemble
-                },
-                "complexity" : 2,   
-                "covariance" : False
-            },
-            "obs_error" : {
-                "status" : "present",
-                "complexity" : 2,
-                "covariance" : False
-            }
-        } # forecast
+            "complexity" : 2,   
+            "covariance" : False
+        },
+        "obs_error" : {
+            "present" : True,
+            "date_driven" : True,
+            "complexity" : 2,
+            "covariance" : False
+        }
+      } # forecast
     } # metadata
 }
 ```
@@ -1084,23 +1105,15 @@ random_effects     | Unexplained variability and heterogeneity in model paramete
 obs_error          | Uncertainty in the observations of the output variables (g)
 process_error      | Dynamic uncertainty in the process model ($\epsilon$)
 
-Each class has a very similar structure and the only required element in each is `status` which can take on the following valid values
+Each class has a very similar structure and the only required element in each is `<present>` which is a boolean indicating whether this concept is included in the model (TRUE) or not (FALSE).
 
-status      | Description
------------ | --------------------------------------------------------------
-absent      | This model does not contain this concept (e.g. a linear regression model doesn't have initial conditions, random effects, or process_error). 
-present     | The model contains this concept (e.g. the model has parameters), but the values used are not derived from data and no uncertainty is represented
-data_driven | The model contains this concept and the inputs are data driven but uncertainty in this input is not explicitly propagated into predictions.
-propagates  | The model propagates uncertainty about this term into forecasts
-assimilates | The model iteratively updates this term through data assimilation.
+If present = TRUE then the `<data_driven>` tag is also required, and is a boolean indicating whether the quantity being discussed is based on data (TRUE) or not (FALSE). Examples of non-data-driven inputs include scenario-based drivers, spin-up initial conditions, and hand-tuned or theoretical parameters.
 
-Except for 'absent' this list is ordinal (e.g. data_driven implies present)
-
-Next, the `<complexity>` tag is recommended, but not required, and should list the size/dimension of each status/uncertainty class at a single location (per dimensions defined above). For example, the logistic model has two initial conditions (n[1], n[2]), six parameters (r, K, and alpha for each species), and both process and observation error on the two state variables. `absent` statuses don't need to be documented as 0 as this is implied.
+Next, if present = TRUE the `<complexity>` tag is recommended, but not required, and should list the size/dimension of each status/uncertainty class at a single location (per dimensions defined above). For example, the logistic model has two initial conditions (n[1], n[2]), six parameters (r, K, and alpha for each species), and both process and observation error on the two state variables.
 
 The `<covariance>` tag states whether the errors/uncertainties within an uncertainty class are being treated as independent or not.
 
-Finally, the `<propagation>` and `<assimilation>` tags provide additional information about the methods used (see EFI standard doc). 
+Finally, the `<propagation>` and `<assimilation>` tags are used to indicate, respectively, which uncertainties are propagated into the forecast and which are updated iteratively. Both include a set of recommended subtags used to provide additional information about the methods used (see EFI standard doc). If subtags are not used, one should just include a empty tag (e.g. `<propagation />`) to indicate that this concept is present.
 
 ## Assembling and validating the metadata
 
@@ -1113,7 +1126,7 @@ All we need now is to combine the dataset metadata with the forecast additionalM
 ```{r}
 my_eml <- eml$eml(dataset = dataset,
            additionalMetadata = additionalMetadata,
-           packageId = forecast_iteration_id , 
+           packageId = iteration_id , 
            system = "datetime"  ## system used to generate packageId
            )
 ```
@@ -1141,7 +1154,7 @@ my_eml = ET.Element("eml:eml", {
     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
     "xmlns:stmml": "http://www.xml-cml.org/schema/stmml-1.2",
     "system": "datetime",
-    "packageId": forecast_iteration_id,
+    "packageId": iteration_id,
     "xsi:schemaLocation": "https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd"
 })
 
@@ -1195,6 +1208,7 @@ result = subprocess.run([
 Alternatively, we can use the `rpy2` module to run R directly from within Python (analogous to R's `reticulate`).
 
 ```{python r-rpy2, eval=FALSE}
+import rpy2
 from rpy2.robjects.packages import importr
 emld = importr("emld")
 EFIstandards = importr("EFIstandards")
