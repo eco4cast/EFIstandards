@@ -24,6 +24,9 @@ library(tidyr)
 library(reshape2)
 emld::eml_version("eml-2.2.0")
 set.seed(42)
+
+#reticulate::install_miniconda()
+reticulate::use_condaenv("r-reticulate")
 ```
 
 ##### Python
@@ -485,6 +488,8 @@ df_combined <- reshape2::melt(n,varnames=c("datetime","depth","parameter","obs_f
 
 head(df_combined,n=10)
 
+df_combined %>% filter(parameter < 3,obs_flag == 1,datetime == as.Date("2001-03-05")) %>% arrange(datetime) %>% select(-data_assimilation)
+
 write.csv(df_combined, 
           file = "logistic-forecast-ensemble-multi-variable-multi-depth.csv")
 ```
@@ -551,15 +556,19 @@ write.csv(dfs, file = "logistic-forecast-summary-multi-variable-multi-depth.csv"
 dfs = df_combined\
     .groupby(["datetime", "depth", "obs_flag", "variable",  "data_assimilation"])\
     .agg(
-        mean = ("prediction", np.mean), sd = ("prediction", np.std)
+        mu = ("prediction", np.mean), sigma = ("prediction", np.std)
     )\
     .reset_index()\
     .melt(
         id_vars = ["datetime", "depth", "obs_flag",
-                   "data_assimilation", "variable"],
-        value_vars = ["mean", "sd"],
-        var_name = "prediction"
+                    "variable","data_assimilation"],
+        value_vars = ["mu", "sigma"],
+        var_name = "parameter",
+        value_name = "prediction"
     )
+
+dfs['family'] = 'normal'
+dfs = dfs[['datetime','depth','family','parameter','obs_flag','variable','prediction']]
 
 #        Conf_interv_025 = ("value", lambda x: np.quantile(x, 0.025)),
 #        Conf_interv_975 = ("value", lambda x: np.quantile(x, 0.975)),
