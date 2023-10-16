@@ -12,6 +12,21 @@ The EFI forecast output convention consists of four components, each described i
 
 For “global attributes” the EFI convention provides up to four unique identifiers for any forecast: a target_id identifying what the forecast is scored against; a model_name that can link across multiple model versions; a model_version that connects all forecasts produced by a specific version of a forecast model and workflow; and an iteration_id for that specific forecast (Table 1). These elements are part of the EML metadata and the output file’s internal metadata for the netCDF format, and are recommended as additional outer columns in the CSV format, especially when forecasts are expected to be used in multimodel predictions or syntheses. The hierarchical order of these variables reflects their potential use as additional outer dimensions in such syntheses (i.e., a given target_id can be predicted by multiple models, a single model_name can have multiple model_versions, a single model_version can be used make many forecasts with unique iteration_ids).
 
+```{r,echo=FALSE}
+knitr::kable(
+  tibble::tribble(
+    ~Attribute,      ~Description,
+    "target_id",     "(OPTIONAL) Unique identifier pointing to data or metadata about what the forecast is being scored against",
+    "model_name",    "Unique identifier for a forecasting project that can be used to link across different model versions",
+    "model_version", "(RECOMMENDED) Unique identifier for a specific forecast model/workflow version",
+    "iteration_id",       "(OPTIONAL) Unique identifier for a specific forecast run. Important to include in cases where a forecast might be rerun (e.g., real-time forecast versus reanalysis)"
+  ),
+caption = "Table 1: Global attributes (metadata) for netCDF forecast files. See Figure 3 for an example application.",
+label = "GlobalAttributes"
+)
+```
+
+
 First, target_id, which is optional, is a unique identifier (e.g., Uniform Resource Location [URL], Digital Object Identifier [DOI]) that links to data or metadata about what the forecast is being scored against. The idea of the target_id is to facilitate intercomparison by being able to definitively say that two (or more) different forecasts were trying to predict the same thing (e.g., in a forecasting challenge). For example, one of the NEON Ecological Forecasting Challenges was to predict the Green Chromatic Coordinate (GCC) observed by phenological cameras at Harvard Forest, Massachusetts; in this case, all of the forecasts would have the same target_id corresponding to a URL to this dataset. As of January 2023 the EFI standard does not specify requirements about what the target_id can validly point to (e.g., raw data versus standardized machine-readable metadata describing a forecast’s ‘rules’), but this is an area of active development.
 
 The model_name is a unique identifier that links across different model versions. Examples might include the name or acronym for a pre-existing process-based model, a project code repository, URL, or a forecasting competition team name.
@@ -25,6 +40,68 @@ If users need to store forecasts that come from different model_names, model_ver
 ## Dimensions
 
 A core part of the EFI convention is the definition of variable dimensions (Table 2). Building upon the Climate and Forecast (CF, http://cfconventions.org/) (Eaton et al. 2020) and Cooperative Ocean/Atmosphere Research Data Service (COARDS 1995) conventions, the order of dimensions for all file formats is T, Z, Y, X, U where T is time, Z, Y, and X are spatial dimensions, and U represents forecast uncertainty (e.g., ensemble member or summary statistic). Each row in the file thus represents a unique datetime, location, etc. That said, for any particular application, not all dimensions may be required. For example, Tables 3 and 4 shows the top few rows of the Lotka-Volterra example forecast (see Introduction: A Simple Example) written out in the ensemble CSV format (Table 3) and probability distribution CSV format (Table 4) respectively. Because this forecast is for a single location only time, depth, and uncertainty are required (X and Y would be recorded in the metadata).
+
+```{r,echo=FALSE}
+knitr::kable(
+tibble::tribble(
+~Dimension,           ~Description,
+"reference_datetime", "ISO 8601 (ISO 2019) datetime the forecast starts from (a.k.a. issue time); Only needed if more than one reference_datetime is stored in a single file. Forecast lead time is thus datetime - reference_datetime. In a hindcast the reference_datetime will be earlier than the time the hindcast was actually produced (see pubDate in Section 3). Datetimes are allowed to be earlier than the reference_datetime if a reanalysis/reforecast is run before the start of the forecast period. This variable was called start_time before v0.5 of the EFI standard.", 
+"datetime",           "ISO 8601 (ISO 2019) datetime being predicted; follows CF convention http://cfconventions.org/cf-conventions/cf-conventions.html#time-coordinate. This variable was called time before v0.5 of the EFI convention. <br /><br /> For time-integrated variables (e.g., cumulative net primary productivity), one should specify the start_datetime and end_datetime as two variables, instead of the single datetime. If this is not provided the datetime is assumed to be the MIDPOINT of the integration period.", 
+"depth or height",    "No single standard name for the Z dimension. Where possible, CF conventions for vertical dimension names and attributes (https://cfconventions.org/cf-conventions/cf-conventions.html#vertical-coordinate) should be used.",
+"lon or X",           "Longitude (units = 'degrees_east') is the default spatial coordinate. The alternative use of Y, X for spatial coordinates should conform to the CF convention and requires additional metadata about grids and projections.",
+"lat or Y",           "Latitude (degrees_north)",
+"site_id",            "For forecasts that are not on a spatial grid, use of a site dimension that maps to a more detailed geometry (points, polygons, etc.) is allowable. In general this would be documented in the external metadata (e.g., a look-up table that provides lon and lat); however in netCDF this could be handled by the CF Discrete Sampling Geometry data model.",
+"family",             "For ensembles: 'ensemble.' Default value if unspecified. <br /><br /> For probability distributions: Name of the statistical distribution associated with the reported statistics. The 'sample' distribution is synonymous with 'ensemble.' <br /><br /> For summary statistics: 'summary.' <br /><br /> If this dimension does not vary, it is permissible to specify family as a variable attribute if the file format being used supports this (e.g., netCDF).",
+"parameter",           "REQUIRED <br /><br /> For ensembles: Integers 1 to Ne (Ne = total size of ensemble) Note: for backward compatibility this can alternatively be named “ensemble” but this is planned to be deprecated in future versions. <br /><br /> For named distributions: parameter/statistic being specified (e.g., mean, standard deviation)",
+"obs_flag",            "Flag indicating whether observation error has been included in the prediction. Only REQUIRED if forecasting both the latent and observed state."
+),
+caption = "Table 2: Ecological forecast dimensions in the order that should be used to specify variables (time, space, uncertainty). The only required dimension is parameter; other dimensions can be dropped if they only have a single value and that value is clearly documented in the metadata. Global attributes (Table 1) can also optionally be used as outer dimensions if needed.",
+label = "dimensions"
+)
+```
+
+```{r,echo=FALSE}
+knitr::kable(
+  tibble::tribble(
+~"reference_datetime &lt;date&gt;", ~"datetime &lt;date&gt;",~"depth &lt;dbl&gt;",~"family &lt;chr&gt;", ~"parameter &lt;int&gt;",~"obs_flag &lt;int&gt;", ~"variable &lt;chr&gt;",~"prediction &lt;dbl&gt;",
+'2001-03-04', '2001-03-05', 1.0, "sample", 1, 1, "species_1", 0.983,
+'2001-03-04', '2001-03-05', 1.0, 'sample', 1, 1, 'species_2', 1.946,
+'2001-03-04', '2001-03-05', 3.0, 'sample', 1, 1, 'species_1', 0.972,
+'2001-03-04', '2001-03-05', 3.0, 'sample', 1, 1, 'species_2', 1.948,
+'2001-03-04', '2001-03-05', 5.0, 'sample', 1, 1, 'species_1', 0.985,
+'2001-03-04', '2001-03-05', 5.0, 'sample', 1, 1, 'species_2', 1.954,
+'2001-03-04', '2001-03-05', 1.0, 'sample', 2, 1, 'species_1', 0.974,
+'2001-03-04', '2001-03-05', 1.0, 'sample', 2, 1, 'species_2', 1.950,
+'2001-03-04', '2001-03-05', 3.0, 'sample', 2, 1, 'species_1', 0.956,
+'2001-03-04', '2001-03-05', 3.0, 'sample', 2, 1, 'species_2', 1.956,
+'2001-03-04', '2001-03-05', 5.0, 'sample', 2, 1, 'species_1', 0.958,
+'2001-03-04', '2001-03-05', 5.0, "sample", 2, 1, "species_2", 1.957
+  ),
+caption = "Table 3: Ensemble CSV format for Lotka-Volterra example (Section 1.1), where parameter designates ensemble number. Only 12 of 3600 rows are shown.",
+label = "EnsembleExample"
+)
+```
+
+
+```{r,echo=FALSE}
+knitr::kable(
+  tibble::tribble(
+~"reference_datetime &lt;date&gt;", ~"datetime &lt;date&gt;", ~"depth &lt;dbl&gt;", ~"family &lt;chr&gt;", ~"parameter &lt;chr&gt;", ~"obs_flag &lt;int&gt;", ~"variable &lt;chr&gt;", ~"prediction &lt;dbl&gt;",
+2001-03-04, 2001-03-04, 1.0, 'normal', 'mu',    1, 'species_1', 0.756,
+2001-03-04, 2001-03-04, 1.0, 'normal', 'sigma', 1, 'species_1', 0.174,
+2001-03-04, 2001-03-04, 1.0, 'normal', 'mu',    1, 'species_2', 0.250,
+2001-03-04, 2001-03-04, 1.0, 'normal', 'sigma', 1, 'species_2', 0.013,
+2001-03-04, 2001-03-04, 1.0, 'normal', 'mu',    2, 'species_1', 0.756,
+2001-03-04, 2001-03-04, 1.0, 'normal', 'sigma', 2, 'species_1', 0.174,
+2001-03-04, 2001-03-04, 1.0, 'normal', 'mu',    2, 'species_2', 0.250,
+2001-03-04, 2001-03-04, 1.0, 'normal', 'sigma', 2, 'species_2', 0.013,
+2001-03-04, 2001-03-04, 3.0, 'normal', 'mu',    1, 'species_1', 0.982,
+2001-03-04, 2001-03-04, 3.0, 'normal', 'sigma', 1, 'species_1', 0.347
+  ),
+caption = "Table 4: Lotka-Volterra example forecast (Section 1.1) written in distributional CSV format with a Normal distribution family. The “summary” format, which does not imply a distributional assumption, would be analogous to this but with family = “summary” and parameters “mean” and “sd” (See Table S2). Only 10 of 720 rows shown.",
+label = "DistributionalExample"
+)
+```
 
 ### Time: 
 In the EFI convention, datetimes are specified in International Organization for Standardization (ISO) 8601 format, YYYY-MM-DDThh:mm:ssZ (ISO 2019). The T is the ISO standard delimiter between date and time. The trailing Z indicates that Coordinated Universal Time (UTC) is the default time zone, but alternate time zones can be specified as offsets after the time (e.g., -05:00 for Eastern Standard) in place of the Z (i.e., Z indicates zero offset). Within ISO 8601, date and time terms can be omitted from right to left to express reduced accuracy; for example, May 2020 would just be 2020-05. Note also, that within netCDF files the convention is to express the time dimension relative to a user-specified origin (e.g., days since 2020-01-01), in which case the origin should be in ISO standard and the time increments since the origin are in UDUNITS (see 2.4 Forecasted Variables below). The ISO standard also allows the specification of weeks and day-of-week as an alternative to months and day-of-month by using the W prefix (e.g., 2022-W02-03 specifies the third day of the second week of the year). ISO weeks start on Mondays and week 01 is the week with the first Thursday of the year in it.
