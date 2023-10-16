@@ -134,6 +134,21 @@ As will be described in the “File Formats” subsection, the formatting of the
 
 In addition to the forecasted variables, the EFI convention also defines four other standard variables: a required forecast flag, a recommended data_assimilation flag, an optional data assimilation quality control flag (da_qc), and an optional ensemble log_weight (Table 5).
 
+```{r,echo=FALSE}
+knitr::kable(
+  tibble::tribble(
+~Variable,           ~Description,
+"data_assimilation", "[RECOMMENDED] Did data assimilation occur (1) or not (0) at that
+time step, location, etc.",
+"da_qc",             "[OPTIONAL] Was the data assimilation successful (0) or not (1 or error code)",
+"forecast",          "[OPTIONAL] Was this timestep a forecast (1) or a hindcast (0)",
+"log_weight",        "[OPTIONAL] Weight assigned to each ensemble member, natural log scale"
+  ),
+caption = "Table 5: Additional ecological forecast netCDF variables (beyond the forecast variables themselves).",
+label = "AncillaryVars"
+)
+```
+
 Similar to the forecast flag, data_assimilation is a boolean flag that records whether (1) or not (0) observational data were used to constrain the system state or parameters at that point in time. If the same time point exists twice, once without data assimilation (data_assimilation = 0) and the other with data_assimilation = 1, the former is assumed to be the Forecast step, and the latter is assumed to be the Analysis step within the Forecast-Analysis cycle (Dietze 2017a). Closely related to this is the optional data assimilation quality flag, da_qc, which records quality control information about a given assimilation step: 0 is used to encode success; 1 is used to indicate a general error; and positive integers greater than 1 are used to indicate system-specific failures documented in the metadata. Like the forecast flag, data_assimilation and da_qc will typically have a time dimension.
 
 The final variable, log_weight, is used to record any weights assigned to each ensemble member. This optional variable is primarily used in data assimilation algorithms that iteratively weight the different ensemble members (e.g., particle filters). Weights are stored on a natural log (ln) scale to reduce numerical round-off issues. To allow for greater flexibility in algorithms, a sum-to-one constraint is not required (e.g., users may choose to record underlying scores, such as logLikelihoods). Because of this end users should note that sum-to-one normalization will need to be applied to perform analyses with weights. Those storing raw scores as their weights are strongly encouraged to document the meaning of such scores in their metadata.
@@ -146,6 +161,41 @@ netCDF is a set of self-documenting, machine-independent data formats. It is par
 A netCDF file consists of three parts (Hassell et al. 2017): dimensions, which describe the size of variables (e.g., 5 depths, 20 time points); variables, which store data of different dimensions; and attributes providing additional arbitrary metadata corresponding to either the entire file (see subsection “Global Attributes”) or specific variables (variable attributes; e.g., description, units, sign conventions, fill values for invalid/missing data) (Box 1). 
 
 Most of the variables in a netCDF file should be the forecasted systems states, pools, and fluxes. Unlike the CSV format, where all the data are in one large table, netCDF files store each forecasted quantity in a dedicated variable, and different variables can have different labelled dimensions (“coordinates”) (Box 1). For example, one might forecast net_primary_productivity with dimensions [datetime, lon, lat, parameter], and in the same file have a forecast of mass_content_of_water_in_soil_layer with dimensions [datetime, depth, lon, lat, parameter]. In each of these cases, the dimension corresponds to the integer size of a particular axis and is paired with a dedicated 1-dimensional coordinate variable of the same size that provides the labels along that dimension. In the net_primary_productivity above, if the forecast is hourly over 3 days, then the datetime dimension has an integer value of 24 × 3 = 72 and is accompanied by a dedicated variable called datetime that is a 1-dimensional vector of length 72 containing the actual timesteps. As noted earlier, dimensions should follow the EFI convention names and order. If one is using a site dimension for the variables (e.g., if forecast locations are for a collection of points that are not on a grid), then following the NetCDF Discrete Sampling Geometry data model, the spatial locations of the sites should be defined as additional 1-dimensional vectors with corresponding site dimensions (e.g., lat[site], lon[site]). 
+
+```{fig.cap="Figure 3: netCDF header for our example forecast (Section 1.1), illustrating how dimensions, variables, and attributes are structured."}
+netcdf logistic-forecast-ensemble-multi-variable-space-long {
+dimensions:
+	datetime = 30 ;
+	depth = 3 ;
+	parameter = 10 ;
+	obs_flag = 2 ;
+variables:
+	double datetime(datetime) ;
+		datetime:units = "days since 2001-03-04" ;
+		datetime:long_name = "datetime" ;
+	double depth(depth) ;
+		depth:units = "meters" ;
+		depth:long_name = "Depth from surface" ;
+	int parameter(parameter) ;
+		parameter:long_name = "ensemble member" ;
+	int obs_flag(obs_flag) ;
+		obs_flag:long_name = "observation error flag" ;
+	float species_1(datetime, depth, parameter, obs_flag) ;
+		species_1:units = "number of individuals" ;
+		species_1:long_name = "<scientific name of species 1>" ;
+	float species_2(datetime, depth, parameter, obs_flag) ;
+		species_2:units = "number of individuals" ;
+		species_2:long_name = "<scientific name of species 2>" ;
+	float data_assimilation(datetime) ;
+		data_assimilation:units = "integer" ;
+		data_assimilation:long_name = "EFI standard data assimilation code" ;
+// global attributes:
+		:model_name = "LogisticDemo" ;
+		:model_version = "v0.5" ;
+		:iteration_id = "20010304T060000" ;
+}
+```
+Figure 3: netCDF header for our example forecast (Section 1.1), illustrating how dimensions, variables, and attributes are structured.
 
 ### CSV:
 The CSV format is less efficient than netCDF (in terms of file size, data access performance, and flexibility of data extraction/manipulation) and is much more reliant on external metadata for information like variable name explanations and units. That said, provided the same numerical precision is used and metadata provided (see section “Forecast Dataset Metadata”), CSV can preserve the same information content as the netCDF. We anticipate the CSV format to be most useful: (1) for simple, low-dimensional forecasts; (2) when forecast producers are unaccustomed to netCDF; or (3) as a conversion format from netCDF when forecast user communities are unaccustomed to netCDF. 

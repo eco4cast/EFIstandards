@@ -10,6 +10,23 @@ On the synthesis side, a key goal of the EFI metadata convention was to address 
 
 In many ways the metadata about forecast outputs shares many of the same characteristics as any other dataset, where documentation is needed for information like file format, variables, spatial and temporal resolution and extent, and provenance. However, forecast outputs have additional characteristics that separate them from observational data, as well as a few features that separate forecasts from most model outputs (e.g., for forecasts that are made repeatedly, it is not uncommon to make multiple different predictions for the same day that vary in the day the forecast was issued). To store this forecast-specific metadata we leverage the extensibility of the EML standard using the “additionalMetadata” field (Box 2). Many of the added elements are conceptually straightforward and provide information about forecast time step, global attributes (Table 1), and modeling approaches (see Appendix S3 for definitions of these EML elements). That said, one of the most important and novel contributions of the EFI metadata convention is a formalization of how we describe and account for the different uncertainties that are included in any particular forecast and how they relate to model structure, which is described in the following section.
 
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<eml:eml>
+  <dataset>
+      <title>
+      <pubDate>
+      <intellectualRights>
+       ….
+  </dataset>
+  <additionalMetadata>
+      ….
+  </additionalMetadata>
+</eml:eml>
+```
+Figure 4: Example high-level structure of an EML file.
+
+
 ## Forecast Uncertainty
 Knowing how a forecasting approach handles different uncertainties is a critical part of its high-level structure, and is important to be able to interpret a forecast and fairly compare among different forecasts. For example, if a forecast that considers more uncertainties has a wider predictive interval, that does not necessarily mean it is doing “worse” than a model that considers fewer uncertainties. Indeed, forecasts that consider fewer uncertainties are more likely to be (falsely) overconfident.
 
@@ -39,8 +56,67 @@ This framework is based on the long-established and frequently used structure of
 
 Given this framework, there are six REQUIRED elements that are used to provide basic information about model structure and how the forecast handles different uncertainties, although in any particular application this element may simply be used to indicate that a specific term is absent from that model (Table 6).
 
+```{r,echo=FALSE}
+knitr::kable(
+tibble::tribble(
+~Tag,                ~Description,
+"&lt;initial_conditions&gt;", "**Uncertainty in the initialization of state variables (Y).** Initial condition uncertainty will be a common feature of any dynamic model, where the future state depends on the current state, such as population models, process-based biogeochemical pool & flux models, and classic time-series analysis. For time series models with multiple lags or dynamic models with memory, the initial conditions may cover multiple timepoints. Initial condition uncertainty will be absent from many statistical and machine learning models. Initial condition uncertainty might be directly informed by field data, indirectly inferred from other proxies (e.g., remote sensing), sampled from some (informed or uninformed) prior distribution, or “spun up” through model simulation. When spun up, initial condition uncertainty may have strong interactions with the other uncertainties below.",
+"&lt;drivers&gt;",           "**Uncertainty in model drivers, covariates, and exogenous scenarios (X).** Driver/covariate uncertainties may come directly from a data product, as a reported error estimate or through driver ensembles, or may be estimated based on sampling theory, calibration/validation documents, or some other source. In most of these cases these uncertainties are thought about probabilistically. When making projections, driver uncertainty may also be associated with scenarios or decision alternatives. These alternative drivers are not themselves probabilistic (they do not have weights or probabilities) and forecast outputs are conditional on a specific alternative scenario. Examples include climate scenarios or treatments associated with system inputs (irrigation, fertilization, etc).",
+"&lt;parameters&gt;",       "**Uncertainty in model parameters (&theta;).** For most ecological processes the parameters (a.k.a. coefficients) in model equations are not physical constants but need to be estimated from data. Because parameters are estimated from data, uncertainty will be associated with them. Parameter uncertainty is usually conditional on model structure and may be estimated directly from data (e.g., ecological traits) or indirectly (e.g., optimization or Bayesian calibration) by comparing model outputs to observations. Parameter uncertainty tends to decline asymptotically with sample size.",
+"&lt;random_effects&gt;",    "**Unexplained variability and heterogeneity in model parameters (&alpha;).** Hierarchical models, random effect models, and meta transfer learning approaches all attempt to acknowledge that the ‘best’ model parameters may change across space, time, individual, or other measurement unit. This variability can be estimated and partitioned into different sources but is (as of yet) not explained within the model’s internal structure. Unlike parameter uncertainty, this variability in parameters does not decline with sample size. Example: variability/heterogeneity in ecological traits such as carbon-to-nitrogen ratios.",
+"&lt;obs_error&gt;",          "**Uncertainty in the observations of the output variables (g).** Note that many statistical modeling approaches do not formally partition errors in observations from errors in the modeling process, but simply lump these into a residual error. We make the pragmatic distinction that errors that do not directly propagate into the future be recorded as observation errors. Observation errors now may indeed affect the initial condition uncertainty in the next forecast, but we consider this to be indirect.",
+"&lt;process_error&gt;",       "**Dynamic uncertainty in the process model (&epsilon;)** attributable to both model misspecification (a.k.a. structural error) and stochasticity. Pragmatically, this is the portion of the residual error from one timestep to the next that is not attributable to any of the other uncertainties listed above, and which typically propagates into the future. Philosophically, process error (as defined here) convolves uncertainty that is part of the natural process itself (i.e., stochasticity), human ignorance about the true process (e.g., model structure), and errors associated with numerical approximation. Deconvolving these is both pragmatically and philosophically very challenging, but teams wishing to do so can alternatively use the &lt;stochastic_error&gt; and &lt;structural_error&gt; elements instead of the <process_error> tag.",
+"&lt;stochastic_error&gt;",      "[OPTIONAL] irreducible uncertainty that is associated with natural stochastic processes (e.g., demographic stochasticity, disturbance)",
+"&lt;structural_error&gt;",      "[OPTIONAL] uncertainty associated with human ignorance about the true process (e.g., model structure) and numerical approximations."
+),
+caption = "Table 6: Uncertainty classes",
+label = "uncertainty"
+)
+```
+
+
 Every element in Table 6 needs to be reported at least once, even if the metadata simply states that a specific term is absent from the model, or that the term is present but the forecast does not consider any uncertainty. Box 3 provides an example of the EML uncertainty elements for our Lotka-Volterra case study (see Introduction: A Simple Example), which is a simple dynamic model that predicts two state variables using six parameters, no random effects, no drivers/covariates, and both observation and process error. Each uncertainty class has the same basic structure for its component subelements (although some have some special cases described below). 
 An uncertainty element (Table 6) can be repeated if different terms within the forecasting process have different subelements. For example, a model may have one subset of \<drivers\> that are data-driven and propagate uncertainty (e.g., weather forecast) and another subset that are scenario-based. Similarly, a process-based model may have one subset of \<parameters\> that are fixed constants, another subset that are calibrated a priori, and a third subset that are dynamically updated via data assimilation.
+
+```
+<initial_conditions>
+          <present>TRUE</present>
+          <data_driven>TRUE</data_driven>
+          <complexity>2</complexity>
+          <propagation>
+                      <type>ensemble</type>
+                      <size>10</size>
+          </propagation>
+</initial_conditions>
+<drivers>
+          <present>FALSE</present>
+</drivers>
+<parameters>
+          <present>TRUE</present>
+          <data_driven>TRUE</data_driven>
+          <complexity>6</complexity>
+</parameters>
+<random_effects>
+          <present>FALSE</present>
+</random_effects>
+<obs_error>
+          <present>TRUE</present>
+          <data_driven>TRUE</data_driven>
+          <complexity>1</complexity>
+          <covariance>FALSE</covariance>
+<obs_error>
+<process_error>
+          <present>TRUE</present>
+          <data_driven>TRUE</data_driven>
+          <complexity>1</complexity>
+          <covariance>FALSE</covariance>
+          <propagation>
+                      <type>ensemble</type>
+                      <size>10</size>
+          </propagation>
+</process_error>
+```
+Figure 5: Example Extensible Markup Language (XML) for the uncertainty classes
 
 ### \<present\> subelement [REQUIRED]
 Within each uncertainty class, the \<present\> subelement contains a boolean value (TRUE/FALSE) that is used to indicate whether the model contains this concept. For example, a model might have parameters (TRUE) but not random effects (FALSE). Similarly, a regression-style model would not have an initial condition because the predicted state, Y, does not depend on the current state. If a concept is absent from the model, the forecast cannot consider uncertainty associated with it and thus none of the other uncertainty elements below should be included. 
