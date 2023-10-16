@@ -80,3 +80,9 @@ This project was supported by NSF Research Coordination Network award 1926388 to
 # References
 
 <div id="refs"></div>
+
+# (APPENDIX) Appendix {-} 
+
+<!---- SUPPLEMENTAL MATERIAL --->
+```{r child = '05-metadata-supplement.Rmd'}
+```
