@@ -2,183 +2,46 @@
 ```{r,echo=FALSE}
 knitr::kable(
 tibble::tribble(
-~"family name",       ~"Parameter 1", ~"Parameter 2", ~"Parameter 3",
-"bernoulli",          "prob",         "",               "",
+~"family name",       ~"Parameter 1",  ~"Parameter 2",  ~"Parameter 3",
+"bernoulli",          "prob",          "",              "",
 "beta",               "shape1",        "shape2",        "",
 "binomial",           "size",          "prob",          "", 
-"burr",               "shape1",        "shape2",        "rate
-categorical
-prob
-outcomes
-
-
-cauchy
-location
-scale
-
-
-chisq
-df
-ncp
-
-
-degenerate
-x
-
-
-
-
-exponential
-rate
-
-
-
-
-f
-df1
-df2
-ncp
-gamma
-shape
-rate
-
-
-geometric
-prob
-
-
-
-
-gumbel
-alpha
-scale
-
-
-hypergeometric
-m
-n
-k
-inflated
-dist
-prob
-x
-inverse_exponential
-rate
-
-
-
-
-inverse_gamma
-shape
-rate
-scale
-inverse_gaussian
-mean
-shape
-
-
-logarithmic
-prob
-
-
-
-
-logistic
-location
-scale
-
-
-lognormal
-mu
-sigma
-
-
-missing
-length
-
-
-
-
-mixture
-<family name>
-weights
-
-
-multinomial
-size
-prob
-
-
-multivariate_normal
-mu
-sigma
-
-
-negative_binomial
-size
-prob
-
-
-normal
-mu
-sigma
-
-
-pareto
-shape
-scale
-
-
-percentile
-x
-percentile
-
-
-poisson
-lambda
-
-
-
-
-poisson_inverse_gamma
-mean
-shape
-
-
-sample
-x
-
-
-
-
-studentized_range
-nmeans
-df
-nranges
-student_t
-df
-mu
-sigma
-transformed
-dist
-transform
-inverse
-truncated
-dist
-lower
-upper
-uniform
-min
-max
-
-
-weibull
-shape
-scale
-
-
-wrap
-dist"
+"burr",               "shape1",        "shape2",        "rate",
+"categorical",        "prob",          "outcomes",      "",
+"cauchy",             "location",      "scale",         "",
+"chisq",              "df",            "ncp",           "",
+"degenerate",          "x",            "",              "",
+"exponential",        "rate",          "",              "",
+"f",                  "df1",           "df2",           "ncp",
+"gamma",              "shape",         "rate",          "",
+"geometric",          "prob",          "",              "",
+"gumbel",             "alpha",         "scale",         "",
+"hypergeometric",     "m",             "n",             "k",
+"inflated",           "dist",          "prob",          "x",
+"inverse_exponential","rate",          "",              "",
+"inverse_gamma",      "shape",         "rate",          "scale",
+"inverse_gaussian",   "mean",          "shape",         "",
+"logarithmic",        "prob",          "",              "",
+"logistic",           "location",      "scale",         "",
+"lognormal",          "mu",            "sigma",         "",
+"missing",            "length",        "",              "",
+"mixture",            "&lt;family name&gt;","weights",  "",
+"multinomial",        "size",          "prob",          "",
+"multivariate_normal","mu",            "sigma",         "",
+"negative_binomial",  "size",          "prob",          "",
+"normal",             "mu",            "sigma",         "",
+"pareto",             "shape",         "scale",         "",
+"percentile",         "x",             "percentile",    "",
+"poisson",            "lambda",        "",              "",
+"poisson_inverse_gamma", "mean",       "shape",         "",
+"sample",             "x",             "",              "",
+"studentized_range",  "nmeans",        "df",            "nranges",
+"student_t",          "df",            "mu",            "sigma",
+"transformed",        "dist",          "transform",     "inverse",
+"truncated",          "dist",          "lower",         "upper",
+"uniform",            "min",           "max",           "",
+"weibull",            "shape",         "scale",         "",
+"wrap",               "dist",          "",              ""
 ),
 caption = "Table S1: Valid family and parameter names for EFI probabilistic output based on the R distributional package, https://pkg.mitchelloharawild.com/distributional/ (O’Hara-Wild et al. 2022)",
 label= "FamilyNames"
