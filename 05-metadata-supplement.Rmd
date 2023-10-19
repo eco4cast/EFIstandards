@@ -1,0 +1,274 @@
+
+```{r,echo=FALSE}
+knitr::kable(
+tibble::tribble(
+~"family name",       ~"Parameter 1",  ~"Parameter 2",  ~"Parameter 3",
+"bernoulli",          "prob",          "",              "",
+"beta",               "shape1",        "shape2",        "",
+"binomial",           "size",          "prob",          "", 
+"burr",               "shape1",        "shape2",        "rate",
+"categorical",        "prob",          "outcomes",      "",
+"cauchy",             "location",      "scale",         "",
+"chisq",              "df",            "ncp",           "",
+"degenerate",          "x",            "",              "",
+"exponential",        "rate",          "",              "",
+"f",                  "df1",           "df2",           "ncp",
+"gamma",              "shape",         "rate",          "",
+"geometric",          "prob",          "",              "",
+"gumbel",             "alpha",         "scale",         "",
+"hypergeometric",     "m",             "n",             "k",
+"inflated",           "dist",          "prob",          "x",
+"inverse_exponential","rate",          "",              "",
+"inverse_gamma",      "shape",         "rate",          "scale",
+"inverse_gaussian",   "mean",          "shape",         "",
+"logarithmic",        "prob",          "",              "",
+"logistic",           "location",      "scale",         "",
+"lognormal",          "mu",            "sigma",         "",
+"missing",            "length",        "",              "",
+"mixture",            "&lt;family name&gt;","weights",  "",
+"multinomial",        "size",          "prob",          "",
+"multivariate_normal","mu",            "sigma",         "",
+"negative_binomial",  "size",          "prob",          "",
+"normal",             "mu",            "sigma",         "",
+"pareto",             "shape",         "scale",         "",
+"percentile",         "x",             "percentile",    "",
+"poisson",            "lambda",        "",              "",
+"poisson_inverse_gamma", "mean",       "shape",         "",
+"sample",             "x",             "",              "",
+"studentized_range",  "nmeans",        "df",            "nranges",
+"student_t",          "df",            "mu",            "sigma",
+"transformed",        "dist",          "transform",     "inverse",
+"truncated",          "dist",          "lower",         "upper",
+"uniform",            "min",           "max",           "",
+"weibull",            "shape",         "scale",         "",
+"wrap",               "dist",          "",              ""
+),
+caption = "Table S1: Valid family and parameter names for EFI probabilistic output based on the R distributional package, https://pkg.mitchelloharawild.com/distributional/ (O’Hara-Wild et al. 2022)",
+label= "FamilyNames"
+)
+```
+
+
+
+```{r,echo=FALSE}
+knitr::kable(
+tibble::tribble(
+  ~parameter,      ~Description,
+"mean",            "Arithmetic mean",
+"median",          "50% quantile",
+"sd",              "Predictive standard deviation, accounts for observation errors",
+"se",              "Uncertainty about the latent variable (standard error)",
+"variance*",       "Predictive variance",
+"precision*",      "Predictive precision (1/variance)",
+"cov",             "Covariance",
+"pred_interv_XX.X","Predictive interval for specific quantile XX.X; values below 10 require a leading 0. Interval accounts for observation errors and is generally preferred over conf_interv. Recommended defaults are 02.5 and 97.5 (i.e., a 95% interval)",
+"conf_interv_XX.X","Confidence interval for specific quantile XX.X. Represents uncertainty about latent variables without accounting for observation uncertainty, but is otherwise analogous to pred_interv"),
+caption = "Table S2: Standard names for the parameter column when the family is “summary.” Note: (*) sd is preferred over variance or precision because sd will have the same units as the variable itself, whereas variances and precisions will have different units than those reported in the metadata.",
+label = "SummaryParamNames"
+)
+```
+
+
+## Base EML
+As noted above, the EFI metadata convention builds on the EML metadata standard. This section highlights the core component of the base EML standard that the EFI convention makes required or recommended. Many optional elements also exist as part of the EML schema (https://eml.ecoinformatics.org/schema/).
+
+The following components all exist within the \<dataset\> tag, which exists at the highest level in the EML file (Figure 4). This includes basic contact information, details on internal file structure (variable names, units, etc.), and spatial, temporal, and taxonomic coverage.
+
+\<title\> [REQUIRED]
+
+* Brief, high-level description (text).
+
+\<pubDate\> [REQUIRED]
+
+Publication date of the forecast. For true forecasts this is not necessarily identical to \<reference_datetime\> due to latency in a forecast system. For hindcasts the pubDate can be long after the *reference_datetime*.
+
+\<intellectualRights\> or \<licensed\> [REQUIRED]
+
+* Usage and licensing information. \<intellectualRights\> can be text, but we recommend providing the URL of a standard license, e.g., https://opensource.org/licenses/MIT.
+* \<licensed\> is more detailed and consists of the following subelements:
+     * \<licenseName\>  e.g., Creative Commons Attribution 4.0 International,
+     * \<url\> e.g., https://spdx.org/licenses/CC-BY-4.0.html,
+     * \<identifier\> e.g., CC-BY-4.0.
+     
+See https://eml.ecoinformatics.org/whats-new-in-eml-2-2-0.html#dataset-license for more information.
+
+\<creator\> [REQUIRED]
+
+* \<individualName\> provides the names of who to contact (more than one allowed). It is composed of the following subelements:
+    * \<givenName\>
+    * \<surName\>
+* \<electronicMailAddress\>
+* \<userID\> [RECOMMENDED] EFI recommends setting the attribute userID to an ORCID (https://orcid.org/) using the format: \<userId directory="https://orcid.org"\>0000-0002-1992-6378\</userId\>. 
+* [OPTIONAL] Additional optional elements include \<organizationName\>, \<address\>, \<phone\>, and \<onlineURL\>. See https://eml.ecoinformatics.org/schema/eml-resource_xsd.html#ResourceGroup_creator for more information.
+
+\<coverage\> [REQUIRED]
+
+Describes the extent of a forecast in space, time, and taxonomy. Can be defined using the R EML package (Boettiger et al. 2022) EML::set_coverage function and minimally should include at least the following elements:
+
+* \<temporalCoverage\>
+    * \<beginDate\> and \<endDate\> should be in ISO 8601 standard
+    * Temporal grain (timestep) of the forecast is not documented in \<coverage\> and thus needs to be in \<additionalMetadata\>\<timestep\>
+* \<geographicCoverage\>
+    * \<geographicDescription\> provides a short text description of the spatial domain
+    * \<boundingCoordinates\> provides a lat/lon bounding box around the forecast region. This box should be consistent with any spatial dimensions in the forecast output file itself. Those dimensions, not the metadata, should provide the detailed spatial information for anything other than point-scale forecasts. Points can be entered with the same values for both, latitude as east and westBoundingCoordinate and ongitude as north and southBoundingCoordinate
+        * \<westBoundingCoordinate\>
+        * \<eastBoundingCoordinate\>
+        * \<northBoundingCoordinate\>
+        * \<southBoundingCoordinate\>
+* \<taxonomicCoverage\> [required only if the forecast is for taxonomic groups]
+    * EML::set_coverage’s sci_names argument will read a string, list, or data frame of scientific names (i.e., Genus species). 
+    * Additional elements are available in the schema to describe the specific taxonomic system used. See https://eml.ecoinformatics.org/schema/eml-coverage_xsd.html#TaxonomicCoverage for more information.
+
+### Entities (file formats)
+
+The heart of the \<dataset\> is the “entity” module, which is used to document the file formats. The one required “entity” is used to document the forecast output file. This section is simplified because there are only two options currently supported (CSV and netCDF), as documented in Section 1, and extensions of the EFI convention to other file formats would have very similar metadata to these two. Optionally, additional entity records can be used to document the drivers, initial conditions, parameters, data assimilation constraints, etc. 
+
+Forecast output entity: [REQUIRED]
+
+* The EML entities can have several different Types, such as dataTable, spatialRaster, spatialVector, and otherEntity. These end up as high-level XML elements within the metadata. For EFI standard outputs the entity type should be:
+    * \<dataTable\> for CSV or
+    * \<otherEntity\> for netCDF. 
+* \<entityName\> = “forecast”
+* \<physical\> = describes characteristics of a specific forecast file (name, size, etc.). These are most easily set using utilities such as R’s EML::set_physical(filename) function, which will directly extract the required metadata from the file itself.
+* \<attributeList\> = Documents the file format in terms of variable names, units, formats, etc. See https://eml.ecoinformatics.org/eml-schema.html#the-eml-attribute-module---attribute-level-information-within-dataset-entities for more information. The attributeList is most easily set using utilities such as R’s EML::set_attributes function, which reads a table with the following columns (see Table S3 for an example):
+    * attributeName
+        * Should start with the DIMENSION variables (datetime, Z, Y, X, uncertainty) in the output file, following the order and standard definitions in Table 2. 
+        * Next, users should document their variable names, as used in the files themselves, for the variables being forecast. In netCDF each variable is its own object within the file. The tabular CSV is organized in a long format, where the variables are in the “variables” column and the values are in the “predictions” column. It is recommended that variable names be CF compliant.
+        * Finally, users should include any indicator variables used: data_assimilation, da_qc, forecast, and log_weight.
+    * attributeDefinition
+        * Because models may be storing a mix of information in their output files (states, parameters, dimensions, flags, etc.) the EFI standard REQUIRES that attribute definitions provide both a variable type and definition. These are stored together in the attributeDefinition by using square and curly braces to delineate the two: [variable_type]{variable_definition}. See Table S3 for examples.
+        * [variable_type] - should be in square braces and come before the variable definition. Can take on one of the following values, per the output standard (Section 1) and uncertainty classes (Table 6)
+            * dimension
+            * variable = output variable
+            * diagnostic = variable output purely for diagnostic purposes
+            * observation = data that is or could be compared to an output variable
+            * flag
+            * initial_condition
+            * driver
+            * parameter
+            * random_effect
+            * obs_error
+            * process_error
+        * {variable_definition} -  Short but precise definition of each attributeName. Should be in curly braces {} and come after the variable_type
+        * If a single attribute falls within more than one variable_type, variable types can be comma-delimited within the square braces.
+        * For those parsing attributeDefinitions, the following regexp should separate the two: `"^ *\\[(.*?)\\] *\\{(.*)\\} *$"`
+    * unit
+        * Unit of each attributeName. Note EML currently uses a different unit convention than UDUNITS and UDUNITS do not pass EML’s validation checks. Therefore one should use EML’s customUnits field to specify variable units and ignore EML's standardUnits field altogether. 
+    * Additional optional columns include: missingValueCode (e.g., “NA”, “-9999”), formatString (required for dateTime data), numberType (e.g., “real” versus “integer”), etc. See the EML attribute schema (https://eml.ecoinformatics.org/schema/eml-attribute_xsd.html) or R EML::set_attributes function for more details.
+    * Other optional components of the entity (e.g., abstract, methods) are documented in the EML entity schema (https://eml.ecoinformatics.org/schema/eml-entity_xsd.html) and the R EML package (and the eml$dataTable and eml$otherEntity functions in particular). The R EML vignette Creating EML (https://cran.r-project.org/web/packages/EML/vignettes/creating-EML.html) may be helpful to users.
+
+```{r,echo=FALSE}
+knitr::kable(
+tibble::tribble(
+~attributeName,     ~attributeDefinition,               ~unit,          ~formatString,   ~numberType,
+"datetime",         "[dimension]{datetime}",            "year",         "YYYY-MM-DD",    "NA",
+"depth",            "[dimension]{depth in reservoir}",  "meter",        "NA",            "real",
+"ensemble",         "[dimension]{index of ensemble member}","dimensionless","NA",        "integer",
+"obs_flag",         "[dimension]{observation error}",   "dimensionless","NA",            "integer",
+"species_1",        "[variable]{Pop. density of species 1}","numberPerMeterSquared","NA","real",
+"species_2",        "[variable]{Pop. density of species 2}","numberPerMeterSquared","NA","real",
+"data_assimilation","[flag]{whether time step assimilated data}","dimensionless","NA",   "integer"
+), caption = "Table S3: Example attribute table passed to R’s EML::set_attributes."
+)
+```
+
+The remaining optional entities have the same structure (entityName, physical, attributeList). In many cases an individual model may mix multiple types of variables within and across files, in which case merging or splitting some of the following optional entities is allowed. In these cases users are encouraged to name entities in ways that make it easiest to understand the outputs and find information. Including variable_type information on attributeLists within entities is thus critical to making this information machine parsable.
+
+Initial conditions entity [OPTIONAL]
+
+* \<entityName\> = “initial_conditions”
+* Provides a listing of initial condition variables and file format
+* Number of variables should match \<initial_conditions\>\<complexity\>
+( Typically, initial_conditions is a subset of the variables in the forecast
+* If \<assimilation\> is used, you can optionally provide matching \<attributeName\> records to indicate which initial conditional variables are being iteratively updated.
+
+Covariates/drivers entity [OPTIONAL]
+
+* \<entityName\> = “drivers”
+* Provides a listing of driver variables and file format
+* Number of variables should match \<drivers\>\<complexity\>
+
+Parameters & Random Effects entities: [OPTIONAL]
+
+* \<entityName\> = “parameters” and/or “random_effects”
+* *parameters* provides a listing of parameter variables and/or file format, which should match \<parameters\>\<complexity\>
+    * When parameter uncertainty is being propagated via ensembles, one dimension of the parameter file should match ensembles.
+    * When forecasting using models that also have parameters that change over space/time/etc (e.g., random effects), parameter files should provide the values of the parameters used for these different dimensions (e.g., a time dimension on the parameter values implies a temporal random effect). We recommend using the same dimensions, in the same order, as are in the output file netCDF and CSV formats, but acknowledge that models store their parameters in many different ways. If a dimension is present in the forecast output, but not in the parameters, that implies parameters do not vary in that dimension.
+    * *random_effects* provides a listing of parameter random effect covariance matrices
+        * Dimension of covariance matrices should match \<random_effects\>\<complexity\>
+        * File format should identify which parameters are random and how they are being indexed (time, location, species, individual, etc). 
+        * As of this convention version (2023), we acknowledge this section needs more detail and examples, especially for how to store autocorrelated effects and basis function approximations.
+
+Process error entity [OPTIONAL]
+
+* \<entityName\> = “process_error”
+* Provides process error covariance matrix
+* Dimension should match \<process_error\>\<complexity\>
+
+Data assimilation constraint entities [OPTIONAL, one per data source] 
+
+* \<entityName\> is user defined.
+* Provides information about data used to constrain the model during data assimilation; documented the same as any data source
+* variable_types are expected to be predominantly observation and obs_error
+
+## additionalMetadata REQUIRED elements 
+
+\<metadata_standard_version\>
+
+Version number of the EFI forecast convention used. Parsing/interpreting metadata correctly is important for cases where variables are added or changed.
+	Example: 0.5
+
+\<timestep\>
+
+* Forecast output timestep (a.k.a. grain) and units (ISO8601 and UDUNITS compliant).
+* Example: 1 day
+
+\<horizon\>
+
+* Total length of the forecast (or hindcast) in time. Should be consistent with \<temporalCoverage\>’s \<beginDate\> and \<endDate\>. For a “free run” this would be the total length of the model run. For an iterative forecast or hindcast/reanalysis, it would be the length of each individual run. The horizon will generally be the same or longer than the time between assimilation steps (e.g., run a 16-day forecast but update it after one day). Must provide both a positive number and units (ISO8601 and UDUNITS compliant).
+* Example: 16 days
+
+\<reference_datetime\>
+
+* Datetime indicating the start of the forecast. Only REQUIRED if not already included in the output file. See dimensions (Table 2) for more information. Typically will be the same as the base EML \<temporalCoverage\>\<beginDate\>.
+* Example: 2020-08-02T12:00:00Z
+
+\<iteration_id\>
+
+* Identifier unique to this specific forecast. Only REQUIRED if not already included in the output file.  See global attributes (Table 1). Allowable for this to be the same as the base EML \<packageId\> and/or the \<reference_datetime\>.
+
+\<model_name\>
+
+* Identifier unique to an overall project, which is intended to allow connections to be made across different versions of a model/workflow or among models in a multi-model forecast. Only REQUIRED if not already included in the output file. Allowable for this to be the same as the \<model_description\>\<name\> or \<model_description\>\<repository\>. See global attributes (Table 1).
+* Example: https://github.com/PecanProject/pecan/
+
+\<model_description\>
+
+* \<model_version\>
+    * Identifier unique to a specific version/snapshot of model/workflow code, such as a DOI, tagged code release, or version control hash. Only REQUIRED if not already included in the output file. See global attributes (Table 1). 
+    * Example: https://github.com/PecanProject/sipnet/releases/tag/r136
+* \<name\>
+    * Name or short description of the model. More extensive model documentation can be provided using the base eml-methods or eml-software modules.
+    * Example: SIPNET
+* \<type\> 
+    * Statistical, process-based, machine-learning, or other. In specifying these classes we acknowledge that these choices are subjective and overlapping, as different disciplines often classify the same modeling approaches differently, but encourage users to use their best judgment.
+    * Example: process-based
+* \<repository\> 
+    * URL or DOI link to the forecast code repository. Allowable to be the same as the model_name. OPTIONAL if no such repository exists, but highly encouraged under FAIR principles (Wilkinson et al. 2016).
+    * Example: https://github.com/PecanProject/sipnet
+
+## Vignettes
+
+See https://github.com/eco4cast/EFIstandards/tree/master/vignettes
+
+logistic-metadata-example.Rmd
+
+* [R & Python] Good first introduction to writing EFI standard files and metadata using a simple logistic model
+
+visualization-example.Rmd
+
+* [R] Example of how to read and parse both files and metadata. Uses the output of the logistic example.
+
+flare-metadata-example.Rmd
+
+* [R] Example of applying the EFI standard to a more complex operational forecast (FLARE reservoir forecast)

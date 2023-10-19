@@ -1,0 +1,88 @@
+---
+title: "A community convention for ecological forecasting: output files and metadata version 1.0"
+author:
+  - Michael C. Dietze 1
+  - R. Quinn Thomas 2 3
+  - Jody Peters 4
+  - Carl Boettiger 5
+  - Gerbrand Koren 6
+  - Alexey N. Shiklomanov 7
+  - Jaime Ashander 8
+  - 1 Department of Earth & Environment, Boston University, Boston, MA
+  - 2 Department of Forest Resources and Conservation, Virginia Tech, Blacksburg, VA
+  - 3 Department of Biological Sciences, Virginia Tech, Blacksburg, VA
+  - 4 Department of Biological Sciences, University of Notre Dame, South Bend, IN
+  - 5 Department of Environmental Science, Policy and Management, University of California Berkeley, Berkeley, CA
+  - 6 Copernicus Institute of Sustainable Development, Utrecht University, Netherlands
+  - 7 NASA Goddard Space Flight Center, Greenbelt, MD, USA
+  - 8 U.S. Geological Survey, Eastern Ecological Science Center, Laurel, MD, USA
+  - Corresponding Author = Michael C. Dietze
+date: '`r Sys.Date()`'
+keywords: comma-separated values (CSV), data assimilation, ecological forecasting, ecological metadata language (EML); ensemble, netCDF, standards, uncertainty
+header-includes:
+    - \usepackage{setspace}\doublespacing
+    - \usepackage[left]{lineno}
+    - \linenumbers
+output:
+  bookdown::html_document2: 
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+    keep_tex: true
+  bookdown::pdf_document2: 
+    fig_caption: yes
+    number_sections: yes
+    toc: no
+    keep_tex: true
+  bookdown::word_document2: 
+    fig_caption: yes
+    number_sections: yes
+    toc: no
+    keep_tex: true
+bibliography: EFIStandards.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Open Research statement**: Code associated with this paper is provided under a BSD-2 open source license as both a public project on Github at https://github.com/eco4cast/EFIstandards and archived on Zenodo at https://doi.org/10.5281/zenodo.7494824
+
+# ABSTRACT
+
+This paper summarizes the open community conventions developed by the Ecological Forecasting Initiative (EFI) for the common formatting and archiving of ecological forecasts and the metadata associated with these forecasts. Such open standards are intended to promote interoperability and facilitate forecast communication, distribution, validation, and synthesis. For output files we first describe the convention conceptually in terms of global attributes, forecast dimensions, forecasted variables, and ancillary indicator variables. We then illustrate the application of this convention to the two file formats that are currently preferred by EFI, netCDF (Network Common Data Form) and comma-separated values (CSV) but note that the convention is extensible to future formats. For metadata, EFI’s convention identifies a subset of conventional metadata variables that are required (e.g., temporal resolution, output variables) but focuses on developing a framework for storing information about forecast uncertainty propagation, data assimilation, and model complexity that aims to facilitate cross-forecast synthesis. The initial application of this convention expands upon the Ecological Metadata Language (EML), a commonly used metadata standard in ecology. To facilitate community adoption we also provide a Github repository containing a metadata validator tool and several vignettes in R and Python on how to both write and read in the EFI standard. Lastly, we provide guidance on forecast archiving, making an important distinction between short-term dissemination and long-term forecast archiving, while also touching on the archiving of code and workflows. Overall, the EFI convention is a living document that can continue to evolve over time through an open community process.
+
+<!---- INTRO --->
+```{r child = '01-Intro.Rmd'}
+```
+
+<!---- FORECAST OUTPUTS --->
+```{r child = '02-Outputs.Rmd'}
+```
+
+<!---- FORECAST DATASET METADATA --->
+```{r child = '03-Metadata.Rmd'}
+```
+
+<!---- FORECAST ARCHIVING --->
+```{r child = '04-Archive.Rmd'}
+```
+
+# Conclusions
+
+Overall, this initial version of the EFI convention (version 1.0) represents a community-developed and community-tested attempt to promote the archiving, interoperability, and synthesis of ecological forecasts. The conventions build on existing community standards (e.g., CF, EML, STAC, fable) that are in wide use, while targeting needs that are specific to the ecological forecasting community. As of 2023 the EFI convention focuses on three file formats, netCDF or CSV for forecast outputs, and EML for forecast metadata, but the design principles are laid out in a manner that would allow the convention to be serialized into alternative file formats and data structures in the future as new approaches to data access, storage, and management emerge and mature (e.g., the current growth of cloud-native data). To facilitate community adoption we also provide a Github repository, https://github.com/eco4cast/EFIstandards, that provides the text of the convention, R-based validation tools, and several vignettes illustrating both how to generate files and metadata for a range of different models, and how to access EFI convention files and metadata. Lastly, this convention is a living document that the community can contribute back to through the EFI Standards working group and through Issues and Pull Requests to our Github repository, where we plan to develop a more formal convention specification. A more formal convention specification would typically involve expressing the standard in a programmatic schema, such as XML Schema file (xsd file, see W3C standard https://www.w3.org/XML/Schema) extending the EML specification.  Other mechanisms are also possible, for instance, several terms from the EFI forecast standard have recently been adopted and expressed in a recently developed forecasting extension to the Spatio-Temporal Assets Catalog (a JSON schema, see https://stacspec.org/en/about/stac-spec/).
+
+# Acknowledgements
+
+This project was supported by NSF Research Coordination Network award 1926388 to RQT, MCD and JAP, funding from the Alfred P. Sloan Foundation to MCD and JAP, and funding from the Boston University Pardee Center for the Longer Range Future to MCD. The version of the EFI convention validation tools and vignettes coincident with the paper are archived on Zenodo at https://doi.org/10.5281/zenodo.7494824. The authors would like to thank the members of the EFI Standards working group, and in particular the contributions from Rob Kooper (National Center for Supercomputing Applications), Bruce Wilson (Oak Ridge National Laboratory), Jacob Zwart (U.S. Geological Survey), and Corrina Gries (Environmental Data Initiative, University of Wisconsin). Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. Government.
+
+\newpage
+# References
+
+<div id="refs"></div>
+
+# (APPENDIX) Appendix {-} 
+
+<!---- SUPPLEMENTAL MATERIAL --->
+```{r child = '05-metadata-supplement.Rmd'}
+```
